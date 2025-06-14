@@ -378,13 +378,13 @@ const ComparacaoGlobalPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white">
       <Navigation />
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            🌍 Comparação Global de Todos os Países
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent">
+            <span className="text-yellow-400">🌍</span> Comparação Global de Todos os Países
           </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
             Visualize e compare expectativa de vida e estilos de vida de {allCountriesData.length} países ao redor do mundo
@@ -406,10 +406,10 @@ const ComparacaoGlobalPage = () => {
         </div>
 
         {/* Insights dos Dados - Collapsible com Sorteio */}
-        <Card className="bg-gradient-to-br from-purple-900 to-indigo-900 border-purple-700 mb-8">
+        <Card className="bg-black/40 border-gray-700 mb-8">
           <Collapsible open={isInsightsOpen} onOpenChange={setIsInsightsOpen}>
             <CollapsibleTrigger asChild>
-              <CardHeader className="cursor-pointer hover:bg-purple-800/20 transition-colors">
+              <CardHeader className="cursor-pointer hover:bg-gray-800/20 transition-colors">
                 <CardTitle className="text-xl text-white flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Lightbulb className="w-6 h-6 text-yellow-400" />
@@ -417,7 +417,7 @@ const ComparacaoGlobalPage = () => {
                   </div>
                   <ChevronRight className={`w-5 h-5 transition-transform ${isInsightsOpen ? 'rotate-90' : ''}`} />
                 </CardTitle>
-                <p className="text-sm text-purple-200">
+                <p className="text-sm text-gray-300">
                   Análises detalhadas baseadas nos dados oficiais de todos os países
                 </p>
               </CardHeader>
@@ -426,26 +426,26 @@ const ComparacaoGlobalPage = () => {
               <CardContent>
                 <div className="space-y-6">
                   {/* Insight Atual */}
-                  <div className="bg-purple-800/30 rounded-lg border border-purple-600/30 p-6">
+                  <div className="bg-gray-800/30 rounded-lg border border-gray-600/30 p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <span className="text-3xl">{insights[currentInsightIndex].emoji}</span>
                       <span className="text-yellow-400 font-semibold text-xl">{insights[currentInsightIndex].title}</span>
                     </div>
                     <p className="text-gray-200 mb-4 text-lg leading-relaxed">{insights[currentInsightIndex].content}</p>
-                    <div className="bg-purple-800/50 rounded-lg p-4 mb-4">
+                    <div className="bg-gray-800/50 rounded-lg p-4 mb-4">
                       <p className="text-yellow-300 font-semibold mb-2">💎 Conclusão:</p>
-                      <p className="text-purple-100">{insights[currentInsightIndex].conclusion}</p>
+                      <p className="text-gray-100">{insights[currentInsightIndex].conclusion}</p>
                     </div>
-                    <div className="bg-indigo-800/50 rounded-lg p-4 mb-6">
+                    <div className="bg-gray-700/50 rounded-lg p-4 mb-6">
                       <p className="text-blue-300 font-semibold mb-2">✔️ Evidência:</p>
-                      <p className="text-indigo-100">{insights[currentInsightIndex].evidence}</p>
+                      <p className="text-gray-100">{insights[currentInsightIndex].evidence}</p>
                     </div>
                     
                     {/* Botão de Sortear */}
                     <div className="flex justify-center">
                       <Button 
                         onClick={drawRandomInsight}
-                        className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                        className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-semibold px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
                       >
                         <Shuffle className="w-4 h-4" />
                         Sortear Outro Insight
@@ -454,7 +454,7 @@ const ComparacaoGlobalPage = () => {
                     
                     {/* Contador de Insights */}
                     <div className="text-center mt-4">
-                      <span className="text-purple-300 text-sm">
+                      <span className="text-gray-300 text-sm">
                         Insight {currentInsightIndex + 1} de {insights.length}
                       </span>
                     </div>
@@ -466,10 +466,10 @@ const ComparacaoGlobalPage = () => {
         </Card>
 
         {/* Filtros */}
-        <Card className="bg-gray-800 border-gray-700 mb-8">
+        <Card className="bg-black/40 border-gray-700 mb-8">
           <CardHeader>
             <CardTitle className="text-xl text-white flex items-center gap-2">
-              <Filter className="w-6 h-6 text-blue-400" />
+              <Filter className="w-6 h-6 text-yellow-400" />
               Filtros
             </CardTitle>
           </CardHeader>
@@ -478,10 +478,10 @@ const ComparacaoGlobalPage = () => {
               <div>
                 <label className="block text-sm font-medium text-white mb-2">Região</label>
                 <Select value={regionFilter} onValueChange={setRegionFilter}>
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                  <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
                     <SelectValue placeholder="Selecione uma região" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-700 border-gray-600 text-white">
+                  <SelectContent className="bg-gray-800 border-gray-600 text-white">
                     <SelectItem value="all" className="text-white">Todas as Regiões</SelectItem>
                     <SelectItem value="Europa" className="text-white">Europa</SelectItem>
                     <SelectItem value="Ásia" className="text-white">Ásia</SelectItem>
@@ -494,10 +494,10 @@ const ComparacaoGlobalPage = () => {
               <div>
                 <label className="block text-sm font-medium text-white mb-2">Expectativa Mínima</label>
                 <Select value={minExpectancy} onValueChange={setMinExpectancy}>
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                  <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
                     <SelectValue placeholder="Expectativa mínima" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-700 border-gray-600 text-white">
+                  <SelectContent className="bg-gray-800 border-gray-600 text-white">
                     <SelectItem value="all" className="text-white">Todas</SelectItem>
                     <SelectItem value="70" className="text-white">70+ anos</SelectItem>
                     <SelectItem value="75" className="text-white">75+ anos</SelectItem>
@@ -511,7 +511,7 @@ const ComparacaoGlobalPage = () => {
                 <Button 
                   onClick={resetFilters}
                   variant="outline" 
-                  className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                  className="bg-gray-800 border-gray-600 text-white hover:bg-gray-600"
                 >
                   Limpar Filtros
                 </Button>
@@ -522,7 +522,7 @@ const ComparacaoGlobalPage = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-black/40 border-gray-700">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Heart className="w-5 h-5 text-red-400" />
@@ -537,7 +537,7 @@ const ComparacaoGlobalPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-black/40 border-gray-700">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-5 h-5 text-yellow-400" />
@@ -552,7 +552,7 @@ const ComparacaoGlobalPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-black/40 border-gray-700">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Clock className="w-5 h-5 text-green-400" />
@@ -567,7 +567,7 @@ const ComparacaoGlobalPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-black/40 border-gray-700">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Users className="w-5 h-5 text-blue-400" />
@@ -586,7 +586,7 @@ const ComparacaoGlobalPage = () => {
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Top 10 Expectativa de Vida - Agora com todas as barras */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-black/40 border-gray-700">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center gap-2">
                 <Heart className="w-6 h-6 text-red-400" />
@@ -649,7 +649,7 @@ const ComparacaoGlobalPage = () => {
           </Card>
 
           {/* Work-Life Balance Scatter */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-black/40 border-gray-700">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center gap-2">
                 <Clock className="w-6 h-6 text-blue-400" />
@@ -704,7 +704,7 @@ const ComparacaoGlobalPage = () => {
           </Card>
 
           {/* Happiness vs Work Hours */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-black/40 border-gray-700">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center gap-2">
                 <TrendingUp className="w-6 h-6 text-yellow-400" />
@@ -759,7 +759,7 @@ const ComparacaoGlobalPage = () => {
           </Card>
 
           {/* Países com Melhor Equilíbrio */}
-          <Card className="bg-gray-800 border-gray-700">
+          <Card className="bg-black/40 border-gray-700">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center gap-2">
                 <Activity className="w-6 h-6 text-green-400" />
@@ -803,7 +803,7 @@ const ComparacaoGlobalPage = () => {
         </div>
 
         {/* Tabela Completa com ordenação clicável */}
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="bg-black/40 border-gray-700">
           <CardHeader>
             <CardTitle className="text-xl text-white flex items-center gap-2">
               <Globe className="w-6 h-6 text-blue-400" />
@@ -860,7 +860,7 @@ const ComparacaoGlobalPage = () => {
                 </TableHeader>
                 <TableBody>
                   {sortedCountries.map((country, index) => (
-                    <TableRow key={country.country} className="border-gray-600 hover:bg-gray-700">
+                    <TableRow key={country.country} className="border-gray-600 hover:bg-gray-700/50">
                       <TableCell className="text-gray-400 font-mono">
                         {(index + 1).toString().padStart(2, '0')}
                       </TableCell>
