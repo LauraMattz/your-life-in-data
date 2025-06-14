@@ -36,19 +36,25 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
     const readingTimeAdded = (changes.readingIncrease / 60) * daysRemaining; // horas
     const sleepTimeAdded = changes.sleepImprovement * daysRemaining; // horas
     
+    // Cálculos em anos
+    const socialMediaYearsSaved = socialMediaTimeSaved / (24 * 365);
+    const exerciseYearsAdded = exerciseTimeAdded / (24 * 365);
+    const readingYearsAdded = readingTimeAdded / (24 * 365);
+    const sleepYearsAdded = sleepTimeAdded / (24 * 365);
+    
     // Cálculos interessantes
     const booksRead = Math.floor(readingTimeAdded / 8); // assumindo 8h por livro
     const workoutSessions = Math.floor(exerciseTimeAdded / 1); // 1h por sessão
-    const socialMediaDaysSaved = socialMediaTimeSaved / 24;
-    const sleepDaysAdded = sleepTimeAdded / 24;
+    const totalProductiveYears = (readingTimeAdded + exerciseTimeAdded) / (24 * 365);
 
     return {
-      socialMediaTimeSaved,
-      socialMediaDaysSaved,
+      socialMediaYearsSaved,
+      exerciseYearsAdded,
+      readingYearsAdded,
+      sleepYearsAdded,
       booksRead,
       workoutSessions,
-      sleepDaysAdded,
-      totalProductiveHours: readingTimeAdded + exerciseTimeAdded
+      totalProductiveYears
     };
   };
 
@@ -135,10 +141,10 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
               {changes.socialMediaReduction > 0 && (
                 <div className="bg-purple-900/20 p-3 rounded border border-purple-500/30">
                   <div className="text-2xl font-bold text-purple-400">
-                    {Math.floor(impact.socialMediaDaysSaved)}
+                    {impact.socialMediaYearsSaved.toFixed(1)}
                   </div>
                   <div className="text-sm text-gray-300">
-                    dias livres sem redes sociais
+                    anos livres sem redes sociais
                   </div>
                 </div>
               )}
@@ -149,7 +155,7 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                     {impact.booksRead}
                   </div>
                   <div className="text-sm text-gray-300">
-                    livros lidos a mais
+                    livros lidos ({impact.readingYearsAdded.toFixed(1)} anos)
                   </div>
                 </div>
               )}
@@ -157,10 +163,10 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
               {changes.exerciseIncrease > 0 && (
                 <div className="bg-green-900/20 p-3 rounded border border-green-500/30">
                   <div className="text-2xl font-bold text-green-400">
-                    {impact.workoutSessions}
+                    {impact.exerciseYearsAdded.toFixed(1)}
                   </div>
                   <div className="text-sm text-gray-300">
-                    sessões de exercício
+                    anos de exercício extra
                   </div>
                 </div>
               )}
@@ -168,20 +174,19 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
               {changes.sleepImprovement > 0 && (
                 <div className="bg-indigo-900/20 p-3 rounded border border-indigo-500/30">
                   <div className="text-2xl font-bold text-indigo-400">
-                    {Math.floor(impact.sleepDaysAdded)}
+                    {impact.sleepYearsAdded.toFixed(1)}
                   </div>
                   <div className="text-sm text-gray-300">
-                    dias extras de sono
+                    anos extras de sono
                   </div>
                 </div>
               )}
             </div>
 
-            {impact.totalProductiveHours > 0 && (
+            {impact.totalProductiveYears > 0 && (
               <div className="mt-4 p-3 bg-yellow-900/20 border border-yellow-500/30 rounded">
                 <p className="text-yellow-300 font-semibold">
-                  🎯 Total: {Math.floor(impact.totalProductiveHours).toLocaleString()} horas produtivas extras 
-                  = {(impact.totalProductiveHours / 24).toFixed(1)} dias de vida mais rica!
+                  🎯 Total: {impact.totalProductiveYears.toFixed(1)} anos de vida mais produtiva e saudável!
                 </p>
               </div>
             )}
