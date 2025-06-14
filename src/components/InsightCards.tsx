@@ -21,19 +21,19 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
     {
       icon: '📱',
       title: 'Tempo Digital',
-      content: `Uma hora a menos de tela por dia te daria ${(365 / 24).toFixed(0)} dias extras por ano para fazer o que você ama.`,
+      content: `Uma hora a menos de tela por dia te daria <span class="text-orange-400 font-bold">${(365 / 24).toFixed(0)} dias</span> extras por ano para fazer o que você ama.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '📚',
       title: 'Hábito da Leitura',
-      content: `Com 15 minutos diários de leitura, você poderia ler cerca de ${Math.floor((userProfile.lifeExpectancy - ageInYears) * 365 * 0.25 / 8)} livros até os ${userProfile.lifeExpectancy} anos.`,
+      content: `Com <span class="text-orange-400 font-bold">15 minutos</span> diários de leitura, você poderia ler cerca de <span class="text-orange-400 font-bold">${Math.floor((userProfile.lifeExpectancy - ageInYears) * 365 * 0.25 / 8)} livros</span> até os <span class="text-orange-400 font-bold">${userProfile.lifeExpectancy} anos</span>.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '⚡',
       title: 'Energia Vital',
-      content: `Você tem ${((1 - ageInYears / userProfile.lifeExpectancy) * 100).toFixed(1)}% da sua jornada pela frente. Cada dia é uma nova oportunidade.`,
+      content: `Você tem <span class="text-orange-400 font-bold">${((1 - ageInYears / userProfile.lifeExpectancy) * 100).toFixed(1)}%</span> da sua jornada pela frente. Cada dia é uma nova oportunidade.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
@@ -45,7 +45,7 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
     {
       icon: '🎯',
       title: 'Pequenos Passos',
-      content: `Melhorar 1% ao dia resulta em um crescimento de 37x ao final de um ano. A consistência é mais poderosa que a perfeição.`,
+      content: `Melhorar <span class="text-orange-400 font-bold">1%</span> ao dia resulta em um crescimento de <span class="text-orange-400 font-bold">37x</span> ao final de um ano. A consistência é mais poderosa que a perfeição.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
@@ -71,8 +71,7 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
                 <h3 className="font-bold text-white text-lg relative z-10">{insight.title}</h3>
               </div>
               <div className="p-4">
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  {insight.content}
+                <p className="text-gray-300 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: insight.content }}>
                 </p>
               </div>
             </CardContent>
