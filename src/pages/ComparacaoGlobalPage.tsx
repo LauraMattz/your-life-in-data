@@ -1,11 +1,12 @@
 
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Navigation } from '@/components/Navigation';
-import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter } from 'lucide-react';
+import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter, LineChart, Line } from 'recharts';
 
@@ -199,8 +200,12 @@ const chartConfig = {
   },
 };
 
+type SortField = 'country' | 'expectancy' | 'happiness' | 'workHours' | 'exercise' | 'socialMedia';
+type SortDirection = 'asc' | 'desc';
+
 const ComparacaoGlobalPage = () => {
-  const [sortBy, setSortBy] = useState<'expectancy' | 'happiness' | 'workHours' | 'exercise'>('expectancy');
+  const [sortBy, setSortBy] = useState<SortField>('expectancy');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [regionFilter, setRegionFilter] = useState<string>('all');
   const [minExpectancy, setMinExpectancy] = useState<string>('all');
 
@@ -234,12 +239,27 @@ const ComparacaoGlobalPage = () => {
     allCountriesData = allCountriesData.filter(country => country.expectancy >= minValue);
   }
 
-  // Aplicar ordenação baseada no sortBy selecionado
-  const sortedCountries = [...allCountriesData].sort((a, b) => {
-    if (sortBy === 'workHours') {
-      return a[sortBy] - b[sortBy]; // Menor é melhor para horas de trabalho
+  // Função para ordenar
+  const handleSort = (field: SortField) => {
+    if (sortBy === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(field);
+      setSortDirection(field === 'workHours' ? 'asc' : 'desc'); // Menor trabalho é melhor
     }
-    return b[sortBy] - a[sortBy]; // Maior é melhor para outros
+  };
+
+  // Aplicar ordenação
+  const sortedCountries = [...allCountriesData].sort((a, b) => {
+    let comparison = 0;
+    
+    if (sortBy === 'country') {
+      comparison = a[sortBy].localeCompare(b[sortBy]);
+    } else {
+      comparison = a[sortBy] - b[sortBy];
+    }
+    
+    return sortDirection === 'asc' ? comparison : -comparison;
   });
 
   const scatterData = allCountriesData.map(country => ({
@@ -252,6 +272,23 @@ const ComparacaoGlobalPage = () => {
   const resetFilters = () => {
     setRegionFilter('all');
     setMinExpectancy('all');
+  };
+
+  // Cálculos para insights
+  const nordicos = allCountriesData.filter(c => ['Noruega', 'Dinamarca', 'Suécia', 'Finlândia'].includes(c.country));
+  const avgNordicoHappiness = nordicos.reduce((sum, c) => sum + c.happiness, 0) / nordicos.length;
+  const avgNordicoWork = nordicos.reduce((sum, c) => sum + c.workHours, 0) / nordicos.length;
+  
+  const asiaticos = allCountriesData.filter(c => ['Japão', 'Coreia do Sul', 'Singapura', 'China'].includes(c.country));
+  const avgAsiaticoWork = asiaticos.reduce((sum, c) => sum + c.workHours, 0) / asiaticos.length;
+  
+  const workLifeBalanceCountries = allCountriesData.filter(c => c.workHours < 30 && c.happiness > 7);
+
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortBy !== field) return null;
+    return sortDirection === 'asc' ? 
+      <ChevronUp className="w-4 h-4 inline ml-1" /> : 
+      <ChevronDown className="w-4 h-4 inline ml-1" />;
   };
 
   return (
@@ -280,6 +317,57 @@ const ComparacaoGlobalPage = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Insights Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <Card className="bg-gradient-to-br from-blue-900 to-blue-800 border-blue-700">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <BarChart3 className="w-8 h-8 text-blue-400" />
+                <h3 className="font-bold text-white text-lg">Fórmula Nórdica</h3>
+              </div>
+              <p className="text-blue-100 text-sm mb-3">
+                Países nórdicos trabalham apenas <strong>{avgNordicoWork.toFixed(1)}h/semana</strong> em média, 
+                mas têm felicidade de <strong>{avgNordicoHappiness.toFixed(1)}/10</strong>
+              </p>
+              <div className="text-xs text-blue-200">
+                Menos trabalho ≠ Menos prosperidade
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-red-900 to-red-800 border-red-700">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Clock className="w-8 h-8 text-red-400" />
+                <h3 className="font-bold text-white text-lg">Paradoxo Asiático</h3>
+              </div>
+              <p className="text-red-100 text-sm mb-3">
+                Singapura trabalha <strong>45h/semana</strong> mas vive até <strong>85,2 anos</strong>. 
+                Japão e Coreia: muito trabalho, pouca felicidade.
+              </p>
+              <div className="text-xs text-red-200">
+                Longevidade ≠ Felicidade
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-green-900 to-green-800 border-green-700">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Activity className="w-8 h-8 text-green-400" />
+                <h3 className="font-bold text-white text-lg">Work-Life Champions</h3>
+              </div>
+              <p className="text-green-100 text-sm mb-3">
+                <strong>{workLifeBalanceCountries.length} países</strong> conseguem trabalhar menos de 30h/semana 
+                E ter felicidade acima de 7/10
+              </p>
+              <div className="text-xs text-green-200">
+                {workLifeBalanceCountries.map(c => c.flag).join(' ')} Holanda, Noruega, Dinamarca, Finlândia
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Filtros */}
@@ -402,77 +490,16 @@ const ComparacaoGlobalPage = () => {
 
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Expectativa de Vida - Enhanced */}
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-xl text-white flex items-center gap-2">
-                <Heart className="w-6 h-6 text-red-400" />
-                Expectativa de Vida por País
-              </CardTitle>
-              <p className="text-sm text-gray-400">
-                Top {Math.min(15, sortedCountries.length)} países com maior expectativa de vida
-              </p>
-            </CardHeader>
-            <CardContent className="h-[500px] p-4">
-              <ChartContainer config={chartConfig} className="h-full w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart 
-                    data={sortedCountries.sort((a, b) => b.expectancy - a.expectancy).slice(0, 15)} 
-                    layout="horizontal"
-                    margin={{ top: 10, right: 50, left: 60, bottom: 10 }}
-                  >
-                    <XAxis 
-                      type="number" 
-                      domain={[65, 90]} 
-                      tick={{ fontSize: 12, fill: '#ffffff' }}
-                      axisLine={{ stroke: '#374151' }}
-                    />
-                    <YAxis 
-                      dataKey="country" 
-                      type="category" 
-                      width={55} 
-                      tick={{ fontSize: 10, fill: '#ffffff' }}
-                      axisLine={{ stroke: '#374151' }}
-                    />
-                    <Bar 
-                      dataKey="expectancy" 
-                      fill="url(#expectancyGradient)"
-                      radius={[0, 4, 4, 0]}
-                    />
-                    <defs>
-                      <linearGradient id="expectancyGradient" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="#ef4444" />
-                        <stop offset="50%" stopColor="#f87171" />
-                        <stop offset="100%" stopColor="#fca5a5" />
-                      </linearGradient>
-                    </defs>
-                    <ChartTooltip 
-                      content={<ChartTooltipContent />}
-                      formatter={(value, name, props) => [
-                        `${value} anos`, 
-                        `${props.payload.flag} ${props.payload.country}`
-                      ]}
-                      labelFormatter={() => ''}
-                      contentStyle={{
-                        backgroundColor: '#1f2937',
-                        border: '1px solid #374151',
-                        borderRadius: '8px',
-                        color: '#ffffff'
-                      }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-
-          {/* Relação Trabalho vs Expectativa */}
+          {/* Work-Life Balance Scatter */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center gap-2">
                 <Clock className="w-6 h-6 text-blue-400" />
-                Horas de Trabalho vs Expectativa de Vida
+                Work-Life Balance Global
               </CardTitle>
+              <p className="text-sm text-gray-400">
+                Países no canto inferior direito têm o melhor equilíbrio
+              </p>
             </CardHeader>
             <CardContent className="h-[450px] p-4">
               <ChartContainer config={chartConfig} className="h-full w-full">
@@ -485,13 +512,17 @@ const ComparacaoGlobalPage = () => {
                       dataKey="x" 
                       name="Horas de Trabalho" 
                       unit="h/sem" 
-                      label={{ value: 'Horas/Semana', position: 'insideBottom', offset: -5, style: { fontSize: '12px' } }}
+                      domain={[25, 50]}
+                      label={{ value: 'Horas/Semana →', position: 'insideBottom', offset: -5, style: { fontSize: '12px', fill: '#ffffff' } }}
+                      tick={{ fontSize: 12, fill: '#ffffff' }}
                     />
                     <YAxis 
                       dataKey="y" 
                       name="Expectativa" 
                       unit=" anos"
-                      label={{ value: 'Expectativa (anos)', angle: -90, position: 'insideLeft', style: { fontSize: '12px' } }}
+                      domain={[68, 86]}
+                      label={{ value: '↑ Expectativa (anos)', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
+                      tick={{ fontSize: 12, fill: '#ffffff' }}
                     />
                     <Scatter dataKey="y" fill="#3b82f6" />
                     <ChartTooltip 
@@ -514,80 +545,161 @@ const ComparacaoGlobalPage = () => {
             </CardContent>
           </Card>
 
-          {/* Índice de Felicidade */}
+          {/* Happiness vs Work Hours */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center gap-2">
                 <TrendingUp className="w-6 h-6 text-yellow-400" />
-                Índice de Felicidade
+                Felicidade vs Horas de Trabalho
               </CardTitle>
+              <p className="text-sm text-gray-400">
+                Será que trabalhar mais traz mais felicidade?
+              </p>
             </CardHeader>
-            <CardContent className="h-[350px] p-4">
+            <CardContent className="h-[450px] p-4">
               <ChartContainer config={chartConfig} className="h-full w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart 
-                    data={sortedCountries.sort((a, b) => b.happiness - a.happiness).slice(0, 12)}
-                    margin={{ top: 10, right: 20, left: 20, bottom: 60 }}
+                  <ScatterChart 
+                    data={allCountriesData.map(c => ({ ...c, x: c.workHours, y: c.happiness }))}
+                    margin={{ top: 10, right: 20, bottom: 40, left: 20 }}
                   >
                     <XAxis 
-                      dataKey="flag" 
-                      tick={{ fontSize: 10 }}
-                      interval={0}
-                      angle={-45}
-                      textAnchor="end"
-                      height={60}
+                      dataKey="x" 
+                      name="Horas de Trabalho" 
+                      unit="h/sem" 
+                      domain={[25, 50]}
+                      label={{ value: 'Horas/Semana →', position: 'insideBottom', offset: -5, style: { fontSize: '12px', fill: '#ffffff' } }}
+                      tick={{ fontSize: 12, fill: '#ffffff' }}
                     />
                     <YAxis 
-                      domain={[3, 8]} 
-                      label={{ value: 'Felicidade (0-10)', angle: -90, position: 'insideLeft', style: { fontSize: '12px' } }}
+                      dataKey="y" 
+                      name="Felicidade" 
+                      unit="/10"
+                      domain={[3, 8]}
+                      label={{ value: '↑ Felicidade', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
+                      tick={{ fontSize: 12, fill: '#ffffff' }}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="happiness" 
-                      stroke="#fbbf24" 
-                      strokeWidth={2}
-                      dot={{ fill: '#fbbf24', strokeWidth: 2, r: 3 }}
-                    />
+                    <Scatter dataKey="y" fill="#fbbf24" />
                     <ChartTooltip 
                       content={<ChartTooltipContent />}
-                      formatter={(value) => [`${value}/10`, 'Felicidade']}
+                      formatter={(value, name, props) => {
+                        if (name === 'y') return [`${value}/10`, 'Felicidade'];
+                        if (name === 'x') return [`${props.payload.x}h/sem`, 'Trabalho'];
+                        return [value, name];
+                      }}
+                      labelFormatter={(label, payload) => {
+                        if (payload && payload.length > 0) {
+                          return `${payload[0].payload.flag} ${payload[0].payload.country}`;
+                        }
+                        return label;
+                      }}
                     />
-                  </LineChart>
+                  </ScatterChart>
                 </ResponsiveContainer>
               </ChartContainer>
             </CardContent>
           </Card>
 
-          {/* Exercício Semanal */}
+          {/* Top Expectativa de Vida */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center gap-2">
-                <Users className="w-6 h-6 text-green-400" />
-                Exercício Semanal por País
+                <Heart className="w-6 h-6 text-red-400" />
+                Top 10 Expectativa de Vida
               </CardTitle>
+              <p className="text-sm text-gray-400">
+                Asiáticos dominam, mas europeus não ficam muito atrás
+              </p>
             </CardHeader>
-            <CardContent className="h-[350px] p-4">
+            <CardContent className="h-[400px] p-4">
               <ChartContainer config={chartConfig} className="h-full w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart 
-                    data={sortedCountries.sort((a, b) => b.exercise - a.exercise).slice(0, 12)}
+                    data={[...allCountriesData].sort((a, b) => b.expectancy - a.expectancy).slice(0, 10)} 
+                    layout="horizontal"
+                    margin={{ top: 10, right: 50, left: 60, bottom: 10 }}
+                  >
+                    <XAxis 
+                      type="number" 
+                      domain={[75, 90]} 
+                      tick={{ fontSize: 12, fill: '#ffffff' }}
+                      axisLine={{ stroke: '#374151' }}
+                    />
+                    <YAxis 
+                      dataKey="flag" 
+                      type="category" 
+                      width={55} 
+                      tick={{ fontSize: 14, fill: '#ffffff' }}
+                      axisLine={{ stroke: '#374151' }}
+                    />
+                    <Bar 
+                      dataKey="expectancy" 
+                      fill="url(#expectancyGradient)"
+                      radius={[0, 4, 4, 0]}
+                    />
+                    <defs>
+                      <linearGradient id="expectancyGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#ef4444" />
+                        <stop offset="50%" stopColor="#f87171" />
+                        <stop offset="100%" stopColor="#fca5a5" />
+                      </linearGradient>
+                    </defs>
+                    <ChartTooltip 
+                      content={<ChartTooltipContent />}
+                      formatter={(value, name, props) => [
+                        `${value} anos`, 
+                        `${props.payload.country}`
+                      ]}
+                      labelFormatter={() => ''}
+                      contentStyle={{
+                        backgroundColor: '#1f2937',
+                        border: '1px solid #374151',
+                        borderRadius: '8px',
+                        color: '#ffffff'
+                      }}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          {/* Países com Melhor Equilíbrio */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <Activity className="w-6 h-6 text-green-400" />
+                Mestres do Work-Life Balance
+              </CardTitle>
+              <p className="text-sm text-gray-400">
+                Menos de 30h/semana + Felicidade 7+
+              </p>
+            </CardHeader>
+            <CardContent className="h-[400px] p-4">
+              <ChartContainer config={chartConfig} className="h-full w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart 
+                    data={workLifeBalanceCountries}
                     margin={{ top: 10, right: 20, left: 20, bottom: 60 }}
                   >
                     <XAxis 
                       dataKey="flag" 
-                      tick={{ fontSize: 10 }}
+                      tick={{ fontSize: 16 }}
                       interval={0}
-                      angle={-45}
-                      textAnchor="end"
                       height={60}
                     />
                     <YAxis 
-                      label={{ value: 'Horas/Semana', angle: -90, position: 'insideLeft', style: { fontSize: '12px' } }}
+                      label={{ value: 'Horas/Semana', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
+                      tick={{ fontSize: 12, fill: '#ffffff' }}
                     />
-                    <Bar dataKey="exercise" fill="#10b981" />
+                    <Bar dataKey="workHours" fill="#10b981" radius={[4, 4, 0, 0]} />
                     <ChartTooltip 
                       content={<ChartTooltipContent />}
-                      formatter={(value) => [`${value}h/semana`, 'Exercício']}
+                      formatter={(value, name, props) => [
+                        `${value}h/sem`, 
+                        `${props.payload.country} (${props.payload.happiness}/10 felicidade)`
+                      ]}
+                      labelFormatter={() => ''}
                     />
                   </BarChart>
                 </ResponsiveContainer>
@@ -596,39 +708,16 @@ const ComparacaoGlobalPage = () => {
           </Card>
         </div>
 
-        {/* Tabela Completa com dados atualizados */}
+        {/* Tabela Completa com ordenação clicável */}
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader>
             <CardTitle className="text-xl text-white flex items-center gap-2">
               <Globe className="w-6 h-6 text-blue-400" />
               Ranking Completo de Países (Dados Oficiais 2024)
             </CardTitle>
-            <div className="flex gap-2 mt-4 flex-wrap">
-              <button 
-                onClick={() => setSortBy('expectancy')}
-                className={`px-3 py-1 rounded text-sm transition-colors ${sortBy === 'expectancy' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
-              >
-                Expectativa
-              </button>
-              <button 
-                onClick={() => setSortBy('happiness')}
-                className={`px-3 py-1 rounded text-sm transition-colors ${sortBy === 'happiness' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
-              >
-                Felicidade
-              </button>
-              <button 
-                onClick={() => setSortBy('workHours')}
-                className={`px-3 py-1 rounded text-sm transition-colors ${sortBy === 'workHours' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
-              >
-                Trabalho
-              </button>
-              <button 
-                onClick={() => setSortBy('exercise')}
-                className={`px-3 py-1 rounded text-sm transition-colors ${sortBy === 'exercise' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
-              >
-                Exercício
-              </button>
-            </div>
+            <p className="text-sm text-gray-400 mt-2">
+              Clique nas colunas para ordenar os dados
+            </p>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
@@ -636,13 +725,43 @@ const ComparacaoGlobalPage = () => {
                 <TableHeader>
                   <TableRow className="border-gray-600">
                     <TableHead className="text-gray-300">#</TableHead>
-                    <TableHead className="text-gray-300">País</TableHead>
+                    <TableHead 
+                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                      onClick={() => handleSort('country')}
+                    >
+                      País <SortIcon field="country" />
+                    </TableHead>
                     <TableHead className="text-gray-300">Região</TableHead>
-                    <TableHead className="text-gray-300">Expectativa</TableHead>
-                    <TableHead className="text-gray-300">Trabalho</TableHead>
-                    <TableHead className="text-gray-300">Exercício</TableHead>
-                    <TableHead className="text-gray-300">Redes Sociais</TableHead>
-                    <TableHead className="text-gray-300">Felicidade</TableHead>
+                    <TableHead 
+                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                      onClick={() => handleSort('expectancy')}
+                    >
+                      Expectativa <SortIcon field="expectancy" />
+                    </TableHead>
+                    <TableHead 
+                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                      onClick={() => handleSort('workHours')}
+                    >
+                      Trabalho <SortIcon field="workHours" />
+                    </TableHead>
+                    <TableHead 
+                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                      onClick={() => handleSort('exercise')}
+                    >
+                      Exercício <SortIcon field="exercise" />
+                    </TableHead>
+                    <TableHead 
+                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                      onClick={() => handleSort('socialMedia')}
+                    >
+                      Redes Sociais <SortIcon field="socialMedia" />
+                    </TableHead>
+                    <TableHead 
+                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                      onClick={() => handleSort('happiness')}
+                    >
+                      Felicidade <SortIcon field="happiness" />
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -688,3 +807,4 @@ const ComparacaoGlobalPage = () => {
 };
 
 export default ComparacaoGlobalPage;
+
