@@ -85,7 +85,6 @@ export const UserSetup = ({ onProfileComplete }: UserSetupProps) => {
               <p className="font-semibold text-gray-200 mb-2">🔐 Por que coletamos estes dados?</p>
               <ul className="text-left space-y-1 text-gray-300">
                 <li>• <strong>Nome:</strong> Para personalizar sua experiência</li>
-                <li>• <strong>Data de nascimento:</strong> Para calcular sua idade atual</li>
                 <li>• <strong>País:</strong> Para estimar expectativa de vida baseada em dados estatísticos</li>
               </ul>
             </div>
@@ -130,16 +129,16 @@ export const UserSetup = ({ onProfileComplete }: UserSetupProps) => {
                 <SelectTrigger className="bg-gray-800/70 border-gray-600/50 text-white focus:border-yellow-400 focus:ring-yellow-400/20">
                   <SelectValue placeholder="Selecione seu país" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-900 border-gray-600">
+                <SelectContent className="bg-gray-900 border-gray-600 z-50">
                   {Object.entries(countries).map(([countryName, expectancy]) => (
                     <SelectItem 
                       key={countryName} 
                       value={countryName}
-                      className="text-white hover:bg-gray-700 focus:bg-gray-700"
+                      className="text-white hover:bg-gray-700 focus:bg-gray-700 cursor-pointer"
                     >
                       {countryName === 'Personalizada' 
                         ? 'Personalizada (você define)'
-                        : `${countryName} (~${expectancy} anos)`
+                        : countryName
                       }
                     </SelectItem>
                   ))}
@@ -159,10 +158,6 @@ export const UserSetup = ({ onProfileComplete }: UserSetupProps) => {
                   />
                 </div>
               )}
-              
-              <p className="text-xs text-gray-400 mt-2 flex items-center gap-1">
-                💡 As expectativas são estimativas baseadas em dados gerais. Sua jornada é única!
-              </p>
             </div>
 
             <Button 
