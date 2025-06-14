@@ -22,7 +22,7 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent">
-          Olá, {userProfile.name}! 👋
+          Olá, {userProfile.name}! <span className="text-yellow-400">👋</span>
         </h1>
         <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-6 leading-relaxed">
           Seu dashboard pessoal da vida — Uma calculadora brutalmente honesta de como você vive sua existência
