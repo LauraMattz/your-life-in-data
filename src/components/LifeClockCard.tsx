@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -65,7 +64,6 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
     return () => clearInterval(interval);
   }, [userProfile]);
 
-  // Criar grid de quadradinhos (representando semanas de vida)
   const totalWeeks = userProfile.lifeExpectancy * 52;
   const weeksLived = timeData.weeksLived;
   const gridSize = Math.ceil(Math.sqrt(totalWeeks));
@@ -90,7 +88,7 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
   };
 
   return (
-    <Card className="bg-gray-900 border-gray-700 h-fit">
+    <Card className="bg-gray-900 border-gray-700 h-full w-full">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold text-white">
           ⏰ Seu Relógio da Vida

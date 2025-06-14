@@ -35,11 +35,11 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
       </div>
 
       {/* Top Section - Life Clock e Life Metrics em grid balanceado */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-        <div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10 items-start">
+        <div className="flex">
           <LifeClockCard userProfile={userProfile} />
         </div>
-        <div>
+        <div className="flex">
           <LifeMetricsCard userProfile={userProfile} />
         </div>
       </div>
