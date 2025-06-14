@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface UserProfile {
   name: string;
@@ -17,54 +16,17 @@ interface UserSetupProps {
   onProfileComplete: (profile: UserProfile) => void;
 }
 
-const countries = {
-  'Brasil': 76,
-  'Estados Unidos': 78,
-  'Japão': 84,
-  'Alemanha': 81,
-  'França': 82,
-  'Canadá': 82,
-  'Austrália': 83,
-  'Reino Unido': 81,
-  'Espanha': 83,
-  'Itália': 83,
-  'Argentina': 77,
-  'Chile': 80,
-  'Uruguai': 78,
-  'Portugal': 82,
-  'Coreia do Sul': 83,
-  'Suécia': 83,
-  'Noruega': 82,
-  'Dinamarca': 81,
-  'Suíça': 84,
-  'Holanda': 82,
-  'Personalizada': 80
-};
-
 export const UserSetup = ({ onProfileComplete }: UserSetupProps) => {
   const [name, setName] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [country, setCountry] = useState('');
-  const [customExpectancy, setCustomExpectancy] = useState(80);
-  const [showCustomInput, setShowCustomInput] = useState(false);
-
-  const handleCountryChange = (value: string) => {
-    setCountry(value);
-    setShowCustomInput(value === 'Personalizada');
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name && birthDate && country) {
-      const expectancy = country === 'Personalizada' 
-        ? customExpectancy 
-        : countries[country as keyof typeof countries] || 78;
-      
+    if (name) {
       const profile: UserProfile = {
         name,
-        birthDate,
-        country,
-        lifeExpectancy: expectancy
+        birthDate: '1990-01-01', // default value
+        country: 'Brasil',
+        lifeExpectancy: 76
       };
       onProfileComplete(profile);
     }
@@ -81,13 +43,6 @@ export const UserSetup = ({ onProfileComplete }: UserSetupProps) => {
             <p className="text-lg leading-relaxed">
               Vamos calcular sua jornada de vida de forma brutalmente honesta.
             </p>
-            <div className="bg-gray-800/80 border border-gray-600/50 rounded-xl p-4 text-sm">
-              <p className="font-semibold text-gray-200 mb-2">🔐 Por que coletamos estes dados?</p>
-              <ul className="text-left space-y-1 text-gray-300">
-                <li>• <strong>Nome:</strong> Para personalizar sua experiência</li>
-                <li>• <strong>País:</strong> Para estimar expectativa de vida baseada em dados estatísticos</li>
-              </ul>
-            </div>
             <div className="bg-yellow-900/30 border border-yellow-500/40 rounded-lg p-3">
               <p className="text-sm text-yellow-200 flex items-center justify-center gap-2">
                 🛡️ <strong>100% Privado:</strong> Nenhum dado é salvo ou enviado para servidores. 
@@ -109,55 +64,6 @@ export const UserSetup = ({ onProfileComplete }: UserSetupProps) => {
                 className="bg-gray-800/70 border-gray-600/50 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400/20"
                 required
               />
-            </div>
-
-            <div>
-              <Label htmlFor="birthDate" className="text-gray-200 font-medium mb-2 block">Data de Nascimento</Label>
-              <Input
-                id="birthDate"
-                type="date"
-                value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-                className="bg-gray-800/70 border-gray-600/50 text-white focus:border-yellow-400 focus:ring-yellow-400/20"
-                required
-              />
-            </div>
-
-            <div>
-              <Label className="text-gray-200 font-medium mb-2 block">País/Região</Label>
-              <Select value={country} onValueChange={handleCountryChange} required>
-                <SelectTrigger className="bg-gray-800/70 border-gray-600/50 text-white focus:border-yellow-400 focus:ring-yellow-400/20">
-                  <SelectValue placeholder="Selecione seu país" />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-900 border-gray-600 z-50">
-                  {Object.entries(countries).map(([countryName, expectancy]) => (
-                    <SelectItem 
-                      key={countryName} 
-                      value={countryName}
-                      className="text-white hover:bg-gray-700 focus:bg-gray-700 cursor-pointer"
-                    >
-                      {countryName === 'Personalizada' 
-                        ? 'Personalizada (você define)'
-                        : countryName
-                      }
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              {showCustomInput && (
-                <div className="mt-3">
-                  <Label className="text-gray-300 text-sm block mb-2">Expectativa de vida personalizada</Label>
-                  <Input
-                    type="number"
-                    min="50"
-                    max="120"
-                    value={customExpectancy}
-                    onChange={(e) => setCustomExpectancy(Number(e.target.value))}
-                    className="bg-gray-800/70 border-gray-600/50 text-white focus:border-yellow-400 focus:ring-yellow-400/20"
-                  />
-                </div>
-              )}
             </div>
 
             <Button 
