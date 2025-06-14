@@ -41,7 +41,7 @@ export const UserSetup = ({ onProfileComplete }: UserSetupProps) => {
           </CardTitle>
           <div className="space-y-3 text-gray-300">
             <p className="text-lg leading-relaxed">
-              Vamos calcular sua jornada de vida de forma brutalmente honesta.
+              Vamos descobrir juntos como aproveitar melhor cada momento da sua vida.
             </p>
             <div className="bg-yellow-900/30 border border-yellow-500/40 rounded-lg p-3">
               <p className="text-sm text-yellow-200 flex items-center justify-center gap-2">
