@@ -44,10 +44,10 @@ const Index = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
-          <p className="text-blue-200">Carregando...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+          <p className="text-gray-300">Carregando...</p>
         </div>
       </div>
     );
@@ -55,7 +55,7 @@ const Index = () => {
 
   if (!userProfile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white">
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white">
         <UserSetup onProfileComplete={handleProfileComplete} />
         <Footer />
       </div>
@@ -63,7 +63,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white">
       <Navigation onResetProfile={handleResetProfile} />
       <Dashboard userProfile={userProfile} />
       <Footer />
