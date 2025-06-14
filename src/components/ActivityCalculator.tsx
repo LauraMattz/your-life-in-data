@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 
 interface UserProfile {
   name: string;
@@ -24,17 +23,26 @@ export const ActivityCalculator = ({ userProfile }: ActivityCalculatorProps) => 
     exercise: 0.5
   });
 
-  const birthDate = new Date(userProfile.birthDate);
   const now = new Date();
-  const ageInYears = now.getFullYear() - birthDate.getFullYear();
+  const currentYear = now.getFullYear();
+  const startOfYear = new Date(currentYear, 0, 1);
+  const dayOfYear = Math.floor((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  const isLeapYear = (currentYear % 4 === 0 && currentYear % 100 !== 0) || (currentYear % 400 === 0);
+  const totalDaysInYear = isLeapYear ? 366 : 365;
+  const daysRemainingThisYear = totalDaysInYear - dayOfYear;
 
-  const calculateLifetimeActivity = (hoursPerDay: number, startAge: number = 0) => {
-    const yearsActive = Math.max(0, ageInYears - startAge);
-    const totalHours = yearsActive * 365 * hoursPerDay;
-    const totalDays = totalHours / 24;
-    const totalYears = totalHours / (24 * 365);
+  const calculateYearActivity = (hoursPerDay: number) => {
+    const totalHoursThisYear = dayOfYear * hoursPerDay;
+    const remainingHoursThisYear = daysRemainingThisYear * hoursPerDay;
+    const totalDaysThisYear = totalHoursThisYear / 24;
+    const remainingDaysThisYear = remainingHoursThisYear / 24;
     
-    return { totalHours, totalDays, totalYears };
+    return { 
+      totalHoursThisYear, 
+      totalDaysThisYear, 
+      remainingHoursThisYear,
+      remainingDaysThisYear 
+    };
   };
 
   const activities = [
@@ -43,7 +51,6 @@ export const ActivityCalculator = ({ userProfile }: ActivityCalculatorProps) => 
       icon: '📱',
       value: dailyHours.socialMedia,
       key: 'socialMedia' as keyof typeof dailyHours,
-      startAge: 13,
       color: 'text-purple-400'
     },
     {
@@ -51,7 +58,6 @@ export const ActivityCalculator = ({ userProfile }: ActivityCalculatorProps) => 
       icon: '📺',
       value: dailyHours.television,
       key: 'television' as keyof typeof dailyHours,
-      startAge: 5,
       color: 'text-red-400'
     },
     {
@@ -59,7 +65,6 @@ export const ActivityCalculator = ({ userProfile }: ActivityCalculatorProps) => 
       icon: '🚗',
       value: dailyHours.commute,
       key: 'commute' as keyof typeof dailyHours,
-      startAge: 18,
       color: 'text-gray-400'
     },
     {
@@ -67,7 +72,6 @@ export const ActivityCalculator = ({ userProfile }: ActivityCalculatorProps) => 
       icon: '💪',
       value: dailyHours.exercise,
       key: 'exercise' as keyof typeof dailyHours,
-      startAge: 15,
       color: 'text-green-400'
     }
   ];
@@ -76,15 +80,15 @@ export const ActivityCalculator = ({ userProfile }: ActivityCalculatorProps) => 
     <Card className="bg-gray-800 border-gray-700 h-fit">
       <CardHeader>
         <CardTitle className="text-xl font-bold text-white">
-          ⚡ Calculadora Personalizada
+          ⚡ Calculadora para {currentYear}
         </CardTitle>
         <p className="text-gray-300 text-sm">
-          Ajuste suas horas diárias e veja o impacto na vida
+          Ajuste suas horas diárias e veja o impacto no ano atual ({daysRemainingThisYear} dias restantes)
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
         {activities.map((activity) => {
-          const stats = calculateLifetimeActivity(activity.value, activity.startAge);
+          const stats = calculateYearActivity(activity.value);
           
           return (
             <div key={activity.key} className="bg-gray-700 p-3 rounded-lg space-y-2">
@@ -93,7 +97,7 @@ export const ActivityCalculator = ({ userProfile }: ActivityCalculatorProps) => 
                   {activity.icon} {activity.name}
                 </Label>
                 <span className={`text-sm font-bold ${activity.color}`}>
-                  {stats.totalYears.toFixed(1)} anos
+                  {stats.totalDaysThisYear.toFixed(1)} dias em {currentYear}
                 </span>
               </div>
               
@@ -115,10 +119,10 @@ export const ActivityCalculator = ({ userProfile }: ActivityCalculatorProps) => 
               
               <div className="grid grid-cols-2 gap-2 text-xs text-gray-300">
                 <div>
-                  <span className="text-gray-400">Total:</span> {Math.floor(stats.totalDays)} dias
+                  <span className="text-gray-400">Já passou:</span> {Math.floor(stats.totalDaysThisYear)} dias
                 </div>
                 <div>
-                  <span className="text-gray-400">Horas:</span> {Math.floor(stats.totalHours).toLocaleString()}
+                  <span className="text-gray-400">Restante:</span> {Math.floor(stats.remainingDaysThisYear)} dias
                 </div>
               </div>
             </div>

@@ -23,38 +23,39 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
     sleepImprovement: 0 // horas por dia aumentadas
   });
 
-  const birthDate = new Date(userProfile.birthDate);
   const now = new Date();
-  const ageInYears = now.getFullYear() - birthDate.getFullYear();
-  const yearsRemaining = userProfile.lifeExpectancy - ageInYears;
+  const currentYear = now.getFullYear();
+  const startOfYear = new Date(currentYear, 0, 1);
+  const dayOfYear = Math.floor((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  const isLeapYear = (currentYear % 4 === 0 && currentYear % 100 !== 0) || (currentYear % 400 === 0);
+  const totalDaysInYear = isLeapYear ? 366 : 365;
+  const daysRemainingThisYear = totalDaysInYear - dayOfYear;
 
   const calculateImpact = () => {
-    const daysRemaining = yearsRemaining * 365;
+    const socialMediaTimeSaved = changes.socialMediaReduction * daysRemainingThisYear; // horas
+    const exerciseTimeAdded = changes.exerciseIncrease * daysRemainingThisYear; // horas
+    const readingTimeAdded = (changes.readingIncrease / 60) * daysRemainingThisYear; // horas
+    const sleepTimeAdded = changes.sleepImprovement * daysRemainingThisYear; // horas
     
-    const socialMediaTimeSaved = changes.socialMediaReduction * daysRemaining; // horas
-    const exerciseTimeAdded = changes.exerciseIncrease * daysRemaining; // horas
-    const readingTimeAdded = (changes.readingIncrease / 60) * daysRemaining; // horas
-    const sleepTimeAdded = changes.sleepImprovement * daysRemaining; // horas
-    
-    // Cálculos em anos
-    const socialMediaYearsSaved = socialMediaTimeSaved / (24 * 365);
-    const exerciseYearsAdded = exerciseTimeAdded / (24 * 365);
-    const readingYearsAdded = readingTimeAdded / (24 * 365);
-    const sleepYearsAdded = sleepTimeAdded / (24 * 365);
+    // Cálculos em dias para o resto do ano
+    const socialMediaDaysSaved = socialMediaTimeSaved / 24;
+    const exerciseDaysAdded = exerciseTimeAdded / 24;
+    const readingDaysAdded = readingTimeAdded / 24;
+    const sleepDaysAdded = sleepTimeAdded / 24;
     
     // Cálculos interessantes
     const booksRead = Math.floor(readingTimeAdded / 8); // assumindo 8h por livro
     const workoutSessions = Math.floor(exerciseTimeAdded / 1); // 1h por sessão
-    const totalProductiveYears = (readingTimeAdded + exerciseTimeAdded) / (24 * 365);
+    const totalProductiveDays = (readingTimeAdded + exerciseTimeAdded) / 24;
 
     return {
-      socialMediaYearsSaved,
-      exerciseYearsAdded,
-      readingYearsAdded,
-      sleepYearsAdded,
+      socialMediaDaysSaved,
+      exerciseDaysAdded,
+      readingDaysAdded,
+      sleepDaysAdded,
       booksRead,
       workoutSessions,
-      totalProductiveYears
+      totalProductiveDays
     };
   };
 
@@ -64,10 +65,10 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
     <Card className="bg-slate-800 border-slate-700">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-white">
-          🔮 Simulador de Futuros Possíveis
+          🔮 Simulador para o Resto de {currentYear}
         </CardTitle>
         <p className="text-slate-300">
-          "E se..." você começar a fazer mudanças hoje? Veja o impacto até os {userProfile.lifeExpectancy} anos.
+          "E se..." você começar a fazer mudanças hoje? Veja o impacto até o fim de {currentYear} ({daysRemainingThisYear} dias restantes).
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -134,17 +135,17 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
         {(changes.socialMediaReduction > 0 || changes.exerciseIncrease > 0 || changes.readingIncrease > 0 || changes.sleepImprovement > 0) && (
           <div className="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 p-6 rounded-lg border border-emerald-500/20">
             <h3 className="text-xl font-bold text-emerald-400 mb-4">
-              ✨ Impacto até os {userProfile.lifeExpectancy} anos:
+              ✨ Impacto até o fim de {currentYear}:
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {changes.socialMediaReduction > 0 && (
                 <div className="bg-violet-900/20 p-3 rounded border border-violet-500/30">
                   <div className="text-2xl font-bold text-violet-400">
-                    {impact.socialMediaYearsSaved.toFixed(1)}
+                    {impact.socialMediaDaysSaved.toFixed(1)}
                   </div>
                   <div className="text-sm text-slate-300">
-                    anos livres sem redes sociais
+                    dias livres sem redes sociais
                   </div>
                 </div>
               )}
@@ -155,7 +156,7 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                     {impact.booksRead}
                   </div>
                   <div className="text-sm text-slate-300">
-                    livros lidos ({impact.readingYearsAdded.toFixed(1)} anos)
+                    livros lidos até o fim do ano
                   </div>
                 </div>
               )}
@@ -163,10 +164,10 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
               {changes.exerciseIncrease > 0 && (
                 <div className="bg-emerald-900/20 p-3 rounded border border-emerald-500/30">
                   <div className="text-2xl font-bold text-emerald-400">
-                    {impact.exerciseYearsAdded.toFixed(1)}
+                    {impact.exerciseDaysAdded.toFixed(1)}
                   </div>
                   <div className="text-sm text-slate-300">
-                    anos de exercício extra
+                    dias de exercício extra
                   </div>
                 </div>
               )}
@@ -174,19 +175,19 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
               {changes.sleepImprovement > 0 && (
                 <div className="bg-indigo-900/20 p-3 rounded border border-indigo-500/30">
                   <div className="text-2xl font-bold text-indigo-400">
-                    {impact.sleepYearsAdded.toFixed(1)}
+                    {impact.sleepDaysAdded.toFixed(1)}
                   </div>
                   <div className="text-sm text-slate-300">
-                    anos extras de sono
+                    dias extras de sono
                   </div>
                 </div>
               )}
             </div>
 
-            {impact.totalProductiveYears > 0 && (
+            {impact.totalProductiveDays > 0 && (
               <div className="mt-4 p-3 bg-amber-900/20 border border-amber-500/30 rounded">
                 <p className="text-amber-300 font-semibold">
-                  🎯 Total: {impact.totalProductiveYears.toFixed(1)} anos de vida mais produtiva e saudável!
+                  🎯 Total: {impact.totalProductiveDays.toFixed(1)} dias de vida mais produtiva e saudável até o fim de {currentYear}!
                 </p>
               </div>
             )}

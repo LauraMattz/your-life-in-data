@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -32,15 +33,21 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
     currency: 'R$'
   });
 
-  const birthDate = new Date(userProfile.birthDate);
   const now = new Date();
-  const ageInYears = now.getFullYear() - birthDate.getFullYear();
+  const currentYear = now.getFullYear();
+  const startOfYear = new Date(currentYear, 0, 1);
+  const endOfYear = new Date(currentYear, 11, 31);
+  const dayOfYear = Math.floor((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  const isLeapYear = (currentYear % 4 === 0 && currentYear % 100 !== 0) || (currentYear % 400 === 0);
+  const totalDaysInYear = isLeapYear ? 366 : 365;
+  const daysRemainingThisYear = totalDaysInYear - dayOfYear;
   
-  const calculateActivityTime = (hoursPerDay: number, startAge: number = 0) => {
-    const yearsActive = Math.max(0, ageInYears - startAge);
-    const totalHours = yearsActive * 365 * hoursPerDay;
+  const calculateActivityTimeThisYear = (hoursPerDay: number) => {
+    const remainingHours = daysRemainingThisYear * hoursPerDay;
+    const passedHours = dayOfYear * hoursPerDay;
     return {
-      years: (totalHours / (24 * 365)).toFixed(1)
+      totalDaysThisYear: (passedHours / 24).toFixed(1),
+      remainingDaysThisYear: (remainingHours / 24).toFixed(1)
     };
   };
 
@@ -48,61 +55,54 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
     {
       activity: '😴 Descansando',
       hours: dailyHours.sleep,
-      data: calculateActivityTime(dailyHours.sleep),
+      data: calculateActivityTimeThisYear(dailyHours.sleep),
       color: 'from-blue-500 to-blue-600',
       textColor: 'text-blue-300',
-      startAge: 0,
-      description: 'Baseado em 8h de sono por dia desde o nascimento'
+      description: `Baseado em ${dailyHours.sleep}h de sono por dia durante ${currentYear}`
     },
     {
       activity: '💼 Trabalhando',
       hours: dailyHours.work,
-      data: calculateActivityTime(dailyHours.work, 18),
+      data: calculateActivityTimeThisYear(dailyHours.work),
       color: 'from-emerald-500 to-emerald-600',
       textColor: 'text-emerald-300',
-      startAge: 18,
-      description: 'Considerando início da vida profissional aos 18 anos'
+      description: `Tempo dedicado ao trabalho durante ${currentYear}`
     },
     {
       activity: '🍽️ Saboreando',
       hours: dailyHours.eating,
-      data: calculateActivityTime(dailyHours.eating),
+      data: calculateActivityTimeThisYear(dailyHours.eating),
       color: 'from-orange-500 to-orange-600',
       textColor: 'text-orange-300',
-      startAge: 0,
-      description: 'Tempo dedicado às refeições desde o nascimento'
+      description: `Tempo dedicado às refeições durante ${currentYear}`
     },
     {
       activity: '📱 Conectado',
       hours: dailyHours.socialMedia,
-      data: calculateActivityTime(dailyHours.socialMedia, 13),
+      data: calculateActivityTimeThisYear(dailyHours.socialMedia),
       color: 'from-purple-500 to-purple-600',
       textColor: 'text-purple-300',
-      startAge: 13,
-      description: 'Redes sociais e internet, considerando início aos 13 anos'
+      description: `Tempo em redes sociais e internet durante ${currentYear}`
     },
     {
       activity: '🚗 Em movimento',
       hours: dailyHours.commute,
-      data: calculateActivityTime(dailyHours.commute, 16),
+      data: calculateActivityTimeThisYear(dailyHours.commute),
       color: 'from-gray-500 to-gray-600',
       textColor: 'text-gray-300',
-      startAge: 16,
-      description: 'Transporte e deslocamentos, considerando início aos 16 anos'
+      description: `Tempo de transporte e deslocamentos durante ${currentYear}`
     },
     {
       activity: '💪 Se exercitando',
       hours: dailyHours.exercise,
-      data: calculateActivityTime(dailyHours.exercise, 15),
+      data: calculateActivityTimeThisYear(dailyHours.exercise),
       color: 'from-green-500 to-green-600',
       textColor: 'text-green-300',
-      startAge: 15,
-      description: 'Atividades físicas regulares, considerando início aos 15 anos'
+      description: `Tempo de atividades físicas durante ${currentYear}`
     }
   ];
 
-  const workingYears = Math.max(0, ageInYears - 18);
-  const hourlyWage = workingYears > 0 ? salary.monthly * 12 / (dailyHours.work * 22 * 12) : 0;
+  const hourlyWage = salary.monthly > 0 ? salary.monthly * 12 / (dailyHours.work * 22 * 12) : 0;
 
   return (
     <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-600 h-fit">
@@ -112,13 +112,13 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
             <CardTitle className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
               <div className="flex items-center gap-2">
                 <span className="text-2xl relative z-10">📊</span>
-                <span>Sua Jornada de Vida</span>
+                <span>Suas Horas em {currentYear}</span>
               </div>
             </CardTitle>
             <div className="flex items-center gap-3">
               <p className="text-gray-300 text-sm flex items-center gap-1">
                 <Calculator className="w-3 h-3" />
-                Estimativas baseadas nos seus hábitos atuais
+                Tempo dedicado a cada atividade este ano
               </p>
               <Dialog>
                 <DialogTrigger asChild>
@@ -128,28 +128,28 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
                 </DialogTrigger>
                 <DialogContent className="bg-gray-800 border-gray-600 text-white">
                   <DialogHeader>
-                    <DialogTitle className="text-blue-400">Como Calculamos Sua Jornada</DialogTitle>
+                    <DialogTitle className="text-blue-400">Como Calculamos Suas Horas em {currentYear}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div className="bg-blue-900/20 p-3 rounded-lg border border-blue-500/30">
                       <h4 className="font-semibold text-blue-300 mb-2">📐 Fórmula Base</h4>
                       <p className="text-sm text-gray-300">
-                        <strong>Anos de Vida = (Sua Idade - Idade de Início) × 365 dias × Horas por Dia ÷ (24h × 365 dias)</strong>
+                        <strong>Dias = Horas por Dia × Número de Dias ÷ 24h</strong>
                       </p>
                     </div>
                     
                     <div className="space-y-2">
                       <h4 className="font-semibold text-green-300">🔢 Exemplos de Cálculo:</h4>
                       <div className="text-sm text-gray-300 space-y-1">
-                        <p>• <strong>Dormindo:</strong> {ageInYears} anos × 365 dias × 8h ÷ (24h × 365 dias) = {((ageInYears * 365 * 8) / (24 * 365)).toFixed(1)} anos</p>
-                        <p>• <strong>Trabalhando:</strong> ({ageInYears} - 18) anos × 365 dias × 8h ÷ (24h × 365 dias) = {Math.max(0, ((ageInYears - 18) * 365 * 8) / (24 * 365)).toFixed(1)} anos</p>
+                        <p>• <strong>Já passou:</strong> {dayOfYear} dias × 8h ÷ 24h = {((dayOfYear * 8) / 24).toFixed(1)} dias dormindo</p>
+                        <p>• <strong>Restante:</strong> {daysRemainingThisYear} dias × 8h ÷ 24h = {((daysRemainingThisYear * 8) / 24).toFixed(1)} dias para dormir</p>
                       </div>
                     </div>
 
                     <div className="bg-yellow-900/20 p-3 rounded-lg border border-yellow-500/30">
                       <h4 className="font-semibold text-yellow-300 mb-2">⚠️ Importante</h4>
                       <p className="text-sm text-gray-300">
-                        Estes são valores aproximados baseados em médias. Cada pessoa tem uma rotina única!
+                        Cálculos baseados no ano atual ({currentYear}). Ajuste as horas para refletir sua rotina real!
                       </p>
                     </div>
                   </div>
@@ -207,7 +207,7 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
                 />
               </div>
             </div>
-            {salary.monthly > 0 && workingYears > 0 && (
+            {salary.monthly > 0 && (
               <div className="mt-3 p-2 bg-green-900/20 border border-green-500/30 rounded">
                 <p className="text-green-200 text-xs">
                   💰 Cada hora vale {salary.currency} {hourlyWage.toFixed(2)} - seu tempo tem valor!
@@ -219,10 +219,10 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
             )}
             <div className="bg-gray-700/50 p-3 rounded border border-gray-600">
               <p className="text-xs text-gray-300 mb-2">
-                💡 <strong>Ajuste as horas diárias para refletir melhor sua rotina:</strong>
+                💡 <strong>Ajuste as horas diárias para refletir melhor sua rotina em {currentYear}:</strong>
               </p>
               <p className="text-xs text-gray-400">
-                Os cálculos são atualizados automaticamente baseados na sua idade atual ({ageInYears} anos) e nas idades de início de cada atividade.
+                Os cálculos mostram quanto tempo você dedica a cada atividade durante todo o ano de {currentYear}.
               </p>
             </div>
           </div>
@@ -247,14 +247,16 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
                       <div className="space-y-3">
                         <p className="text-gray-300">{metric.description}</p>
                         <div className="bg-blue-900/20 p-3 rounded border border-blue-500/30">
-                          <h4 className="font-semibold text-blue-300 mb-2">🧮 Cálculo Detalhado:</h4>
+                          <h4 className="font-semibold text-blue-300 mb-2">🧮 Cálculo para {currentYear}:</h4>
                           <div className="text-sm text-gray-300 space-y-1">
-                            <p>• <strong>Sua idade:</strong> {ageInYears} anos</p>
-                            <p>• <strong>Idade de início:</strong> {metric.startAge} anos</p>
-                            <p>• <strong>Anos ativos:</strong> {Math.max(0, ageInYears - metric.startAge)} anos</p>
+                            <p>• <strong>Dias já passados:</strong> {dayOfYear} dias</p>
+                            <p>• <strong>Dias restantes:</strong> {daysRemainingThisYear} dias</p>
                             <p>• <strong>Horas por dia:</strong> {metric.hours}h</p>
                             <p className="pt-2 border-t border-blue-500/30">
-                              <strong>Total em anos:</strong> {Math.max(0, ageInYears - metric.startAge)} × {metric.hours}h ÷ 24h = {metric.data.years} anos
+                              <strong>Já dedicou:</strong> {metric.data.totalDaysThisYear} dias em {currentYear}
+                            </p>
+                            <p>
+                              <strong>Vai dedicar:</strong> {metric.data.remainingDaysThisYear} dias até o fim do ano
                             </p>
                           </div>
                         </div>
@@ -280,9 +282,14 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
                       className="bg-gray-700 border-gray-600 text-white w-16 text-xs"
                     />
                   )}
-                  <span className={`font-bold ${metric.textColor} text-lg`}>
-                    {metric.data.years} anos
-                  </span>
+                  <div className="text-right">
+                    <div className={`font-bold ${metric.textColor} text-lg`}>
+                      {metric.data.totalDaysThisYear} dias
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      já em {currentYear}
+                    </div>
+                  </div>
                 </div>
               </div>
               {!isEditing && (

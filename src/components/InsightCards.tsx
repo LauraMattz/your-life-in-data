@@ -13,45 +13,49 @@ interface InsightCardsProps {
 }
 
 export const InsightCards = ({ userProfile }: InsightCardsProps) => {
-  const birthDate = new Date(userProfile.birthDate);
   const now = new Date();
-  const ageInYears = now.getFullYear() - birthDate.getFullYear();
+  const currentYear = now.getFullYear();
+  const startOfYear = new Date(currentYear, 0, 1);
+  const dayOfYear = Math.floor((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+  const isLeapYear = (currentYear % 4 === 0 && currentYear % 100 !== 0) || (currentYear % 400 === 0);
+  const totalDaysInYear = isLeapYear ? 366 : 365;
+  const daysRemainingThisYear = totalDaysInYear - dayOfYear;
   
   const insights = [
     {
       icon: '📱',
       title: 'Tempo Digital',
-      content: `Uma hora a menos de tela por dia te daria <span class="text-orange-400 font-bold">${(365 / 24).toFixed(0)} dias</span> extras por ano para fazer o que você ama.`,
+      content: `Uma hora a menos de tela por dia te daria <span class="text-orange-400 font-bold">${daysRemainingThisYear}</span> horas extras até o fim de ${currentYear} para fazer o que você ama.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '📚',
       title: 'Hábito da Leitura',
-      content: `Com <span class="text-orange-400 font-bold">15 minutos</span> diários de leitura, você poderia ler cerca de <span class="text-orange-400 font-bold">${Math.floor((userProfile.lifeExpectancy - ageInYears) * 365 * 0.25 / 8)} livros</span> até os <span class="text-orange-400 font-bold">${userProfile.lifeExpectancy} anos</span>.`,
+      content: `Com <span class="text-orange-400 font-bold">15 minutos</span> diários de leitura, você poderia ler cerca de <span class="text-orange-400 font-bold">${Math.floor(daysRemainingThisYear * 0.25 / 8)} livros</span> até o fim de ${currentYear}.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '⚡',
-      title: 'Energia Vital',
-      content: `Você tem <span class="text-orange-400 font-bold">${((1 - ageInYears / userProfile.lifeExpectancy) * 100).toFixed(1)}%</span> da sua jornada pela frente. Cada dia é uma nova oportunidade.`,
+      title: 'Energia do Ano',
+      content: `Você ainda tem <span class="text-orange-400 font-bold">${((daysRemainingThisYear / totalDaysInYear) * 100).toFixed(1)}%</span> do ano de ${currentYear} pela frente. Cada dia restante é uma nova oportunidade.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '😴',
       title: 'Qualidade do Sono',
-      content: `Um sono de qualidade pode adicionar anos saudáveis à sua vida. É um dos melhores investimentos que você pode fazer.`,
+      content: `Melhorar seu sono nos próximos <span class="text-orange-400 font-bold">${daysRemainingThisYear} dias</span> pode fazer toda a diferença no seu bem-estar até o fim do ano.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '🎯',
       title: 'Pequenos Passos',
-      content: `Melhorar <span class="text-orange-400 font-bold">1%</span> ao dia resulta em um crescimento de <span class="text-orange-400 font-bold">37x</span> ao final de um ano. A consistência é mais poderosa que a perfeição.`,
+      content: `Melhorar <span class="text-orange-400 font-bold">1%</span> ao dia pelos próximos <span class="text-orange-400 font-bold">${daysRemainingThisYear} dias</span> resultará em um crescimento exponencial até o fim de ${currentYear}.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '🌱',
       title: 'Desenvolvimento Pessoal',
-      content: `Cada nova habilidade que você desenvolve se torna parte de quem você é. O aprendizado nunca para.`,
+      content: `Com <span class="text-orange-400 font-bold">${daysRemainingThisYear} dias</span> restantes em ${currentYear}, você tem tempo suficiente para desenvolver uma nova habilidade significativa.`,
       color: 'from-gray-700 to-gray-800'
     }
   ];
@@ -61,7 +65,7 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
       <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-300 bg-clip-text text-transparent mb-6 text-center">
         <div className="flex items-center justify-center gap-3">
           <span className="text-4xl relative z-10">💡</span>
-          <span>Insights Inspiradores</span>
+          <span>Insights para {currentYear}</span>
         </div>
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
