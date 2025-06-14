@@ -41,8 +41,6 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
     const yearsActive = Math.max(0, ageInYears - startAge);
     const totalHours = yearsActive * 365 * hoursPerDay;
     return {
-      hours: totalHours,
-      days: Math.floor(totalHours / 24),
       years: (totalHours / (24 * 365)).toFixed(1)
     };
   };
@@ -134,15 +132,15 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
                     <div className="bg-blue-900/20 p-3 rounded-lg border border-blue-500/30">
                       <h4 className="font-semibold text-blue-300 mb-2">📐 Fórmula Base</h4>
                       <p className="text-sm text-gray-300">
-                        <strong>Anos de Vida = (Sua Idade - Idade de Início) × 365 dias × Horas por Dia</strong>
+                        <strong>Anos de Vida = (Sua Idade - Idade de Início) × 365 dias × Horas por Dia ÷ (24h × 365 dias)</strong>
                       </p>
                     </div>
                     
                     <div className="space-y-2">
                       <h4 className="font-semibold text-green-300">🔢 Exemplos de Cálculo:</h4>
                       <div className="text-sm text-gray-300 space-y-1">
-                        <p>• <strong>Dormindo:</strong> {ageInYears} anos × 365 dias × 8 horas = {(ageInYears * 365 * 8).toLocaleString()} horas totais</p>
-                        <p>• <strong>Trabalhando:</strong> ({ageInYears} - 18) anos × 365 dias × 8 horas = {Math.max(0, (ageInYears - 18) * 365 * 8).toLocaleString()} horas</p>
+                        <p>• <strong>Dormindo:</strong> {ageInYears} anos × 365 dias × 8h ÷ (24h × 365 dias) = {((ageInYears * 365 * 8) / (24 * 365)).toFixed(1)} anos</p>
+                        <p>• <strong>Trabalhando:</strong> ({ageInYears} - 18) anos × 365 dias × 8h ÷ (24h × 365 dias) = {Math.max(0, ((ageInYears - 18) * 365 * 8) / (24 * 365)).toFixed(1)} anos</p>
                       </div>
                     </div>
 
@@ -254,7 +252,7 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
                             <p>• <strong>Anos ativos:</strong> {Math.max(0, ageInYears - metric.startAge)} anos</p>
                             <p>• <strong>Horas por dia:</strong> {metric.hours}h</p>
                             <p className="pt-2 border-t border-blue-500/30">
-                              <strong>Total:</strong> {Math.max(0, ageInYears - metric.startAge)} × 365 × {metric.hours} = {metric.data.hours.toLocaleString()} horas
+                              <strong>Total em anos:</strong> {Math.max(0, ageInYears - metric.startAge)} × {metric.hours}h ÷ 24h = {metric.data.years} anos
                             </p>
                           </div>
                         </div>
@@ -280,17 +278,9 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
                       className="bg-gray-700 border-gray-600 text-white w-16 text-xs"
                     />
                   )}
-                  <span className={`font-bold ${metric.textColor}`}>
+                  <span className={`font-bold ${metric.textColor} text-lg`}>
                     {metric.data.years} anos
                   </span>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-sm text-gray-300">
-                <div>
-                  <span className="text-gray-400">Horas:</span> {metric.data.hours.toLocaleString()}
-                </div>
-                <div>
-                  <span className="text-gray-400">Dias:</span> {metric.data.days.toLocaleString()}
                 </div>
               </div>
               {!isEditing && (
