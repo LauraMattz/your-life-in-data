@@ -400,33 +400,64 @@ const ComparacaoGlobalPage = () => {
 
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Expectativa de Vida */}
+          {/* Expectativa de Vida - Enhanced */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center gap-2">
                 <Heart className="w-6 h-6 text-red-400" />
                 Expectativa de Vida por País
               </CardTitle>
+              <p className="text-sm text-gray-400">
+                Top {Math.min(15, sortedCountries.length)} países com maior expectativa de vida
+              </p>
             </CardHeader>
-            <CardContent className="h-[450px] p-4">
+            <CardContent className="h-[500px] p-4">
               <ChartContainer config={chartConfig} className="h-full w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart 
-                    data={sortedCountries.slice(0, 12)} 
+                    data={sortedCountries.sort((a, b) => b.expectancy - a.expectancy).slice(0, 15)} 
                     layout="horizontal"
-                    margin={{ top: 10, right: 30, left: 40, bottom: 10 }}
+                    margin={{ top: 10, right: 50, left: 60, bottom: 10 }}
                   >
-                    <XAxis type="number" domain={[65, 90]} />
-                    <YAxis 
-                      dataKey="flag" 
-                      type="category" 
-                      width={40} 
-                      tick={{ fontSize: 11 }}
+                    <XAxis 
+                      type="number" 
+                      domain={[65, 90]} 
+                      tick={{ fontSize: 12, fill: '#ffffff' }}
+                      axisLine={{ stroke: '#374151' }}
+                      gridLine={{ stroke: '#374151' }}
                     />
-                    <Bar dataKey="expectancy" fill="#ef4444" />
+                    <YAxis 
+                      dataKey="country" 
+                      type="category" 
+                      width={55} 
+                      tick={{ fontSize: 10, fill: '#ffffff' }}
+                      axisLine={{ stroke: '#374151' }}
+                    />
+                    <Bar 
+                      dataKey="expectancy" 
+                      fill="url(#expectancyGradient)"
+                      radius={[0, 4, 4, 0]}
+                    />
+                    <defs>
+                      <linearGradient id="expectancyGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#ef4444" />
+                        <stop offset="50%" stopColor="#f87171" />
+                        <stop offset="100%" stopColor="#fca5a5" />
+                      </linearGradient>
+                    </defs>
                     <ChartTooltip 
                       content={<ChartTooltipContent />}
-                      formatter={(value, name) => [`${value} anos`, 'Expectativa de Vida']}
+                      formatter={(value, name, props) => [
+                        `${value} anos`, 
+                        `${props.payload.flag} ${props.payload.country}`
+                      ]}
+                      labelFormatter={() => ''}
+                      contentStyle={{
+                        backgroundColor: '#1f2937',
+                        border: '1px solid #374151',
+                        borderRadius: '8px',
+                        color: '#ffffff'
+                      }}
                     />
                   </BarChart>
                 </ResponsiveContainer>
