@@ -149,6 +149,13 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
                 />
               </div>
             </div>
+            {salary.monthly > 0 && workingYears > 0 && (
+              <div className="mt-3 p-2 bg-green-900/20 border border-green-500/30 rounded">
+                <p className="text-green-200 text-xs">
+                  Cada hora vale {salary.currency} {hourlyWage.toFixed(2)} - seu tempo tem valor! ⏰
+                </p>
+              </div>
+            )}
             <p className="text-xs text-gray-400">
               💡 Ajuste as horas diárias para refletir melhor sua rotina
             </p>
@@ -194,14 +201,6 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
             </div>
           </div>
         ))}
-        
-        {salary.monthly > 0 && workingYears > 0 && (
-          <div className="mt-4 p-3 bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-500/30 rounded-lg">
-            <p className="text-green-200 text-sm">
-              Cada hora vale {salary.currency} {hourlyWage.toFixed(2)} - seu tempo tem valor! ⏰
-            </p>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
