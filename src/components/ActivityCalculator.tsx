@@ -19,7 +19,7 @@ interface ActivityCalculatorProps {
 export const ActivityCalculator = ({ userProfile }: ActivityCalculatorProps) => {
   const [dailyHours, setDailyHours] = useState({
     socialMedia: 2.5,
-    netflix: 1.5,
+    television: 1.5,
     commute: 1,
     exercise: 0.5
   });
@@ -47,11 +47,11 @@ export const ActivityCalculator = ({ userProfile }: ActivityCalculatorProps) => 
       color: 'text-purple-400'
     },
     {
-      name: '📺 Netflix/Streaming',
+      name: '📺 Televisão',
       icon: '📺',
-      value: dailyHours.netflix,
-      key: 'netflix' as keyof typeof dailyHours,
-      startAge: 10,
+      value: dailyHours.television,
+      key: 'television' as keyof typeof dailyHours,
+      startAge: 5,
       color: 'text-red-400'
     },
     {
@@ -124,16 +124,6 @@ export const ActivityCalculator = ({ userProfile }: ActivityCalculatorProps) => 
             </div>
           );
         })}
-        
-        <div className="mt-4 p-3 bg-orange-900/20 border border-orange-500/30 rounded-lg">
-          <p className="text-orange-300 text-sm">
-            💭 <strong>Insight:</strong> Você já passou{' '}
-            {(
-              calculateLifetimeActivity(dailyHours.socialMedia, 13).totalYears +
-              calculateLifetimeActivity(dailyHours.netflix, 10).totalYears
-            ).toFixed(1)} anos só entre telas e entretenimento.
-          </p>
-        </div>
       </CardContent>
     </Card>
   );
