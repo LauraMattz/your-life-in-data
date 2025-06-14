@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -162,7 +161,7 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
             className={`${
               isEditing 
                 ? "bg-green-600 hover:bg-green-700 text-white border-green-500" 
-                : "border-blue-500 text-blue-400 hover:bg-blue-600 hover:text-white"
+                : "border-gray-500 text-gray-300 bg-gray-800 hover:bg-gray-700 hover:text-white"
             } min-w-[100px] font-medium transition-all duration-200`}
           >
             {isEditing ? (

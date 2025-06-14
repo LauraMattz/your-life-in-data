@@ -79,7 +79,9 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
         <CardTitle className="text-2xl font-bold text-white">
           ⏰ Seu Relógio da Vida
         </CardTitle>
-        <p className="text-gray-300">Olá, {userProfile.name}</p>
+        <p className="text-gray-300 text-sm">
+          Baseado na expectativa de vida do {userProfile.country} ({userProfile.lifeExpectancy} anos)
+        </p>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Circular Progress */}

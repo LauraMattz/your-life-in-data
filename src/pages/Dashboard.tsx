@@ -22,10 +22,10 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent">
-          Olá, {userProfile.name}! <span className="text-yellow-400">👋</span>
+          Bem-vindo, {userProfile.name}! <span className="text-yellow-400">👋</span>
         </h1>
         <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-6 leading-relaxed">
-          Seu dashboard pessoal da vida — Uma calculadora brutalmente honesta de como você vive sua existência
+          Seu dashboard pessoal da vida — Uma calculadora que transforma dados em perspectiva, baseada na expectativa de vida do seu país ({userProfile.country}: {userProfile.lifeExpectancy} anos). Descubra como aproveitar melhor cada momento! ✨
         </p>
         <div className="bg-yellow-900/30 border border-yellow-500/40 rounded-xl p-4 max-w-md mx-auto backdrop-blur-sm">
           <p className="text-sm text-yellow-200 flex items-center justify-center gap-2">

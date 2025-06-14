@@ -1,5 +1,5 @@
 
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Github, Star } from 'lucide-react';
 
 export const Footer = () => {
   return (
@@ -32,6 +32,20 @@ export const Footer = () => {
         <p className="text-gray-300 mb-4">
           Transformando ideias em código ✨
         </p>
+        
+        {/* GitHub Section */}
+        <div className="mb-4">
+          <a 
+            href="https://github.com/LauraMattz/your-life-in-data" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-yellow-600 hover:bg-yellow-700 text-black font-semibold px-4 py-2 rounded-lg transition-colors duration-200"
+          >
+            <Github className="w-5 h-5" />
+            Gostou? Dê uma <Star className="w-4 h-4" /> no GitHub!
+          </a>
+        </div>
+        
         <div className="border-t border-gray-700 pt-4">
           <p className="text-sm text-gray-400 flex items-center justify-center gap-2">
             🛡️ <strong>Privacidade Garantida:</strong> Nenhum dado pessoal é salvo ou armazenado. 
