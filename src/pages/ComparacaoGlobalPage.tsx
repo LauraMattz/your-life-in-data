@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -395,20 +394,20 @@ const ComparacaoGlobalPage = () => {
                 Expectativa de Vida por País
               </CardTitle>
             </CardHeader>
-            <CardContent className="h-[500px]">
-              <ChartContainer config={chartConfig} className="h-full">
+            <CardContent className="h-[450px] p-4">
+              <ChartContainer config={chartConfig} className="h-full w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart 
-                    data={sortedCountries.slice(0, 15)} 
+                    data={sortedCountries.slice(0, 12)} 
                     layout="horizontal"
-                    margin={{ top: 20, right: 80, left: 60, bottom: 20 }}
+                    margin={{ top: 10, right: 30, left: 40, bottom: 10 }}
                   >
                     <XAxis type="number" domain={[65, 90]} />
                     <YAxis 
                       dataKey="flag" 
                       type="category" 
-                      width={50} 
-                      tick={{ fontSize: 12 }}
+                      width={40} 
+                      tick={{ fontSize: 11 }}
                     />
                     <Bar dataKey="expectancy" fill="#ef4444" />
                     <ChartTooltip 
@@ -429,24 +428,24 @@ const ComparacaoGlobalPage = () => {
                 Horas de Trabalho vs Expectativa de Vida
               </CardTitle>
             </CardHeader>
-            <CardContent className="h-[500px]">
-              <ChartContainer config={chartConfig} className="h-full">
+            <CardContent className="h-[450px] p-4">
+              <ChartContainer config={chartConfig} className="h-full w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <ScatterChart 
                     data={scatterData}
-                    margin={{ top: 20, right: 20, bottom: 60, left: 20 }}
+                    margin={{ top: 10, right: 20, bottom: 40, left: 20 }}
                   >
                     <XAxis 
                       dataKey="x" 
                       name="Horas de Trabalho" 
                       unit="h/sem" 
-                      label={{ value: 'Horas de Trabalho/Semana', position: 'insideBottom', offset: -10 }}
+                      label={{ value: 'Horas/Semana', position: 'insideBottom', offset: -5, style: { fontSize: '12px' } }}
                     />
                     <YAxis 
                       dataKey="y" 
                       name="Expectativa" 
                       unit=" anos"
-                      label={{ value: 'Expectativa de Vida (anos)', angle: -90, position: 'insideLeft' }}
+                      label={{ value: 'Expectativa (anos)', angle: -90, position: 'insideLeft', style: { fontSize: '12px' } }}
                     />
                     <Scatter dataKey="y" fill="#3b82f6" />
                     <ChartTooltip 
@@ -477,31 +476,31 @@ const ComparacaoGlobalPage = () => {
                 Índice de Felicidade
               </CardTitle>
             </CardHeader>
-            <CardContent className="h-[400px]">
-              <ChartContainer config={chartConfig} className="h-full">
+            <CardContent className="h-[350px] p-4">
+              <ChartContainer config={chartConfig} className="h-full w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart 
-                    data={sortedCountries.sort((a, b) => b.happiness - a.happiness).slice(0, 15)}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
+                    data={sortedCountries.sort((a, b) => b.happiness - a.happiness).slice(0, 12)}
+                    margin={{ top: 10, right: 20, left: 20, bottom: 60 }}
                   >
                     <XAxis 
                       dataKey="flag" 
-                      tick={{ fontSize: 12 }}
+                      tick={{ fontSize: 10 }}
                       interval={0}
                       angle={-45}
                       textAnchor="end"
-                      height={80}
+                      height={60}
                     />
                     <YAxis 
                       domain={[3, 8]} 
-                      label={{ value: 'Índice de Felicidade (0-10)', angle: -90, position: 'insideLeft' }}
+                      label={{ value: 'Felicidade (0-10)', angle: -90, position: 'insideLeft', style: { fontSize: '12px' } }}
                     />
                     <Line 
                       type="monotone" 
                       dataKey="happiness" 
                       stroke="#fbbf24" 
-                      strokeWidth={3}
-                      dot={{ fill: '#fbbf24', strokeWidth: 2, r: 4 }}
+                      strokeWidth={2}
+                      dot={{ fill: '#fbbf24', strokeWidth: 2, r: 3 }}
                     />
                     <ChartTooltip 
                       content={<ChartTooltipContent />}
@@ -521,23 +520,23 @@ const ComparacaoGlobalPage = () => {
                 Exercício Semanal por País
               </CardTitle>
             </CardHeader>
-            <CardContent className="h-[400px]">
-              <ChartContainer config={chartConfig} className="h-full">
+            <CardContent className="h-[350px] p-4">
+              <ChartContainer config={chartConfig} className="h-full w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart 
-                    data={sortedCountries.sort((a, b) => b.exercise - a.exercise).slice(0, 15)}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
+                    data={sortedCountries.sort((a, b) => b.exercise - a.exercise).slice(0, 12)}
+                    margin={{ top: 10, right: 20, left: 20, bottom: 60 }}
                   >
                     <XAxis 
                       dataKey="flag" 
-                      tick={{ fontSize: 12 }}
+                      tick={{ fontSize: 10 }}
                       interval={0}
                       angle={-45}
                       textAnchor="end"
-                      height={80}
+                      height={60}
                     />
                     <YAxis 
-                      label={{ value: 'Horas de Exercício/Semana', angle: -90, position: 'insideLeft' }}
+                      label={{ value: 'Horas/Semana', angle: -90, position: 'insideLeft', style: { fontSize: '12px' } }}
                     />
                     <Bar dataKey="exercise" fill="#10b981" />
                     <ChartTooltip 
