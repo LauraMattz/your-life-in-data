@@ -139,7 +139,7 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
             <div className="text-2xl font-bold text-green-400">
               {timeData.daysRemaining.toLocaleString()} 🌎
             </div>
-            <div className="text-sm text-gray-300">Oportunidades novas de explorar o mundão</div>
+            <div className="text-sm text-gray-300">e muito mais oportunidades novas de explorar o mundão</div>
           </div>
         </div>
 
