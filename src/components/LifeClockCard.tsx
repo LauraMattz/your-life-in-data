@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -88,16 +89,18 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
   };
 
   return (
-    <Card className="bg-gray-900 border-gray-700 h-full w-full">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold text-white">
-          ⏰ Seu Relógio da Vida
-        </CardTitle>
-        <p className="text-gray-300 text-sm">
-          Baseado na expectativa de vida do {userProfile.country} ({userProfile.lifeExpectancy} anos)
-        </p>
+    <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-600 h-fit">
+      <CardHeader>
+        <div className="text-center">
+          <CardTitle className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+            ⏰ Seu Relógio da Vida
+          </CardTitle>
+          <p className="text-gray-300 text-sm">
+            Baseado na expectativa de vida do {userProfile.country} ({userProfile.lifeExpectancy} anos)
+          </p>
+        </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {/* Life Grid - Cada quadradinho é uma semana */}
         <div className="bg-gray-800 p-4 rounded-lg">
           <h3 className="text-lg font-semibold text-yellow-400 mb-3 text-center">
@@ -122,9 +125,6 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
               <span className="text-gray-300">A explorar</span>
             </div>
           </div>
-          <p className="text-center text-sm text-gray-400 mt-2">
-            {timeData.percentageLived.toFixed(1)}% da jornada completada
-          </p>
         </div>
 
         {/* Life Stats */}
@@ -139,7 +139,7 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
             <div className="text-2xl font-bold text-green-400">
               {timeData.daysRemaining.toLocaleString()} 🌎
             </div>
-            <div className="text-sm text-gray-300">Dias a explorar o mundão</div>
+            <div className="text-sm text-gray-300">+ de {Math.floor(timeData.daysRemaining / 1000)}k oportunidades novas de explorar o mundão</div>
           </div>
         </div>
 
