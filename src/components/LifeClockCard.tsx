@@ -89,7 +89,7 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-600 h-fit">
+    <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-600 h-full w-full">
       <CardHeader>
         <div className="text-center">
           <CardTitle className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
@@ -139,7 +139,7 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
             <div className="text-2xl font-bold text-green-400">
               {timeData.daysRemaining.toLocaleString()} 🌎
             </div>
-            <div className="text-sm text-gray-300">+ de {Math.floor(timeData.daysRemaining / 1000)}k oportunidades novas de explorar o mundão</div>
+            <div className="text-sm text-gray-300">Oportunidades novas de explorar o mundão</div>
           </div>
         </div>
 
@@ -166,11 +166,11 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
               <div className="text-xs text-gray-400">Horas</div>
             </div>
             <div>
-              <div className="text-lg font-bold text-yellow-400">{timeData.minutesLived.toLocaleString()}</div>
+              <div className="text-lg font-bold text-yellow-400">{Math.round(timeData.minutesLived / 1000)}k</div>
               <div className="text-xs text-gray-400">Minutos</div>
             </div>
             <div>
-              <div className="text-lg font-bold text-green-400">{timeData.secondsLived.toLocaleString()}</div>
+              <div className="text-lg font-bold text-green-400">{Math.round(timeData.secondsLived / 1000000)}M</div>
               <div className="text-xs text-gray-400">Segundos</div>
             </div>
           </div>
