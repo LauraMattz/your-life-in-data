@@ -1,8 +1,13 @@
 
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BarChart3, Globe } from 'lucide-react';
+import { Home, Globe, RotateCcw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-export const Navigation = () => {
+interface NavigationProps {
+  onResetProfile?: () => void;
+}
+
+export const Navigation = ({ onResetProfile }: NavigationProps) => {
   const location = useLocation();
   
   const navItems = [
@@ -21,7 +26,7 @@ export const Navigation = () => {
             </h1>
           </div>
           
-          <div className="flex space-x-1">
+          <div className="flex items-center space-x-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
@@ -41,6 +46,19 @@ export const Navigation = () => {
                 </Link>
               );
             })}
+            
+            {onResetProfile && (
+              <Button
+                onClick={onResetProfile}
+                variant="ghost"
+                size="sm"
+                className="text-slate-300 hover:text-white hover:bg-slate-700 ml-2"
+                title="Redefinir perfil"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span className="hidden sm:inline ml-2">Redefinir</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>
