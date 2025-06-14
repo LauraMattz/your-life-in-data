@@ -24,7 +24,9 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
     weeksLived: 0,
     hoursLived: 0,
     minutesLived: 0,
-    secondsLived: 0
+    secondsLived: 0,
+    daysPassedThisYear: 0,
+    daysRemainingThisYear: 0
   });
 
   useEffect(() => {
@@ -46,6 +48,14 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
       const minutesLived = Math.floor(ageInMs / (1000 * 60));
       const secondsLived = Math.floor(ageInMs / 1000);
 
+      // Calcular dias do ano atual
+      const currentYear = now.getFullYear();
+      const startOfYear = new Date(currentYear, 0, 1);
+      const dayOfYear = Math.floor((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      const isLeapYear = (currentYear % 4 === 0 && currentYear % 100 !== 0) || (currentYear % 400 === 0);
+      const totalDaysInYear = isLeapYear ? 366 : 365;
+      const daysRemainingThisYear = totalDaysInYear - dayOfYear;
+
       setTimeData({
         ageInDays,
         daysLived: ageInDays,
@@ -56,7 +66,9 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
         weeksLived: Math.max(0, weeksLived),
         hoursLived: Math.max(0, hoursLived),
         minutesLived: Math.max(0, minutesLived),
-        secondsLived: Math.max(0, secondsLived)
+        secondsLived: Math.max(0, secondsLived),
+        daysPassedThisYear: dayOfYear,
+        daysRemainingThisYear
       });
     };
 
@@ -65,23 +77,25 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
     return () => clearInterval(interval);
   }, [userProfile]);
 
-  const totalWeeks = userProfile.lifeExpectancy * 52;
-  const weeksLived = timeData.weeksLived;
-  const gridSize = Math.ceil(Math.sqrt(totalWeeks));
+  const currentYear = new Date().getFullYear();
+  const isLeapYear = (currentYear % 4 === 0 && currentYear % 100 !== 0) || (currentYear % 400 === 0);
+  const totalDaysInYear = isLeapYear ? 366 : 365;
+  const daysPassedThisYear = timeData.daysPassedThisYear;
+  const gridSize = Math.ceil(Math.sqrt(totalDaysInYear));
   
-  const renderLifeGrid = () => {
+  const renderYearGrid = () => {
     const squares = [];
-    for (let i = 0; i < totalWeeks; i++) {
-      const isLived = i < weeksLived;
+    for (let i = 0; i < totalDaysInYear; i++) {
+      const isPassed = i < daysPassedThisYear;
       squares.push(
         <div
           key={i}
           className={`w-1 h-1 ${
-            isLived 
+            isPassed 
               ? 'bg-yellow-400' 
               : 'bg-gray-700'
           } transition-colors duration-200`}
-          title={`Semana ${i + 1}${isLived ? ' - Vivida' : ' - A explorar'}`}
+          title={`Dia ${i + 1} de ${currentYear}${isPassed ? ' - Já passou' : ' - Ainda por vir'}`}
         />
       );
     }
@@ -104,48 +118,48 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Life Grid - Cada quadradinho é uma semana */}
+        {/* Year Grid - Cada quadradinho é um dia do ano */}
         <div className="bg-gray-800 p-4 rounded-lg">
           <h3 className="text-lg font-semibold text-yellow-400 mb-3 text-center">
             <div className="flex items-center justify-center gap-2">
-              <span className="text-xl relative z-10">📊</span>
-              <span>Sua Vida em Semanas</span>
+              <span className="text-xl relative z-10">📅</span>
+              <span>Dias de {currentYear}</span>
             </div>
           </h3>
           <div 
             className="grid gap-0.5 mx-auto justify-center mb-3"
             style={{ 
-              gridTemplateColumns: `repeat(${Math.min(gridSize, 52)}, minmax(0, 1fr))`,
+              gridTemplateColumns: `repeat(${Math.min(gridSize, 30)}, minmax(0, 1fr))`,
               maxWidth: '300px'
             }}
           >
-            {renderLifeGrid()}
+            {renderYearGrid()}
           </div>
           <div className="flex justify-center gap-4 text-xs">
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 bg-yellow-400 rounded"></div>
-              <span className="text-gray-300">Vividas</span>
+              <span className="text-gray-300">Já passou</span>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 bg-gray-700 rounded"></div>
-              <span className="text-gray-300">A explorar</span>
+              <span className="text-gray-300">Ainda por vir</span>
             </div>
           </div>
         </div>
 
-        {/* Life Stats */}
+        {/* Year Stats */}
         <div className="grid grid-cols-2 gap-4 text-center">
           <div className="bg-gray-800 p-3 rounded-lg">
             <div className="text-2xl font-bold text-yellow-400">
-              {timeData.daysLived.toLocaleString()} 😊
+              {timeData.daysPassedThisYear.toLocaleString()} 📅
             </div>
-            <div className="text-sm text-gray-300">Dias BEM Vividos</div>
+            <div className="text-sm text-gray-300">Dias vividos em {currentYear}</div>
           </div>
           <div className="bg-gray-800 p-3 rounded-lg">
             <div className="text-2xl font-bold text-green-400">
-              {timeData.daysRemaining.toLocaleString()} 🌎
+              {timeData.daysRemainingThisYear.toLocaleString()} ✨
             </div>
-            <div className="text-sm text-gray-300">oportunidades novas de explorar o mundão</div>
+            <div className="text-sm text-gray-300">Dias restantes para explorar</div>
           </div>
         </div>
 
