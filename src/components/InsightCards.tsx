@@ -58,8 +58,9 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-300 bg-clip-text text-transparent mb-6 text-center">
-        💡 Insights Inspiradores
+      <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-300 bg-clip-text text-transparent mb-6 text-center flex items-center justify-center gap-3">
+        <span className="text-4xl">💡</span>
+        <span>Insights Inspiradores</span>
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {insights.map((insight, index) => (

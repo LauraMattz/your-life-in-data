@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -90,10 +89,11 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
 
   return (
     <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-600 h-full w-full">
-      <CardHeader>
+      <CardHeader className="pb-4">
         <div className="text-center">
-          <CardTitle className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-            ⏰ Seu Relógio da Vida
+          <CardTitle className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2 flex items-center justify-center gap-2">
+            <span className="text-2xl">⏰</span>
+            <span>Seu Relógio da Vida</span>
           </CardTitle>
           <p className="text-gray-300 text-sm">
             Baseado na expectativa de vida do {userProfile.country} ({userProfile.lifeExpectancy} anos)
@@ -103,8 +103,9 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
       <CardContent className="space-y-4">
         {/* Life Grid - Cada quadradinho é uma semana */}
         <div className="bg-gray-800 p-4 rounded-lg">
-          <h3 className="text-lg font-semibold text-yellow-400 mb-3 text-center">
-            📊 Sua Vida em Semanas
+          <h3 className="text-lg font-semibold text-yellow-400 mb-3 text-center flex items-center justify-center gap-2">
+            <span className="text-xl">📊</span>
+            <span>Sua Vida em Semanas</span>
           </h3>
           <div 
             className="grid gap-0.5 mx-auto justify-center mb-3"
@@ -145,8 +146,9 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
 
         {/* Contador Positivo - Conquistas da Vida */}
         <div className="bg-black p-4 rounded-lg border border-gray-600">
-          <h3 className="text-lg font-semibold text-yellow-400 mb-3 text-center">
-            🏆 Suas Conquistas de Tempo
+          <h3 className="text-lg font-semibold text-yellow-400 mb-3 text-center flex items-center justify-center gap-2">
+            <span className="text-xl">🏆</span>
+            <span>Suas Conquistas de Tempo</span>
           </h3>
           <div className="grid grid-cols-3 gap-2 text-center">
             <div>

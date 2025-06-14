@@ -109,8 +109,9 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
       <CardHeader>
         <div className="flex justify-between items-start">
           <div className="flex-1">
-            <CardTitle className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-              📊 Sua Jornada de Vida
+            <CardTitle className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2 flex items-center gap-2">
+              <span className="text-2xl">📊</span>
+              <span>Sua Jornada de Vida</span>
             </CardTitle>
             <div className="flex items-center gap-3">
               <p className="text-gray-300 text-sm flex items-center gap-1">
