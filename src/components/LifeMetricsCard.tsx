@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -97,8 +96,9 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
     }
   ];
 
+  const workingYears = Math.max(0, ageInYears - 18); // Assume que começou a trabalhar aos 18
   const workHours = calculateActivityTime(dailyHours.work, 18).hours;
-  const hourlyWage = salary.monthly * 12 / (dailyHours.work * 22 * 12);
+  const hourlyWage = workingYears > 0 ? salary.monthly * 12 / (dailyHours.work * 22 * 12) : 0;
   const totalEarned = workHours * hourlyWage;
 
   return (
@@ -196,20 +196,20 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
           </div>
         ))}
         
-        {salary.monthly > 0 && (
+        {salary.monthly > 0 && workingYears > 0 && (
           <div className="mt-4 p-4 bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-500/30 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
               <DollarSign className="w-5 h-5 text-green-400" />
-              <h4 className="font-semibold text-green-400">Valor do Seu Tempo</h4>
+              <h4 className="font-semibold text-green-400">Valor do Seu Trabalho</h4>
             </div>
             <p className="text-green-300 text-sm">
-              💰 Através do seu trabalho, você já conquistou aproximadamente{' '}
+              💰 Nos seus {workingYears} anos de trabalho, você conquistou aproximadamente{' '}
               <span className="font-bold">
                 {salary.currency} {totalEarned.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
               </span>
             </p>
             <p className="text-green-200 text-xs mt-1">
-              Cada hora vale {salary.currency} {hourlyWage.toFixed(2)} - reconheça o valor do seu tempo! ⏰
+              Cada hora vale {salary.currency} {hourlyWage.toFixed(2)} - seu tempo tem valor! ⏰
             </p>
           </div>
         )}
