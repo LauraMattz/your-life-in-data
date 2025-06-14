@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Navigation } from '@/components/Navigation';
-import { Globe, TrendingUp, Heart, Clock, Users } from 'lucide-react';
+import { Globe, TrendingUp, Heart, Clock, Users, Info } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter, LineChart, Line } from 'recharts';
 
@@ -105,7 +105,7 @@ const countriesData = {
     flag: '🇮🇹'
   },
   'Espanha': {
-    expectancy: 83,
+    expectancy: 84,
     workHours: 37,
     exercise: 3.2,
     socialMedia: 2.7,
@@ -137,7 +137,7 @@ const countriesData = {
     flag: '🇳🇱'
   },
   'China': {
-    expectancy: 77,
+    expectancy: 78,
     workHours: 46,
     exercise: 2.3,
     socialMedia: 4.2,
@@ -229,6 +229,14 @@ const ComparacaoGlobalPage = () => {
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
             Visualize e compare expectativa de vida e estilos de vida de 20 países ao redor do mundo
           </p>
+          
+          {/* Fonte dos dados */}
+          <div className="flex items-center justify-center gap-2 mt-4 text-sm text-yellow-400 bg-yellow-400/10 rounded-lg p-3 max-w-2xl mx-auto">
+            <Info className="w-4 h-4" />
+            <span>
+              <strong>Fonte:</strong> Dados simulados para demonstração baseados em tendências globais aproximadas
+            </span>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -305,12 +313,35 @@ const ComparacaoGlobalPage = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ChartContainer config={chartConfig} className="h-[400px]">
+              <ChartContainer config={chartConfig} className="h-[500px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={sortedCountries} layout="horizontal">
+                  <BarChart 
+                    data={sortedCountries} 
+                    layout="horizontal"
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
                     <XAxis type="number" domain={[65, 90]} />
-                    <YAxis dataKey="flag" type="category" width={40} />
-                    <Bar dataKey="expectancy" fill="#ef4444" />
+                    <YAxis 
+                      dataKey="flag" 
+                      type="category" 
+                      width={50} 
+                      tick={{ fontSize: 14 }}
+                    />
+                    <Bar dataKey="expectancy" fill="#ef4444">
+                      {/* Adicionar labels nas barras */}
+                      {sortedCountries.map((entry, index) => (
+                        <text
+                          key={`label-${index}`}
+                          x={entry.expectancy + 68}
+                          y={index * 25 + 15}
+                          textAnchor="start"
+                          fill="#ffffff"
+                          fontSize="12"
+                        >
+                          {entry.expectancy} anos
+                        </text>
+                      ))}
+                    </Bar>
                     <ChartTooltip 
                       content={<ChartTooltipContent />}
                       formatter={(value, name) => [`${value} anos`, 'Expectativa de Vida']}
@@ -330,18 +361,38 @@ const ComparacaoGlobalPage = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ChartContainer config={chartConfig} className="h-[400px]">
+              <ChartContainer config={chartConfig} className="h-[500px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart data={scatterData}>
-                    <XAxis dataKey="x" name="Horas de Trabalho" unit="h/sem" />
-                    <YAxis dataKey="y" name="Expectativa" unit=" anos" />
+                  <ScatterChart 
+                    data={scatterData}
+                    margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                  >
+                    <XAxis 
+                      dataKey="x" 
+                      name="Horas de Trabalho" 
+                      unit="h/sem" 
+                      label={{ value: 'Horas de Trabalho/Semana', position: 'insideBottom', offset: -10 }}
+                    />
+                    <YAxis 
+                      dataKey="y" 
+                      name="Expectativa" 
+                      unit=" anos"
+                      label={{ value: 'Expectativa de Vida (anos)', angle: -90, position: 'insideLeft' }}
+                    />
                     <Scatter dataKey="y" fill="#3b82f6" />
                     <ChartTooltip 
                       content={<ChartTooltipContent />}
-                      formatter={(value, name) => [
-                        name === 'y' ? `${value} anos` : `${value}h/sem`,
-                        name === 'y' ? 'Expectativa' : 'Trabalho'
-                      ]}
+                      formatter={(value, name, props) => {
+                        if (name === 'y') return [`${value} anos`, 'Expectativa'];
+                        if (name === 'x') return [`${props.payload.x}h/sem`, 'Trabalho'];
+                        return [value, name];
+                      }}
+                      labelFormatter={(label, payload) => {
+                        if (payload && payload.length > 0) {
+                          return `${payload[0].payload.flag} ${payload[0].payload.country}`;
+                        }
+                        return label;
+                      }}
                     />
                   </ScatterChart>
                 </ResponsiveContainer>
@@ -360,10 +411,29 @@ const ComparacaoGlobalPage = () => {
             <CardContent>
               <ChartContainer config={chartConfig} className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={sortedCountries.sort((a, b) => b.happiness - a.happiness)}>
-                    <XAxis dataKey="flag" />
-                    <YAxis domain={[3, 8]} />
-                    <Line type="monotone" dataKey="happiness" stroke="#fbbf24" strokeWidth={3} />
+                  <LineChart 
+                    data={sortedCountries.sort((a, b) => b.happiness - a.happiness)}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                  >
+                    <XAxis 
+                      dataKey="flag" 
+                      tick={{ fontSize: 12 }}
+                      interval={0}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis 
+                      domain={[3, 8]} 
+                      label={{ value: 'Índice de Felicidade (0-10)', angle: -90, position: 'insideLeft' }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="happiness" 
+                      stroke="#fbbf24" 
+                      strokeWidth={3}
+                      dot={{ fill: '#fbbf24', strokeWidth: 2, r: 4 }}
+                    />
                     <ChartTooltip 
                       content={<ChartTooltipContent />}
                       formatter={(value) => [`${value}/10`, 'Felicidade']}
@@ -385,10 +455,36 @@ const ComparacaoGlobalPage = () => {
             <CardContent>
               <ChartContainer config={chartConfig} className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={sortedCountries.sort((a, b) => b.exercise - a.exercise)}>
-                    <XAxis dataKey="flag" />
-                    <YAxis />
-                    <Bar dataKey="exercise" fill="#10b981" />
+                  <BarChart 
+                    data={sortedCountries.sort((a, b) => b.exercise - a.exercise)}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                  >
+                    <XAxis 
+                      dataKey="flag" 
+                      tick={{ fontSize: 12 }}
+                      interval={0}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis 
+                      label={{ value: 'Horas de Exercício/Semana', angle: -90, position: 'insideLeft' }}
+                    />
+                    <Bar dataKey="exercise" fill="#10b981">
+                      {/* Labels nas barras */}
+                      {sortedCountries.sort((a, b) => b.exercise - a.exercise).map((entry, index) => (
+                        <text
+                          key={`exercise-label-${index}`}
+                          x={index * (400 / sortedCountries.length) + 20}
+                          y={400 - (entry.exercise * 80) - 10}
+                          textAnchor="middle"
+                          fill="#ffffff"
+                          fontSize="10"
+                        >
+                          {entry.exercise}h
+                        </text>
+                      ))}
+                    </Bar>
                     <ChartTooltip 
                       content={<ChartTooltipContent />}
                       formatter={(value) => [`${value}h/semana`, 'Exercício']}
@@ -407,7 +503,7 @@ const ComparacaoGlobalPage = () => {
               <Globe className="w-6 h-6 text-blue-400" />
               Ranking Completo de Países
             </CardTitle>
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-2 mt-4 flex-wrap">
               <button 
                 onClick={() => setSortBy('expectancy')}
                 className={`px-3 py-1 rounded text-sm ${sortBy === 'expectancy' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
