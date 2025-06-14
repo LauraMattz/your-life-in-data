@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Navigation } from '@/components/Navigation';
 import { Globe, TrendingUp, Heart, Clock } from 'lucide-react';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
 const countriesData = {
   'Brasil': { 
@@ -69,7 +71,122 @@ const countriesData = {
     socialMedia: 3.1,
     happiness: 6.3,
     flag: '🇸🇬'
+  },
+  'Canadá': {
+    expectancy: 82,
+    workHours: 36,
+    exercise: 3.9,
+    socialMedia: 2.9,
+    happiness: 7.2,
+    flag: '🇨🇦'
+  },
+  'Reino Unido': {
+    expectancy: 81,
+    workHours: 37,
+    exercise: 3.4,
+    socialMedia: 3.5,
+    happiness: 6.8,
+    flag: '🇬🇧'
+  },
+  'Austrália': {
+    expectancy: 83,
+    workHours: 38,
+    exercise: 4.1,
+    socialMedia: 3.0,
+    happiness: 7.1,
+    flag: '🇦🇺'
+  },
+  'Itália': {
+    expectancy: 83,
+    workHours: 39,
+    exercise: 2.9,
+    socialMedia: 2.6,
+    happiness: 6.0,
+    flag: '🇮🇹'
+  },
+  'Espanha': {
+    expectancy: 83,
+    workHours: 37,
+    exercise: 3.2,
+    socialMedia: 2.7,
+    happiness: 6.5,
+    flag: '🇪🇸'
+  },
+  'Noruega': {
+    expectancy: 82,
+    workHours: 27,
+    exercise: 4.5,
+    socialMedia: 2.2,
+    happiness: 7.4,
+    flag: '🇳🇴'
+  },
+  'Dinamarca': {
+    expectancy: 81,
+    workHours: 32,
+    exercise: 4.3,
+    socialMedia: 2.4,
+    happiness: 7.6,
+    flag: '🇩🇰'
+  },
+  'Holanda': {
+    expectancy: 82,
+    workHours: 29,
+    exercise: 4.0,
+    socialMedia: 2.5,
+    happiness: 7.4,
+    flag: '🇳🇱'
+  },
+  'China': {
+    expectancy: 77,
+    workHours: 46,
+    exercise: 2.3,
+    socialMedia: 4.2,
+    happiness: 5.1,
+    flag: '🇨🇳'
+  },
+  'Índia': {
+    expectancy: 70,
+    workHours: 48,
+    exercise: 1.8,
+    socialMedia: 2.8,
+    happiness: 3.8,
+    flag: '🇮🇳'
+  },
+  'México': {
+    expectancy: 75,
+    workHours: 43,
+    exercise: 2.4,
+    socialMedia: 3.6,
+    happiness: 6.3,
+    flag: '🇲🇽'
+  },
+  'Argentina': {
+    expectancy: 77,
+    workHours: 42,
+    exercise: 2.6,
+    socialMedia: 3.4,
+    happiness: 5.9,
+    flag: '🇦🇷'
   }
+};
+
+const chartConfig = {
+  expectancy: {
+    label: "Expectativa de Vida",
+    color: "hsl(var(--chart-1))",
+  },
+  workHours: {
+    label: "Horas de Trabalho",
+    color: "hsl(var(--chart-2))",
+  },
+  exercise: {
+    label: "Exercício",
+    color: "hsl(var(--chart-3))",
+  },
+  happiness: {
+    label: "Felicidade",
+    color: "hsl(var(--chart-4))",
+  },
 };
 
 const ComparacaoGlobalPage = () => {
@@ -78,6 +195,47 @@ const ComparacaoGlobalPage = () => {
 
   const country1 = countriesData[selectedCountry as keyof typeof countriesData];
   const country2 = countriesData[compareCountry as keyof typeof countriesData];
+
+  // Preparar dados para gráficos
+  const chartData = Object.entries(countriesData).map(([name, data]) => ({
+    country: name,
+    flag: data.flag,
+    expectancy: data.expectancy,
+    workHours: data.workHours,
+    exercise: data.exercise,
+    happiness: data.happiness * 10, // Multiplicar por 10 para melhor visualização
+  }));
+
+  const topCountriesExpectancy = chartData
+    .sort((a, b) => b.expectancy - a.expectancy)
+    .slice(0, 10);
+
+  const topCountriesHappiness = chartData
+    .sort((a, b) => b.happiness - a.happiness)
+    .slice(0, 10);
+
+  const radarData = [
+    {
+      metric: 'Expectativa',
+      [selectedCountry]: country1.expectancy,
+      [compareCountry]: country2.expectancy,
+    },
+    {
+      metric: 'Felicidade',
+      [selectedCountry]: country1.happiness * 10,
+      [compareCountry]: country2.happiness * 10,
+    },
+    {
+      metric: 'Exercício',
+      [selectedCountry]: country1.exercise * 10,
+      [compareCountry]: country2.exercise * 10,
+    },
+    {
+      metric: 'Trabalho',
+      [selectedCountry]: 100 - country1.workHours, // Inverter para que menos horas seja melhor
+      [compareCountry]: 100 - country2.workHours,
+    },
+  ];
 
   const ComparisonCard = ({ 
     title, 
@@ -173,6 +331,42 @@ const ComparacaoGlobalPage = () => {
           </div>
         </div>
 
+        {/* Radar Chart Comparison */}
+        <Card className="bg-gray-800 border-gray-700 mb-8">
+          <CardHeader>
+            <CardTitle className="text-xl text-white flex items-center gap-2">
+              <TrendingUp className="w-6 h-6 text-blue-400" />
+              Comparação Direta
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={chartConfig} className="h-[400px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart data={radarData}>
+                  <PolarGrid />
+                  <PolarAngleAxis dataKey="metric" />
+                  <PolarRadiusAxis angle={0} domain={[0, 100]} />
+                  <Radar
+                    name={selectedCountry}
+                    dataKey={selectedCountry}
+                    stroke="#3b82f6"
+                    fill="#3b82f6"
+                    fillOpacity={0.3}
+                  />
+                  <Radar
+                    name={compareCountry}
+                    dataKey={compareCountry}
+                    stroke="#8b5cf6"
+                    fill="#8b5cf6"
+                    fillOpacity={0.3}
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                </RadarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+
         {/* Comparison Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <ComparisonCard
@@ -210,6 +404,59 @@ const ComparacaoGlobalPage = () => {
             unit="h/dia"
             higher1={country1.socialMedia < country2.socialMedia}
           />
+        </div>
+
+        {/* Global Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Top Countries by Life Expectancy */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <Heart className="w-6 h-6 text-red-400" />
+                Top 10 - Expectativa de Vida
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={topCountriesExpectancy} layout="horizontal">
+                    <XAxis type="number" domain={[70, 90]} />
+                    <YAxis dataKey="flag" type="category" width={40} />
+                    <Bar dataKey="expectancy" fill="#ef4444" />
+                    <ChartTooltip 
+                      content={<ChartTooltipContent />}
+                      formatter={(value, name) => [`${value} anos`, 'Expectativa de Vida']}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          {/* Top Countries by Happiness */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <TrendingUp className="w-6 h-6 text-yellow-400" />
+                Top 10 - Índice de Felicidade
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={topCountriesHappiness} layout="horizontal">
+                    <XAxis type="number" domain={[30, 80]} />
+                    <YAxis dataKey="flag" type="category" width={40} />
+                    <Bar dataKey="happiness" fill="#fbbf24" />
+                    <ChartTooltip 
+                      content={<ChartTooltipContent />}
+                      formatter={(value, name) => [`${(value as number / 10).toFixed(1)}/10`, 'Felicidade']}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Detailed Analysis */}
