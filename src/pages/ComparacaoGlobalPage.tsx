@@ -2,8 +2,10 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { Navigation } from '@/components/Navigation';
-import { Globe, TrendingUp, Heart, Clock, Users, Info } from 'lucide-react';
+import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter, LineChart, Line } from 'recharts';
 
@@ -191,9 +193,19 @@ const chartConfig = {
 
 const ComparacaoGlobalPage = () => {
   const [sortBy, setSortBy] = useState<'expectancy' | 'happiness' | 'workHours' | 'exercise'>('expectancy');
+  const [regionFilter, setRegionFilter] = useState<string>('all');
+  const [minExpectancy, setMinExpectancy] = useState<string>('all');
+
+  // Classificação por região
+  const countryRegions = {
+    'Europa': ['Alemanha', 'França', 'Suécia', 'Reino Unido', 'Itália', 'Espanha', 'Noruega', 'Dinamarca', 'Holanda'],
+    'Ásia': ['Japão', 'Coreia do Sul', 'Singapura', 'China', 'Índia'],
+    'Américas': ['Brasil', 'Estados Unidos', 'Canadá', 'México', 'Argentina'],
+    'Oceania': ['Austrália']
+  };
 
   // Preparar dados para gráficos e tabela
-  const allCountriesData = Object.entries(countriesData).map(([name, data]) => ({
+  let allCountriesData = Object.entries(countriesData).map(([name, data]) => ({
     country: name,
     flag: data.flag,
     expectancy: data.expectancy,
@@ -201,7 +213,18 @@ const ComparacaoGlobalPage = () => {
     exercise: data.exercise,
     socialMedia: data.socialMedia,
     happiness: data.happiness,
+    region: Object.entries(countryRegions).find(([_, countries]) => countries.includes(name))?.[0] || 'Outros'
   }));
+
+  // Aplicar filtros
+  if (regionFilter !== 'all') {
+    allCountriesData = allCountriesData.filter(country => country.region === regionFilter);
+  }
+
+  if (minExpectancy !== 'all') {
+    const minValue = parseInt(minExpectancy);
+    allCountriesData = allCountriesData.filter(country => country.expectancy >= minValue);
+  }
 
   const sortedCountries = [...allCountriesData].sort((a, b) => {
     if (sortBy === 'workHours') {
@@ -217,6 +240,11 @@ const ComparacaoGlobalPage = () => {
     y: country.expectancy,
   }));
 
+  const resetFilters = () => {
+    setRegionFilter('all');
+    setMinExpectancy('all');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
       <Navigation />
@@ -227,7 +255,7 @@ const ComparacaoGlobalPage = () => {
             🌍 Comparação Global de Todos os Países
           </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-            Visualize e compare expectativa de vida e estilos de vida de 20 países ao redor do mundo
+            Visualize e compare expectativa de vida e estilos de vida de {allCountriesData.length} países ao redor do mundo
           </p>
           
           {/* Fonte dos dados */}
@@ -239,6 +267,61 @@ const ComparacaoGlobalPage = () => {
           </div>
         </div>
 
+        {/* Filtros */}
+        <Card className="bg-gray-800 border-gray-700 mb-8">
+          <CardHeader>
+            <CardTitle className="text-xl text-white flex items-center gap-2">
+              <Filter className="w-6 h-6 text-blue-400" />
+              Filtros
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Região</label>
+                <Select value={regionFilter} onValueChange={setRegionFilter}>
+                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                    <SelectValue placeholder="Selecione uma região" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-700 border-gray-600">
+                    <SelectItem value="all">Todas as Regiões</SelectItem>
+                    <SelectItem value="Europa">Europa</SelectItem>
+                    <SelectItem value="Ásia">Ásia</SelectItem>
+                    <SelectItem value="Américas">Américas</SelectItem>
+                    <SelectItem value="Oceania">Oceania</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Expectativa Mínima</label>
+                <Select value={minExpectancy} onValueChange={setMinExpectancy}>
+                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                    <SelectValue placeholder="Expectativa mínima" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-700 border-gray-600">
+                    <SelectItem value="all">Todas</SelectItem>
+                    <SelectItem value="70">70+ anos</SelectItem>
+                    <SelectItem value="75">75+ anos</SelectItem>
+                    <SelectItem value="80">80+ anos</SelectItem>
+                    <SelectItem value="85">85+ anos</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Button 
+                  onClick={resetFilters}
+                  variant="outline" 
+                  className="bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
+                >
+                  Limpar Filtros
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gray-800 border-gray-700">
@@ -248,7 +331,7 @@ const ComparacaoGlobalPage = () => {
                 <h3 className="font-semibold text-white">Maior Expectativa</h3>
               </div>
               <div className="text-2xl font-bold text-red-400">
-                {Math.max(...allCountriesData.map(c => c.expectancy))} anos
+                {allCountriesData.length > 0 ? Math.max(...allCountriesData.map(c => c.expectancy)) : 0} anos
               </div>
               <div className="text-sm text-gray-400">
                 {allCountriesData.find(c => c.expectancy === Math.max(...allCountriesData.map(c => c.expectancy)))?.flag} {allCountriesData.find(c => c.expectancy === Math.max(...allCountriesData.map(c => c.expectancy)))?.country}
@@ -263,7 +346,7 @@ const ComparacaoGlobalPage = () => {
                 <h3 className="font-semibold text-white">Mais Feliz</h3>
               </div>
               <div className="text-2xl font-bold text-yellow-400">
-                {Math.max(...allCountriesData.map(c => c.happiness)).toFixed(1)}/10
+                {allCountriesData.length > 0 ? Math.max(...allCountriesData.map(c => c.happiness)).toFixed(1) : 0}/10
               </div>
               <div className="text-sm text-gray-400">
                 {allCountriesData.find(c => c.happiness === Math.max(...allCountriesData.map(c => c.happiness)))?.flag} {allCountriesData.find(c => c.happiness === Math.max(...allCountriesData.map(c => c.happiness)))?.country}
@@ -278,7 +361,7 @@ const ComparacaoGlobalPage = () => {
                 <h3 className="font-semibold text-white">Menos Trabalho</h3>
               </div>
               <div className="text-2xl font-bold text-green-400">
-                {Math.min(...allCountriesData.map(c => c.workHours))}h/sem
+                {allCountriesData.length > 0 ? Math.min(...allCountriesData.map(c => c.workHours)) : 0}h/sem
               </div>
               <div className="text-sm text-gray-400">
                 {allCountriesData.find(c => c.workHours === Math.min(...allCountriesData.map(c => c.workHours)))?.flag} {allCountriesData.find(c => c.workHours === Math.min(...allCountriesData.map(c => c.workHours)))?.country}
@@ -290,13 +373,13 @@ const ComparacaoGlobalPage = () => {
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Users className="w-5 h-5 text-blue-400" />
-                <h3 className="font-semibold text-white">Países Analisados</h3>
+                <h3 className="font-semibold text-white">Países Filtrados</h3>
               </div>
               <div className="text-2xl font-bold text-blue-400">
                 {allCountriesData.length}
               </div>
               <div className="text-sm text-gray-400">
-                Dados globais
+                de 20 países
               </div>
             </CardContent>
           </Card>
@@ -312,36 +395,22 @@ const ComparacaoGlobalPage = () => {
                 Expectativa de Vida por País
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="h-[500px]">
+            <CardContent className="h-[500px]">
+              <ChartContainer config={chartConfig} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart 
-                    data={sortedCountries} 
+                    data={sortedCountries.slice(0, 15)} 
                     layout="horizontal"
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    margin={{ top: 20, right: 80, left: 60, bottom: 20 }}
                   >
                     <XAxis type="number" domain={[65, 90]} />
                     <YAxis 
                       dataKey="flag" 
                       type="category" 
                       width={50} 
-                      tick={{ fontSize: 14 }}
+                      tick={{ fontSize: 12 }}
                     />
-                    <Bar dataKey="expectancy" fill="#ef4444">
-                      {/* Adicionar labels nas barras */}
-                      {sortedCountries.map((entry, index) => (
-                        <text
-                          key={`label-${index}`}
-                          x={entry.expectancy + 68}
-                          y={index * 25 + 15}
-                          textAnchor="start"
-                          fill="#ffffff"
-                          fontSize="12"
-                        >
-                          {entry.expectancy} anos
-                        </text>
-                      ))}
-                    </Bar>
+                    <Bar dataKey="expectancy" fill="#ef4444" />
                     <ChartTooltip 
                       content={<ChartTooltipContent />}
                       formatter={(value, name) => [`${value} anos`, 'Expectativa de Vida']}
@@ -360,12 +429,12 @@ const ComparacaoGlobalPage = () => {
                 Horas de Trabalho vs Expectativa de Vida
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="h-[500px]">
+            <CardContent className="h-[500px]">
+              <ChartContainer config={chartConfig} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <ScatterChart 
                     data={scatterData}
-                    margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                    margin={{ top: 20, right: 20, bottom: 60, left: 20 }}
                   >
                     <XAxis 
                       dataKey="x" 
@@ -408,12 +477,12 @@ const ComparacaoGlobalPage = () => {
                 Índice de Felicidade
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="h-[400px]">
+            <CardContent className="h-[400px]">
+              <ChartContainer config={chartConfig} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart 
-                    data={sortedCountries.sort((a, b) => b.happiness - a.happiness)}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                    data={sortedCountries.sort((a, b) => b.happiness - a.happiness).slice(0, 15)}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
                   >
                     <XAxis 
                       dataKey="flag" 
@@ -421,7 +490,7 @@ const ComparacaoGlobalPage = () => {
                       interval={0}
                       angle={-45}
                       textAnchor="end"
-                      height={60}
+                      height={80}
                     />
                     <YAxis 
                       domain={[3, 8]} 
@@ -452,12 +521,12 @@ const ComparacaoGlobalPage = () => {
                 Exercício Semanal por País
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig} className="h-[400px]">
+            <CardContent className="h-[400px]">
+              <ChartContainer config={chartConfig} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart 
-                    data={sortedCountries.sort((a, b) => b.exercise - a.exercise)}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                    data={sortedCountries.sort((a, b) => b.exercise - a.exercise).slice(0, 15)}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
                   >
                     <XAxis 
                       dataKey="flag" 
@@ -465,26 +534,12 @@ const ComparacaoGlobalPage = () => {
                       interval={0}
                       angle={-45}
                       textAnchor="end"
-                      height={60}
+                      height={80}
                     />
                     <YAxis 
                       label={{ value: 'Horas de Exercício/Semana', angle: -90, position: 'insideLeft' }}
                     />
-                    <Bar dataKey="exercise" fill="#10b981">
-                      {/* Labels nas barras */}
-                      {sortedCountries.sort((a, b) => b.exercise - a.exercise).map((entry, index) => (
-                        <text
-                          key={`exercise-label-${index}`}
-                          x={index * (400 / sortedCountries.length) + 20}
-                          y={400 - (entry.exercise * 80) - 10}
-                          textAnchor="middle"
-                          fill="#ffffff"
-                          fontSize="10"
-                        >
-                          {entry.exercise}h
-                        </text>
-                      ))}
-                    </Bar>
+                    <Bar dataKey="exercise" fill="#10b981" />
                     <ChartTooltip 
                       content={<ChartTooltipContent />}
                       formatter={(value) => [`${value}h/semana`, 'Exercício']}
@@ -537,6 +592,7 @@ const ComparacaoGlobalPage = () => {
                   <TableRow className="border-gray-600">
                     <TableHead className="text-gray-300">#</TableHead>
                     <TableHead className="text-gray-300">País</TableHead>
+                    <TableHead className="text-gray-300">Região</TableHead>
                     <TableHead className="text-gray-300">Expectativa</TableHead>
                     <TableHead className="text-gray-300">Trabalho</TableHead>
                     <TableHead className="text-gray-300">Exercício</TableHead>
@@ -555,6 +611,9 @@ const ComparacaoGlobalPage = () => {
                           <span className="text-xl">{country.flag}</span>
                           <span className="hidden sm:inline">{country.country}</span>
                         </div>
+                      </TableCell>
+                      <TableCell className="text-gray-300 text-sm">
+                        {country.region}
                       </TableCell>
                       <TableCell className="text-red-400 font-semibold">
                         {country.expectancy} anos
