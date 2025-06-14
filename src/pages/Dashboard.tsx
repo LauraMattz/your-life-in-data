@@ -70,8 +70,8 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
             </h2>
           </div>
           <p className="text-gray-300 text-base sm:text-lg mb-6 max-w-2xl mx-auto leading-relaxed">
-            Descubra como a expectativa de vida varia pelo mundo e veja onde o {userProfile.country} se posiciona no cenário global. 
-            Uma perspectiva fascinante sobre longevidade e qualidade de vida! 🌍
+            Descubra como pessoas de diferentes países aproveitam o tempo e compare estratégias globais para otimizar o restante de {currentYear}. 
+            Uma perspectiva fascinante sobre produtividade e qualidade de vida ao redor do mundo! 🌍
           </p>
           <Button
             onClick={() => navigate('/comparacao')}
