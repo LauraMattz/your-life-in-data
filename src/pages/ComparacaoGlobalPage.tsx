@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -233,6 +234,7 @@ const ComparacaoGlobalPage = () => {
     allCountriesData = allCountriesData.filter(country => country.expectancy >= minValue);
   }
 
+  // Aplicar ordenação baseada no sortBy selecionado
   const sortedCountries = [...allCountriesData].sort((a, b) => {
     if (sortBy === 'workHours') {
       return a[sortBy] - b[sortBy]; // Menor é melhor para horas de trabalho
@@ -424,7 +426,6 @@ const ComparacaoGlobalPage = () => {
                       domain={[65, 90]} 
                       tick={{ fontSize: 12, fill: '#ffffff' }}
                       axisLine={{ stroke: '#374151' }}
-                      gridLine={{ stroke: '#374151' }}
                     />
                     <YAxis 
                       dataKey="country" 
@@ -605,25 +606,25 @@ const ComparacaoGlobalPage = () => {
             <div className="flex gap-2 mt-4 flex-wrap">
               <button 
                 onClick={() => setSortBy('expectancy')}
-                className={`px-3 py-1 rounded text-sm ${sortBy === 'expectancy' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
+                className={`px-3 py-1 rounded text-sm transition-colors ${sortBy === 'expectancy' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
               >
                 Expectativa
               </button>
               <button 
                 onClick={() => setSortBy('happiness')}
-                className={`px-3 py-1 rounded text-sm ${sortBy === 'happiness' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
+                className={`px-3 py-1 rounded text-sm transition-colors ${sortBy === 'happiness' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
               >
                 Felicidade
               </button>
               <button 
                 onClick={() => setSortBy('workHours')}
-                className={`px-3 py-1 rounded text-sm ${sortBy === 'workHours' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
+                className={`px-3 py-1 rounded text-sm transition-colors ${sortBy === 'workHours' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
               >
                 Trabalho
               </button>
               <button 
                 onClick={() => setSortBy('exercise')}
-                className={`px-3 py-1 rounded text-sm ${sortBy === 'exercise' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
+                className={`px-3 py-1 rounded text-sm transition-colors ${sortBy === 'exercise' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
               >
                 Exercício
               </button>
