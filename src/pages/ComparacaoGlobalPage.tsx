@@ -1,11 +1,11 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Navigation } from '@/components/Navigation';
-import { Globe, TrendingUp, Heart, Clock } from 'lucide-react';
+import { Globe, TrendingUp, Heart, Clock, Users } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter, LineChart, Line } from 'recharts';
 
 const countriesData = {
   'Brasil': { 
@@ -190,97 +190,32 @@ const chartConfig = {
 };
 
 const ComparacaoGlobalPage = () => {
-  const [selectedCountry, setSelectedCountry] = useState('Brasil');
-  const [compareCountry, setCompareCountry] = useState('Japão');
+  const [sortBy, setSortBy] = useState<'expectancy' | 'happiness' | 'workHours' | 'exercise'>('expectancy');
 
-  const country1 = countriesData[selectedCountry as keyof typeof countriesData];
-  const country2 = countriesData[compareCountry as keyof typeof countriesData];
-
-  // Preparar dados para gráficos
-  const chartData = Object.entries(countriesData).map(([name, data]) => ({
+  // Preparar dados para gráficos e tabela
+  const allCountriesData = Object.entries(countriesData).map(([name, data]) => ({
     country: name,
     flag: data.flag,
     expectancy: data.expectancy,
     workHours: data.workHours,
     exercise: data.exercise,
-    happiness: data.happiness * 10, // Multiplicar por 10 para melhor visualização
+    socialMedia: data.socialMedia,
+    happiness: data.happiness,
   }));
 
-  const topCountriesExpectancy = chartData
-    .sort((a, b) => b.expectancy - a.expectancy)
-    .slice(0, 10);
+  const sortedCountries = [...allCountriesData].sort((a, b) => {
+    if (sortBy === 'workHours') {
+      return a[sortBy] - b[sortBy]; // Menor é melhor para horas de trabalho
+    }
+    return b[sortBy] - a[sortBy]; // Maior é melhor para outros
+  });
 
-  const topCountriesHappiness = chartData
-    .sort((a, b) => b.happiness - a.happiness)
-    .slice(0, 10);
-
-  const radarData = [
-    {
-      metric: 'Expectativa',
-      [selectedCountry]: country1.expectancy,
-      [compareCountry]: country2.expectancy,
-    },
-    {
-      metric: 'Felicidade',
-      [selectedCountry]: country1.happiness * 10,
-      [compareCountry]: country2.happiness * 10,
-    },
-    {
-      metric: 'Exercício',
-      [selectedCountry]: country1.exercise * 10,
-      [compareCountry]: country2.exercise * 10,
-    },
-    {
-      metric: 'Trabalho',
-      [selectedCountry]: 100 - country1.workHours, // Inverter para que menos horas seja melhor
-      [compareCountry]: 100 - country2.workHours,
-    },
-  ];
-
-  const ComparisonCard = ({ 
-    title, 
-    icon: Icon, 
-    value1, 
-    value2, 
-    unit, 
-    higher1 
-  }: {
-    title: string;
-    icon: any;
-    value1: number;
-    value2: number;
-    unit: string;
-    higher1: boolean;
-  }) => (
-    <Card className="bg-gray-800 border-gray-700">
-      <CardContent className="p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Icon className="w-5 h-5 text-blue-400" />
-          <h3 className="font-semibold text-white">{title}</h3>
-        </div>
-        
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-gray-300">{country1.flag} {selectedCountry}</span>
-            <span className={`font-bold ${higher1 ? 'text-green-400' : 'text-orange-400'}`}>
-              {value1}{unit}
-            </span>
-          </div>
-          
-          <div className="flex justify-between items-center">
-            <span className="text-gray-300">{country2.flag} {compareCountry}</span>
-            <span className={`font-bold ${!higher1 ? 'text-green-400' : 'text-orange-400'}`}>
-              {value2}{unit}
-            </span>
-          </div>
-          
-          <div className="text-xs text-gray-400">
-            Diferença: {Math.abs(value1 - value2).toFixed(1)}{unit}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+  const scatterData = allCountriesData.map(country => ({
+    ...country,
+    name: country.flag,
+    x: country.workHours,
+    y: country.expectancy,
+  }));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
@@ -289,138 +224,91 @@ const ComparacaoGlobalPage = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            🌍 Comparação Global
+            🌍 Comparação Global de Todos os Países
           </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-            Compare expectativa de vida e estilos de vida entre diferentes países
+            Visualize e compare expectativa de vida e estilos de vida de 20 países ao redor do mundo
           </p>
         </div>
 
-        {/* Country Selectors */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-2xl mx-auto">
-          <div>
-            <label className="block text-gray-300 mb-2">País 1</label>
-            <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-              <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-600">
-                {Object.entries(countriesData).map(([name, data]) => (
-                  <SelectItem key={name} value={name} className="text-white hover:bg-gray-700">
-                    {data.flag} {name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div>
-            <label className="block text-gray-300 mb-2">País 2</label>
-            <Select value={compareCountry} onValueChange={setCompareCountry}>
-              <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-600">
-                {Object.entries(countriesData).map(([name, data]) => (
-                  <SelectItem key={name} value={name} className="text-white hover:bg-gray-700">
-                    {data.flag} {name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Radar Chart Comparison */}
-        <Card className="bg-gray-800 border-gray-700 mb-8">
-          <CardHeader>
-            <CardTitle className="text-xl text-white flex items-center gap-2">
-              <TrendingUp className="w-6 h-6 text-blue-400" />
-              Comparação Direta
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[400px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart data={radarData}>
-                  <PolarGrid />
-                  <PolarAngleAxis dataKey="metric" />
-                  <PolarRadiusAxis angle={0} domain={[0, 100]} />
-                  <Radar
-                    name={selectedCountry}
-                    dataKey={selectedCountry}
-                    stroke="#3b82f6"
-                    fill="#3b82f6"
-                    fillOpacity={0.3}
-                  />
-                  <Radar
-                    name={compareCountry}
-                    dataKey={compareCountry}
-                    stroke="#8b5cf6"
-                    fill="#8b5cf6"
-                    fillOpacity={0.3}
-                  />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                </RadarChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-
-        {/* Comparison Grid */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <ComparisonCard
-            title="Expectativa de Vida"
-            icon={Heart}
-            value1={country1.expectancy}
-            value2={country2.expectancy}
-            unit=" anos"
-            higher1={country1.expectancy > country2.expectancy}
-          />
-          
-          <ComparisonCard
-            title="Horas de Trabalho"
-            icon={Clock}
-            value1={country1.workHours}
-            value2={country2.workHours}
-            unit="h/semana"
-            higher1={country1.workHours < country2.workHours}
-          />
-          
-          <ComparisonCard
-            title="Exercício Semanal"
-            icon={TrendingUp}
-            value1={country1.exercise}
-            value2={country2.exercise}
-            unit="h/semana"
-            higher1={country1.exercise > country2.exercise}
-          />
-          
-          <ComparisonCard
-            title="Redes Sociais"
-            icon={Globe}
-            value1={country1.socialMedia}
-            value2={country2.socialMedia}
-            unit="h/dia"
-            higher1={country1.socialMedia < country2.socialMedia}
-          />
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Heart className="w-5 h-5 text-red-400" />
+                <h3 className="font-semibold text-white">Maior Expectativa</h3>
+              </div>
+              <div className="text-2xl font-bold text-red-400">
+                {Math.max(...allCountriesData.map(c => c.expectancy))} anos
+              </div>
+              <div className="text-sm text-gray-400">
+                {allCountriesData.find(c => c.expectancy === Math.max(...allCountriesData.map(c => c.expectancy)))?.flag} {allCountriesData.find(c => c.expectancy === Math.max(...allCountriesData.map(c => c.expectancy)))?.country}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="w-5 h-5 text-yellow-400" />
+                <h3 className="font-semibold text-white">Mais Feliz</h3>
+              </div>
+              <div className="text-2xl font-bold text-yellow-400">
+                {Math.max(...allCountriesData.map(c => c.happiness)).toFixed(1)}/10
+              </div>
+              <div className="text-sm text-gray-400">
+                {allCountriesData.find(c => c.happiness === Math.max(...allCountriesData.map(c => c.happiness)))?.flag} {allCountriesData.find(c => c.happiness === Math.max(...allCountriesData.map(c => c.happiness)))?.country}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="w-5 h-5 text-green-400" />
+                <h3 className="font-semibold text-white">Menos Trabalho</h3>
+              </div>
+              <div className="text-2xl font-bold text-green-400">
+                {Math.min(...allCountriesData.map(c => c.workHours))}h/sem
+              </div>
+              <div className="text-sm text-gray-400">
+                {allCountriesData.find(c => c.workHours === Math.min(...allCountriesData.map(c => c.workHours)))?.flag} {allCountriesData.find(c => c.workHours === Math.min(...allCountriesData.map(c => c.workHours)))?.country}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="w-5 h-5 text-blue-400" />
+                <h3 className="font-semibold text-white">Países Analisados</h3>
+              </div>
+              <div className="text-2xl font-bold text-blue-400">
+                {allCountriesData.length}
+              </div>
+              <div className="text-sm text-gray-400">
+                Dados globais
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Global Charts */}
+        {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Top Countries by Life Expectancy */}
+          {/* Expectativa de Vida */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center gap-2">
                 <Heart className="w-6 h-6 text-red-400" />
-                Top 10 - Expectativa de Vida
+                Expectativa de Vida por País
               </CardTitle>
             </CardHeader>
             <CardContent>
               <ChartContainer config={chartConfig} className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={topCountriesExpectancy} layout="horizontal">
-                    <XAxis type="number" domain={[70, 90]} />
+                  <BarChart data={sortedCountries} layout="horizontal">
+                    <XAxis type="number" domain={[65, 90]} />
                     <YAxis dataKey="flag" type="category" width={40} />
                     <Bar dataKey="expectancy" fill="#ef4444" />
                     <ChartTooltip 
@@ -433,24 +321,77 @@ const ComparacaoGlobalPage = () => {
             </CardContent>
           </Card>
 
-          {/* Top Countries by Happiness */}
+          {/* Relação Trabalho vs Expectativa */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center gap-2">
-                <TrendingUp className="w-6 h-6 text-yellow-400" />
-                Top 10 - Índice de Felicidade
+                <Clock className="w-6 h-6 text-blue-400" />
+                Horas de Trabalho vs Expectativa de Vida
               </CardTitle>
             </CardHeader>
             <CardContent>
               <ChartContainer config={chartConfig} className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={topCountriesHappiness} layout="horizontal">
-                    <XAxis type="number" domain={[30, 80]} />
-                    <YAxis dataKey="flag" type="category" width={40} />
-                    <Bar dataKey="happiness" fill="#fbbf24" />
+                  <ScatterChart data={scatterData}>
+                    <XAxis dataKey="x" name="Horas de Trabalho" unit="h/sem" />
+                    <YAxis dataKey="y" name="Expectativa" unit=" anos" />
+                    <Scatter dataKey="y" fill="#3b82f6" />
                     <ChartTooltip 
                       content={<ChartTooltipContent />}
-                      formatter={(value, name) => [`${(value as number / 10).toFixed(1)}/10`, 'Felicidade']}
+                      formatter={(value, name) => [
+                        name === 'y' ? `${value} anos` : `${value}h/sem`,
+                        name === 'y' ? 'Expectativa' : 'Trabalho'
+                      ]}
+                    />
+                  </ScatterChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          {/* Índice de Felicidade */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <TrendingUp className="w-6 h-6 text-yellow-400" />
+                Índice de Felicidade
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={sortedCountries.sort((a, b) => b.happiness - a.happiness)}>
+                    <XAxis dataKey="flag" />
+                    <YAxis domain={[3, 8]} />
+                    <Line type="monotone" dataKey="happiness" stroke="#fbbf24" strokeWidth={3} />
+                    <ChartTooltip 
+                      content={<ChartTooltipContent />}
+                      formatter={(value) => [`${value}/10`, 'Felicidade']}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          {/* Exercício Semanal */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <Users className="w-6 h-6 text-green-400" />
+                Exercício Semanal por País
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={sortedCountries.sort((a, b) => b.exercise - a.exercise)}>
+                    <XAxis dataKey="flag" />
+                    <YAxis />
+                    <Bar dataKey="exercise" fill="#10b981" />
+                    <ChartTooltip 
+                      content={<ChartTooltipContent />}
+                      formatter={(value) => [`${value}h/semana`, 'Exercício']}
                     />
                   </BarChart>
                 </ResponsiveContainer>
@@ -459,63 +400,85 @@ const ComparacaoGlobalPage = () => {
           </Card>
         </div>
 
-        {/* Detailed Analysis */}
-        <Card className="bg-gray-800 border-gray-700 max-w-4xl mx-auto">
+        {/* Tabela Completa */}
+        <Card className="bg-gray-800 border-gray-700">
           <CardHeader>
             <CardTitle className="text-xl text-white flex items-center gap-2">
               <Globe className="w-6 h-6 text-blue-400" />
-              Análise Detalhada
+              Ranking Completo de Países
             </CardTitle>
+            <div className="flex gap-2 mt-4">
+              <button 
+                onClick={() => setSortBy('expectancy')}
+                className={`px-3 py-1 rounded text-sm ${sortBy === 'expectancy' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
+              >
+                Expectativa
+              </button>
+              <button 
+                onClick={() => setSortBy('happiness')}
+                className={`px-3 py-1 rounded text-sm ${sortBy === 'happiness' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
+              >
+                Felicidade
+              </button>
+              <button 
+                onClick={() => setSortBy('workHours')}
+                className={`px-3 py-1 rounded text-sm ${sortBy === 'workHours' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
+              >
+                Trabalho
+              </button>
+              <button 
+                onClick={() => setSortBy('exercise')}
+                className={`px-3 py-1 rounded text-sm ${sortBy === 'exercise' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
+              >
+                Exercício
+              </button>
+            </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-blue-400">
-                  {country1.flag} {selectedCountry}
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">Expectativa de vida</span>
-                    <span className="text-white">{country1.expectancy} anos</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">Horas de trabalho</span>
-                    <span className="text-white">{country1.workHours}h/semana</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">Exercício</span>
-                    <span className="text-white">{country1.exercise}h/semana</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">Índice de felicidade</span>
-                    <span className="text-white">{country1.happiness}/10</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-purple-400">
-                  {country2.flag} {compareCountry}
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">Expectativa de vida</span>
-                    <span className="text-white">{country2.expectancy} anos</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">Horas de trabalho</span>
-                    <span className="text-white">{country2.workHours}h/semana</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">Exercício</span>
-                    <span className="text-white">{country2.exercise}h/semana</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">Índice de felicidade</span>
-                    <span className="text-white">{country2.happiness}/10</span>
-                  </div>
-                </div>
-              </div>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-gray-600">
+                    <TableHead className="text-gray-300">#</TableHead>
+                    <TableHead className="text-gray-300">País</TableHead>
+                    <TableHead className="text-gray-300">Expectativa</TableHead>
+                    <TableHead className="text-gray-300">Trabalho</TableHead>
+                    <TableHead className="text-gray-300">Exercício</TableHead>
+                    <TableHead className="text-gray-300">Redes Sociais</TableHead>
+                    <TableHead className="text-gray-300">Felicidade</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sortedCountries.map((country, index) => (
+                    <TableRow key={country.country} className="border-gray-600 hover:bg-gray-700">
+                      <TableCell className="text-gray-400 font-mono">
+                        {(index + 1).toString().padStart(2, '0')}
+                      </TableCell>
+                      <TableCell className="text-white font-medium">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{country.flag}</span>
+                          <span className="hidden sm:inline">{country.country}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-red-400 font-semibold">
+                        {country.expectancy} anos
+                      </TableCell>
+                      <TableCell className="text-orange-400">
+                        {country.workHours}h/sem
+                      </TableCell>
+                      <TableCell className="text-green-400">
+                        {country.exercise}h/sem
+                      </TableCell>
+                      <TableCell className="text-purple-400">
+                        {country.socialMedia}h/dia
+                      </TableCell>
+                      <TableCell className="text-yellow-400 font-semibold">
+                        {country.happiness}/10
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           </CardContent>
         </Card>
