@@ -74,12 +74,12 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
   const strokeDashoffset = circumference - (timeData.percentageLived / 100) * circumference;
 
   return (
-    <Card className="bg-gray-800 border-gray-700 h-fit">
+    <Card className="bg-slate-800 border-slate-700 h-fit">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold text-white">
           ⏰ Seu Relógio da Vida
         </CardTitle>
-        <p className="text-gray-300">Olá, {userProfile.name}</p>
+        <p className="text-slate-300">Olá, {userProfile.name}</p>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Circular Progress */}
@@ -93,7 +93,7 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
                 stroke="currentColor"
                 strokeWidth="8"
                 fill="transparent"
-                className="text-gray-600"
+                className="text-slate-600"
               />
               <circle
                 cx="100"
@@ -104,64 +104,64 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
                 fill="transparent"
                 strokeDasharray={strokeDasharray}
                 strokeDashoffset={strokeDashoffset}
-                className="text-orange-500 transition-all duration-500 ease-out"
+                className="text-blue-500 transition-all duration-500 ease-out"
                 strokeLinecap="round"
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center flex-col">
-              <span className="text-3xl font-bold text-orange-500">
+              <span className="text-3xl font-bold text-blue-500">
                 {timeData.percentageLived.toFixed(1)}%
               </span>
-              <span className="text-sm text-gray-300">vivido</span>
+              <span className="text-sm text-slate-300">vivido</span>
             </div>
           </div>
         </div>
 
         {/* Life Stats */}
         <div className="grid grid-cols-2 gap-4 text-center">
-          <div className="bg-gray-700 p-3 rounded-lg">
-            <div className="text-2xl font-bold text-green-400">
+          <div className="bg-slate-700 p-3 rounded-lg">
+            <div className="text-2xl font-bold text-emerald-400">
               {timeData.daysLived.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-300">Dias Vividos</div>
+            <div className="text-sm text-slate-300">Dias Vividos</div>
           </div>
-          <div className="bg-gray-700 p-3 rounded-lg">
+          <div className="bg-slate-700 p-3 rounded-lg">
             <div className="text-2xl font-bold text-red-400">
               {timeData.daysRemaining.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-300">Dias Restantes</div>
+            <div className="text-sm text-slate-300">Dias Restantes</div>
           </div>
         </div>
 
         {/* Countdown - Memento Mori */}
-        <div className="bg-gray-900 p-4 rounded-lg border border-orange-500/20">
-          <h3 className="text-lg font-semibold text-orange-400 mb-3 text-center">
+        <div className="bg-slate-900 p-4 rounded-lg border border-blue-500/20">
+          <h3 className="text-lg font-semibold text-blue-400 mb-3 text-center">
             ⚱️ Memento Mori - Contagem Regressiva
           </h3>
           <div className="grid grid-cols-3 gap-2 text-center">
             <div>
               <div className="text-xl font-bold text-white">{timeData.yearsRemaining}</div>
-              <div className="text-xs text-gray-400">Anos</div>
+              <div className="text-xs text-slate-400">Anos</div>
             </div>
             <div>
               <div className="text-xl font-bold text-white">{timeData.monthsRemaining}</div>
-              <div className="text-xs text-gray-400">Meses</div>
+              <div className="text-xs text-slate-400">Meses</div>
             </div>
             <div>
               <div className="text-xl font-bold text-white">{timeData.weeksRemaining}</div>
-              <div className="text-xs text-gray-400">Semanas</div>
+              <div className="text-xs text-slate-400">Semanas</div>
             </div>
             <div>
-              <div className="text-lg font-bold text-orange-400">{timeData.hoursRemaining.toLocaleString()}</div>
-              <div className="text-xs text-gray-400">Horas</div>
+              <div className="text-lg font-bold text-blue-400">{timeData.hoursRemaining.toLocaleString()}</div>
+              <div className="text-xs text-slate-400">Horas</div>
             </div>
             <div>
-              <div className="text-lg font-bold text-orange-400">{timeData.minutesRemaining.toLocaleString()}</div>
-              <div className="text-xs text-gray-400">Minutos</div>
+              <div className="text-lg font-bold text-blue-400">{timeData.minutesRemaining.toLocaleString()}</div>
+              <div className="text-xs text-slate-400">Minutos</div>
             </div>
             <div>
               <div className="text-lg font-bold text-red-400">{timeData.secondsRemaining.toLocaleString()}</div>
-              <div className="text-xs text-gray-400">Segundos</div>
+              <div className="text-xs text-slate-400">Segundos</div>
             </div>
           </div>
         </div>

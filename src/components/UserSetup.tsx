@@ -72,25 +72,25 @@ export const UserSetup = ({ onProfileComplete }: UserSetupProps) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-lg bg-gray-800/90 border-gray-700/50 backdrop-blur-sm shadow-2xl">
+      <Card className="w-full max-w-lg bg-slate-800/90 border-slate-700/50 backdrop-blur-sm shadow-2xl">
         <CardHeader className="text-center pb-6">
-          <CardTitle className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-500 bg-clip-text text-transparent">
+          <CardTitle className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
             ⏳ Bem-vindo
           </CardTitle>
-          <div className="space-y-3 text-gray-300">
+          <div className="space-y-3 text-slate-300">
             <p className="text-lg leading-relaxed">
               Vamos calcular sua jornada de vida de forma brutalmente honesta.
             </p>
-            <div className="bg-purple-900/30 border border-purple-500/30 rounded-lg p-4 text-sm">
-              <p className="font-semibold text-purple-200 mb-2">🔐 Por que coletamos estes dados?</p>
-              <ul className="text-left space-y-1 text-purple-100">
+            <div className="bg-blue-900/30 border border-blue-500/30 rounded-xl p-4 text-sm">
+              <p className="font-semibold text-blue-200 mb-2">🔐 Por que coletamos estes dados?</p>
+              <ul className="text-left space-y-1 text-blue-100">
                 <li>• <strong>Nome:</strong> Para personalizar sua experiência</li>
                 <li>• <strong>Data de nascimento:</strong> Para calcular sua idade atual</li>
                 <li>• <strong>País:</strong> Para estimar expectativa de vida baseada em dados estatísticos</li>
               </ul>
             </div>
-            <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3">
-              <p className="text-sm text-green-200 flex items-center justify-center gap-2">
+            <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-lg p-3">
+              <p className="text-sm text-emerald-200 flex items-center justify-center gap-2">
                 🛡️ <strong>100% Privado:</strong> Nenhum dado é salvo ou enviado para servidores. 
                 Tudo fica apenas no seu navegador!
               </p>
@@ -100,42 +100,42 @@ export const UserSetup = ({ onProfileComplete }: UserSetupProps) => {
         <CardContent className="space-y-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <Label htmlFor="name" className="text-purple-200 font-medium mb-2 block">Seu Nome</Label>
+              <Label htmlFor="name" className="text-blue-200 font-medium mb-2 block">Seu Nome</Label>
               <Input
                 id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Como você se chama?"
-                className="bg-gray-700/70 border-gray-600/50 text-white placeholder-gray-400 focus:border-purple-400 focus:ring-purple-400/20"
+                className="bg-slate-700/70 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-400 focus:ring-blue-400/20"
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor="birthDate" className="text-purple-200 font-medium mb-2 block">Data de Nascimento</Label>
+              <Label htmlFor="birthDate" className="text-blue-200 font-medium mb-2 block">Data de Nascimento</Label>
               <Input
                 id="birthDate"
                 type="date"
                 value={birthDate}
                 onChange={(e) => setBirthDate(e.target.value)}
-                className="bg-gray-700/70 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20"
+                className="bg-slate-700/70 border-slate-600/50 text-white focus:border-blue-400 focus:ring-blue-400/20"
                 required
               />
             </div>
 
             <div>
-              <Label className="text-purple-200 font-medium mb-2 block">País/Região</Label>
+              <Label className="text-blue-200 font-medium mb-2 block">País/Região</Label>
               <Select value={country} onValueChange={handleCountryChange} required>
-                <SelectTrigger className="bg-gray-700/70 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20">
+                <SelectTrigger className="bg-slate-700/70 border-slate-600/50 text-white focus:border-blue-400 focus:ring-blue-400/20">
                   <SelectValue placeholder="Selecione seu país" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600">
+                <SelectContent className="bg-slate-800 border-slate-600">
                   {Object.entries(countries).map(([countryName, expectancy]) => (
                     <SelectItem 
                       key={countryName} 
                       value={countryName}
-                      className="text-white hover:bg-gray-700 focus:bg-gray-700"
+                      className="text-white hover:bg-slate-700 focus:bg-slate-700"
                     >
                       {countryName === 'Personalizada' 
                         ? 'Personalizada (você define)'
@@ -148,26 +148,26 @@ export const UserSetup = ({ onProfileComplete }: UserSetupProps) => {
               
               {showCustomInput && (
                 <div className="mt-3">
-                  <Label className="text-purple-300 text-sm block mb-2">Expectativa de vida personalizada</Label>
+                  <Label className="text-blue-300 text-sm block mb-2">Expectativa de vida personalizada</Label>
                   <Input
                     type="number"
                     min="50"
                     max="120"
                     value={customExpectancy}
                     onChange={(e) => setCustomExpectancy(Number(e.target.value))}
-                    className="bg-gray-700/70 border-gray-600/50 text-white focus:border-purple-400 focus:ring-purple-400/20"
+                    className="bg-slate-700/70 border-slate-600/50 text-white focus:border-blue-400 focus:ring-blue-400/20"
                   />
                 </div>
               )}
               
-              <p className="text-xs text-gray-400 mt-2 flex items-center gap-1">
+              <p className="text-xs text-slate-400 mt-2 flex items-center gap-1">
                 💡 As expectativas são estimativas baseadas em dados gerais. Sua jornada é única!
               </p>
             </div>
 
             <Button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 shadow-lg hover:shadow-purple-500/25"
+              className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 shadow-lg hover:shadow-blue-500/25"
             >
               Começar Minha Jornada ✨
             </Button>

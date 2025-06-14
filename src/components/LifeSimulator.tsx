@@ -61,12 +61,12 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
   const impact = calculateImpact();
 
   return (
-    <Card className="bg-gray-800 border-gray-700">
+    <Card className="bg-slate-800 border-slate-700">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-white">
           🔮 Simulador de Futuros Possíveis
         </CardTitle>
-        <p className="text-gray-300">
+        <p className="text-slate-300">
           "E se..." você começar a fazer mudanças hoje? Veja o impacto até os {userProfile.lifeExpectancy} anos.
         </p>
       </CardHeader>
@@ -132,40 +132,40 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
 
         {/* Results */}
         {(changes.socialMediaReduction > 0 || changes.exerciseIncrease > 0 || changes.readingIncrease > 0 || changes.sleepImprovement > 0) && (
-          <div className="bg-gradient-to-r from-green-900/30 to-blue-900/30 p-6 rounded-lg border border-green-500/20">
-            <h3 className="text-xl font-bold text-green-400 mb-4">
+          <div className="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 p-6 rounded-lg border border-emerald-500/20">
+            <h3 className="text-xl font-bold text-emerald-400 mb-4">
               ✨ Impacto até os {userProfile.lifeExpectancy} anos:
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {changes.socialMediaReduction > 0 && (
-                <div className="bg-purple-900/20 p-3 rounded border border-purple-500/30">
-                  <div className="text-2xl font-bold text-purple-400">
+                <div className="bg-violet-900/20 p-3 rounded border border-violet-500/30">
+                  <div className="text-2xl font-bold text-violet-400">
                     {impact.socialMediaYearsSaved.toFixed(1)}
                   </div>
-                  <div className="text-sm text-gray-300">
+                  <div className="text-sm text-slate-300">
                     anos livres sem redes sociais
                   </div>
                 </div>
               )}
 
               {changes.readingIncrease > 0 && (
-                <div className="bg-blue-900/20 p-3 rounded border border-blue-500/30">
-                  <div className="text-2xl font-bold text-blue-400">
+                <div className="bg-cyan-900/20 p-3 rounded border border-cyan-500/30">
+                  <div className="text-2xl font-bold text-cyan-400">
                     {impact.booksRead}
                   </div>
-                  <div className="text-sm text-gray-300">
+                  <div className="text-sm text-slate-300">
                     livros lidos ({impact.readingYearsAdded.toFixed(1)} anos)
                   </div>
                 </div>
               )}
 
               {changes.exerciseIncrease > 0 && (
-                <div className="bg-green-900/20 p-3 rounded border border-green-500/30">
-                  <div className="text-2xl font-bold text-green-400">
+                <div className="bg-emerald-900/20 p-3 rounded border border-emerald-500/30">
+                  <div className="text-2xl font-bold text-emerald-400">
                     {impact.exerciseYearsAdded.toFixed(1)}
                   </div>
-                  <div className="text-sm text-gray-300">
+                  <div className="text-sm text-slate-300">
                     anos de exercício extra
                   </div>
                 </div>
@@ -176,7 +176,7 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                   <div className="text-2xl font-bold text-indigo-400">
                     {impact.sleepYearsAdded.toFixed(1)}
                   </div>
-                  <div className="text-sm text-gray-300">
+                  <div className="text-sm text-slate-300">
                     anos extras de sono
                   </div>
                 </div>
@@ -184,8 +184,8 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
             </div>
 
             {impact.totalProductiveYears > 0 && (
-              <div className="mt-4 p-3 bg-yellow-900/20 border border-yellow-500/30 rounded">
-                <p className="text-yellow-300 font-semibold">
+              <div className="mt-4 p-3 bg-amber-900/20 border border-amber-500/30 rounded">
+                <p className="text-amber-300 font-semibold">
                   🎯 Total: {impact.totalProductiveYears.toFixed(1)} anos de vida mais produtiva e saudável!
                 </p>
               </div>
