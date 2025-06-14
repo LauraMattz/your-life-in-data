@@ -29,27 +29,24 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
         </p>
       </div>
 
-      {/* Main Dashboard Grid */}
+      {/* Top Section - Life Clock e Life Metrics em grid balanceado */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Life Clock - Featured */}
         <div>
           <LifeClockCard userProfile={userProfile} />
         </div>
-        
-        {/* Life Metrics */}
         <div>
           <LifeMetricsCard userProfile={userProfile} />
         </div>
       </div>
 
-      {/* Insights Section */}
-      <div className="mb-8">
-        <InsightCards userProfile={userProfile} />
-      </div>
-
-      {/* Life Simulator */}
+      {/* Middle Section - Simulador de Futuros Possíveis */}
       <div className="mb-8">
         <LifeSimulator userProfile={userProfile} />
+      </div>
+
+      {/* Bottom Section - Insights Cards */}
+      <div className="mb-8">
+        <InsightCards userProfile={userProfile} />
       </div>
     </div>
   );
