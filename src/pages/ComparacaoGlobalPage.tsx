@@ -1,12 +1,10 @@
-
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Navigation } from '@/components/Navigation';
-import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity } from 'lucide-react';
+import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Shuffle, Lightbulb } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter, LineChart, Line } from 'recharts';
 
@@ -181,6 +179,73 @@ const countriesData = {
   }
 };
 
+const insights = [
+  {
+    id: 1,
+    emoji: '🧠',
+    title: 'Tempo Livre é o Novo Ouro',
+    content: 'Os países com menor jornada de trabalho são também os mais felizes. Não é coincidência, é correlação direta.',
+    conclusion: 'Trabalhar menos gera mais felicidade do que qualquer outro fator socioeconômico isolado.',
+    evidence: 'Noruega, Dinamarca, Suécia, Finlândia e Holanda provaram que tempo livre vale mais que aumento de salário.'
+  },
+  {
+    id: 2,
+    emoji: '🔥',
+    title: 'O Custo Oculto da Produtividade Asiática',
+    content: 'Singapura, Japão, Coreia do Sul e China operam em alta performance: Jornadas de 38 a 46 horas/semana, altíssima longevidade (exceto China), mas baixo índice de felicidade (entre 5,8 e 6,5).',
+    conclusion: 'O preço do sucesso econômico é pago com saúde mental e bem-estar emocional.',
+    evidence: 'É uma economia que funciona, mas as pessoas não estão tão bem quanto parecem.'
+  },
+  {
+    id: 3,
+    emoji: '⌛',
+    title: 'A Ilusão do Sucesso Americano',
+    content: 'Os EUA têm uma das maiores jornadas de trabalho do mundo desenvolvido (34h/semana), longevidade baixa (77 anos) e felicidade apenas 6,7/10.',
+    conclusion: 'O famoso "American Dream" entrega mais horas de trabalho, mais consumo, mas não entrega mais felicidade nem vida longa.',
+    evidence: 'Produtividade ≠ Qualidade de Vida.'
+  },
+  {
+    id: 4,
+    emoji: '🌐',
+    title: 'A Curva da Saturação Digital',
+    content: 'Singapura: 5h18/dia em redes → felicidade 6,5. Coreia do Sul: 5h/dia → felicidade 5,8. China: 4h12/dia → felicidade 5,1.',
+    conclusion: 'Quanto mais tempo conectado, menor o índice de felicidade.',
+    evidence: 'Mais tempo na vida virtual → menos satisfação na vida real.'
+  },
+  {
+    id: 5,
+    emoji: '🔮',
+    title: 'Brasil e México — O Paradoxo Latino',
+    content: 'Trabalham muito (44h/semana Brasil, 43h México) e vivem relativamente pouco (76 e 75 anos), mas mantém felicidade moderada (6,3–6,4/10), mais alta que países asiáticos.',
+    conclusion: 'Forte cultura comunitária, calor humano e resiliência social compensam parcialmente as adversidades econômicas.',
+    evidence: 'Felicidade na América Latina não é sobre dinheiro, é sobre laços sociais.'
+  },
+  {
+    id: 6,
+    emoji: '⚡',
+    title: 'A Fórmula Secreta da Holanda',
+    content: 'Holanda é o único país que aparece tanto no grupo dos menos trabalho (<30h/semana) quanto dos altamente felizes (>7/10), fora dos países nórdicos.',
+    conclusion: 'Uma cultura que equilibra trabalho, lazer e desenvolvimento social sem o rigor escandinavo.',
+    evidence: 'O equilíbrio não é cultural, é uma decisão política e social.'
+  },
+  {
+    id: 7,
+    emoji: '⏳',
+    title: 'Quem Compra Tempo, Compra Felicidade',
+    content: 'Cada 5 horas a menos de trabalho semanal equivale a +0,5 ponto no índice de felicidade (Padrão nórdico vs. asiático).',
+    conclusion: 'Tempo livre não é luxo, é estratégia de bem-estar.',
+    evidence: 'Tempo livre é o novo PIB do século 21.'
+  },
+  {
+    id: 8,
+    emoji: '🌎',
+    title: 'O Mapa da Longevidade vs. Felicidade',
+    content: 'Alta Longevidade + Alta Felicidade: 🇳🇴 🇩🇰 🇫🇮 🇸🇪 🇨🇭 🇳🇱 | Alta Longevidade + Baixa Felicidade: 🇯🇵 🇰🇷 🇸🇬 | Baixa Longevidade + Felicidade Moderada: 🇧🇷 🇲🇽 🇦🇷',
+    conclusion: 'Felicidade não acompanha necessariamente longevidade, nem economia.',
+    evidence: 'A equação é muito mais sobre gestão de tempo, estresse e cultura de vida.'
+  }
+];
+
 const chartConfig = {
   expectancy: {
     label: "Expectativa de Vida",
@@ -208,6 +273,8 @@ const ComparacaoGlobalPage = () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [regionFilter, setRegionFilter] = useState<string>('all');
   const [minExpectancy, setMinExpectancy] = useState<string>('all');
+  const [currentInsight, setCurrentInsight] = useState(insights[0]);
+  const [isShuffling, setIsShuffling] = useState(false);
 
   // Classificação por região
   const countryRegions = {
@@ -274,6 +341,16 @@ const ComparacaoGlobalPage = () => {
     setMinExpectancy('all');
   };
 
+  // Função para sortear insight
+  const shuffleInsight = () => {
+    setIsShuffling(true);
+    setTimeout(() => {
+      const randomInsight = insights[Math.floor(Math.random() * insights.length)];
+      setCurrentInsight(randomInsight);
+      setIsShuffling(false);
+    }, 500);
+  };
+
   // Cálculos para insights
   const nordicos = allCountriesData.filter(c => ['Noruega', 'Dinamarca', 'Suécia', 'Finlândia'].includes(c.country));
   const avgNordicoHappiness = nordicos.reduce((sum, c) => sum + c.happiness, 0) / nordicos.length;
@@ -290,6 +367,16 @@ const ComparacaoGlobalPage = () => {
       <ChevronUp className="w-4 h-4 inline ml-1" /> : 
       <ChevronDown className="w-4 h-4 inline ml-1" />;
   };
+
+  // Top 10 países por expectativa de vida
+  const top10Expectancy = [...allCountriesData]
+    .sort((a, b) => b.expectancy - a.expectancy)
+    .slice(0, 10)
+    .map((country, index) => ({
+      ...country,
+      rank: index + 1,
+      displayName: country.flag
+    }));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
@@ -319,56 +406,47 @@ const ComparacaoGlobalPage = () => {
           </div>
         </div>
 
-        {/* Insights Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-blue-900 to-blue-800 border-blue-700">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <BarChart3 className="w-8 h-8 text-blue-400" />
-                <h3 className="font-bold text-white text-lg">Fórmula Nórdica</h3>
+        {/* Sorteio de Insights */}
+        <Card className="bg-gradient-to-br from-purple-900 to-indigo-900 border-purple-700 mb-8">
+          <CardHeader>
+            <CardTitle className="text-xl text-white flex items-center gap-2 justify-between">
+              <div className="flex items-center gap-2">
+                <Lightbulb className="w-6 h-6 text-yellow-400" />
+                Insights dos Dados - Sorteio
               </div>
-              <p className="text-blue-100 text-sm mb-3">
-                Países nórdicos trabalham apenas <strong>{avgNordicoWork.toFixed(1)}h/semana</strong> em média, 
-                mas têm felicidade de <strong>{avgNordicoHappiness.toFixed(1)}/10</strong>
-              </p>
-              <div className="text-xs text-blue-200">
-                Menos trabalho ≠ Menos prosperidade
+              <Button 
+                onClick={shuffleInsight}
+                disabled={isShuffling}
+                className="bg-yellow-500 hover:bg-yellow-600 text-black"
+              >
+                <Shuffle className={`w-4 h-4 mr-2 ${isShuffling ? 'animate-spin' : ''}`} />
+                {isShuffling ? 'Sorteando...' : 'Novo Insight'}
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className={`transition-all duration-500 ${isShuffling ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
+              <div className="flex items-start gap-4 mb-4">
+                <div className="text-4xl">{currentInsight.emoji}</div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-yellow-400 mb-2">{currentInsight.title}</h3>
+                  <p className="text-gray-200 mb-3">{currentInsight.content}</p>
+                  <div className="bg-purple-800/50 rounded-lg p-3 mb-2">
+                    <p className="text-yellow-300 font-semibold">💎 Conclusão:</p>
+                    <p className="text-purple-100">{currentInsight.conclusion}</p>
+                  </div>
+                  <div className="bg-indigo-800/50 rounded-lg p-3">
+                    <p className="text-blue-300 font-semibold">✔️ Evidência:</p>
+                    <p className="text-indigo-100">{currentInsight.evidence}</p>
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-red-900 to-red-800 border-red-700">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Clock className="w-8 h-8 text-red-400" />
-                <h3 className="font-bold text-white text-lg">Paradoxo Asiático</h3>
+              <div className="text-center text-sm text-purple-300">
+                Insight {currentInsight.id} de {insights.length} • Clique em "Novo Insight" para descobrir mais padrões
               </div>
-              <p className="text-red-100 text-sm mb-3">
-                Singapura trabalha <strong>45h/semana</strong> mas vive até <strong>85,2 anos</strong>. 
-                Japão e Coreia: muito trabalho, pouca felicidade.
-              </p>
-              <div className="text-xs text-red-200">
-                Longevidade ≠ Felicidade
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-green-900 to-green-800 border-green-700">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Activity className="w-8 h-8 text-green-400" />
-                <h3 className="font-bold text-white text-lg">Work-Life Champions</h3>
-              </div>
-              <p className="text-green-100 text-sm mb-3">
-                <strong>{workLifeBalanceCountries.length} países</strong> conseguem trabalhar menos de 30h/semana 
-                E ter felicidade acima de 7/10
-              </p>
-              <div className="text-xs text-green-200">
-                {workLifeBalanceCountries.map(c => c.flag).join(' ')} Holanda, Noruega, Dinamarca, Finlândia
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Filtros */}
         <Card className="bg-gray-800 border-gray-700 mb-8">
@@ -490,6 +568,69 @@ const ComparacaoGlobalPage = () => {
 
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Top 10 Expectativa de Vida - Agora com todas as barras */}
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <Heart className="w-6 h-6 text-red-400" />
+                Top 10 Expectativa de Vida
+              </CardTitle>
+              <p className="text-sm text-gray-400">
+                Asiáticos dominam, mas europeus não ficam muito atrás
+              </p>
+            </CardHeader>
+            <CardContent className="h-[450px] p-4">
+              <ChartContainer config={chartConfig} className="h-full w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart 
+                    data={top10Expectancy}
+                    margin={{ top: 10, right: 20, left: 20, bottom: 60 }}
+                  >
+                    <XAxis 
+                      dataKey="displayName" 
+                      tick={{ fontSize: 20 }}
+                      interval={0}
+                      height={80}
+                      angle={0}
+                      textAnchor="middle"
+                    />
+                    <YAxis 
+                      domain={[75, 90]}
+                      label={{ value: 'Anos', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
+                      tick={{ fontSize: 12, fill: '#ffffff' }}
+                    />
+                    <Bar 
+                      dataKey="expectancy" 
+                      fill="url(#expectancyGradient)"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <defs>
+                      <linearGradient id="expectancyGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#ef4444" />
+                        <stop offset="50%" stopColor="#f87171" />
+                        <stop offset="100%" stopColor="#fca5a5" />
+                      </linearGradient>
+                    </defs>
+                    <ChartTooltip 
+                      content={<ChartTooltipContent />}
+                      formatter={(value, name, props) => [
+                        `${value} anos`, 
+                        `${props.payload.country} (${props.payload.rank}º lugar)`
+                      ]}
+                      labelFormatter={() => ''}
+                      contentStyle={{
+                        backgroundColor: '#1f2937',
+                        border: '1px solid #374151',
+                        borderRadius: '8px',
+                        color: '#ffffff'
+                      }}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
           {/* Work-Life Balance Scatter */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
@@ -600,70 +741,6 @@ const ComparacaoGlobalPage = () => {
             </CardContent>
           </Card>
 
-          {/* Top Expectativa de Vida */}
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-xl text-white flex items-center gap-2">
-                <Heart className="w-6 h-6 text-red-400" />
-                Top 10 Expectativa de Vida
-              </CardTitle>
-              <p className="text-sm text-gray-400">
-                Asiáticos dominam, mas europeus não ficam muito atrás
-              </p>
-            </CardHeader>
-            <CardContent className="h-[400px] p-4">
-              <ChartContainer config={chartConfig} className="h-full w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart 
-                    data={[...allCountriesData].sort((a, b) => b.expectancy - a.expectancy).slice(0, 10)} 
-                    layout="horizontal"
-                    margin={{ top: 10, right: 50, left: 60, bottom: 10 }}
-                  >
-                    <XAxis 
-                      type="number" 
-                      domain={[75, 90]} 
-                      tick={{ fontSize: 12, fill: '#ffffff' }}
-                      axisLine={{ stroke: '#374151' }}
-                    />
-                    <YAxis 
-                      dataKey="flag" 
-                      type="category" 
-                      width={55} 
-                      tick={{ fontSize: 14, fill: '#ffffff' }}
-                      axisLine={{ stroke: '#374151' }}
-                    />
-                    <Bar 
-                      dataKey="expectancy" 
-                      fill="url(#expectancyGradient)"
-                      radius={[0, 4, 4, 0]}
-                    />
-                    <defs>
-                      <linearGradient id="expectancyGradient" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="#ef4444" />
-                        <stop offset="50%" stopColor="#f87171" />
-                        <stop offset="100%" stopColor="#fca5a5" />
-                      </linearGradient>
-                    </defs>
-                    <ChartTooltip 
-                      content={<ChartTooltipContent />}
-                      formatter={(value, name, props) => [
-                        `${value} anos`, 
-                        `${props.payload.country}`
-                      ]}
-                      labelFormatter={() => ''}
-                      contentStyle={{
-                        backgroundColor: '#1f2937',
-                        border: '1px solid #374151',
-                        borderRadius: '8px',
-                        color: '#ffffff'
-                      }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-
           {/* Países com Melhor Equilíbrio */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
@@ -675,7 +752,7 @@ const ComparacaoGlobalPage = () => {
                 Menos de 30h/semana + Felicidade 7+
               </p>
             </CardHeader>
-            <CardContent className="h-[400px] p-4">
+            <CardContent className="h-[450px] p-4">
               <ChartContainer config={chartConfig} className="h-full w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart 
@@ -807,4 +884,3 @@ const ComparacaoGlobalPage = () => {
 };
 
 export default ComparacaoGlobalPage;
-
