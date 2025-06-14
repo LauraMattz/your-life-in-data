@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Navigation } from '@/components/Navigation';
-import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Lightbulb, ChevronRight } from 'lucide-react';
+import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Lightbulb, ChevronRight, Shuffle } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter } from 'recharts';
 
@@ -275,6 +275,7 @@ const ComparacaoGlobalPage = () => {
   const [regionFilter, setRegionFilter] = useState<string>('all');
   const [minExpectancy, setMinExpectancy] = useState<string>('all');
   const [isInsightsOpen, setIsInsightsOpen] = useState(false);
+  const [currentInsightIndex, setCurrentInsightIndex] = useState(0);
 
   // Classificação por região
   const countryRegions = {
@@ -368,6 +369,14 @@ const ComparacaoGlobalPage = () => {
       displayName: country.flag
     }));
 
+  const drawRandomInsight = () => {
+    let newIndex;
+    do {
+      newIndex = Math.floor(Math.random() * insights.length);
+    } while (newIndex === currentInsightIndex && insights.length > 1);
+    setCurrentInsightIndex(newIndex);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
       <Navigation />
@@ -396,7 +405,7 @@ const ComparacaoGlobalPage = () => {
           </div>
         </div>
 
-        {/* Insights dos Dados - Collapsible */}
+        {/* Insights dos Dados - Collapsible com Sorteio */}
         <Card className="bg-gradient-to-br from-purple-900 to-indigo-900 border-purple-700 mb-8">
           <Collapsible open={isInsightsOpen} onOpenChange={setIsInsightsOpen}>
             <CollapsibleTrigger asChild>
@@ -416,26 +425,40 @@ const ComparacaoGlobalPage = () => {
             <CollapsibleContent>
               <CardContent>
                 <div className="space-y-6">
-                  {insights.map((insight) => (
-                    <div 
-                      key={insight.id}
-                      className="bg-purple-800/30 rounded-lg border border-purple-600/30 p-4"
-                    >
-                      <div className="flex items-center gap-3 mb-3">
-                        <span className="text-2xl">{insight.emoji}</span>
-                        <span className="text-yellow-400 font-semibold text-lg">{insight.title}</span>
-                      </div>
-                      <p className="text-gray-200 mb-3">{insight.content}</p>
-                      <div className="bg-purple-800/50 rounded-lg p-3 mb-3">
-                        <p className="text-yellow-300 font-semibold mb-1">💎 Conclusão:</p>
-                        <p className="text-purple-100">{insight.conclusion}</p>
-                      </div>
-                      <div className="bg-indigo-800/50 rounded-lg p-3">
-                        <p className="text-blue-300 font-semibold mb-1">✔️ Evidência:</p>
-                        <p className="text-indigo-100">{insight.evidence}</p>
-                      </div>
+                  {/* Insight Atual */}
+                  <div className="bg-purple-800/30 rounded-lg border border-purple-600/30 p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-3xl">{insights[currentInsightIndex].emoji}</span>
+                      <span className="text-yellow-400 font-semibold text-xl">{insights[currentInsightIndex].title}</span>
                     </div>
-                  ))}
+                    <p className="text-gray-200 mb-4 text-lg leading-relaxed">{insights[currentInsightIndex].content}</p>
+                    <div className="bg-purple-800/50 rounded-lg p-4 mb-4">
+                      <p className="text-yellow-300 font-semibold mb-2">💎 Conclusão:</p>
+                      <p className="text-purple-100">{insights[currentInsightIndex].conclusion}</p>
+                    </div>
+                    <div className="bg-indigo-800/50 rounded-lg p-4 mb-6">
+                      <p className="text-blue-300 font-semibold mb-2">✔️ Evidência:</p>
+                      <p className="text-indigo-100">{insights[currentInsightIndex].evidence}</p>
+                    </div>
+                    
+                    {/* Botão de Sortear */}
+                    <div className="flex justify-center">
+                      <Button 
+                        onClick={drawRandomInsight}
+                        className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                      >
+                        <Shuffle className="w-4 h-4" />
+                        Sortear Outro Insight
+                      </Button>
+                    </div>
+                    
+                    {/* Contador de Insights */}
+                    <div className="text-center mt-4">
+                      <span className="text-purple-300 text-sm">
+                        Insight {currentInsightIndex + 1} de {insights.length}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </CollapsibleContent>
