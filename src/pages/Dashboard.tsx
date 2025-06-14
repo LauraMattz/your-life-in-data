@@ -21,6 +21,7 @@ interface DashboardProps {
 
 export const Dashboard = ({ userProfile }: DashboardProps) => {
   const navigate = useNavigate();
+  const currentYear = new Date().getFullYear();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -30,7 +31,7 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
           Bem-vindo, {userProfile.name}! <span className="text-yellow-400">👋</span>
         </h1>
         <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-6 leading-relaxed">
-          Seu dashboard pessoal da vida — Uma calculadora que transforma dados em perspectiva, baseada na expectativa de vida do seu país ({userProfile.country}: {userProfile.lifeExpectancy} anos). Descubra como aproveitar melhor cada momento! ✨
+          Seu dashboard pessoal do ano {currentYear} — Uma calculadora que transforma dados em perspectiva e te ajuda a aproveitar melhor cada dia restante deste ano. Descubra como otimizar seus próximos meses! ✨
         </p>
         <div className="bg-yellow-900/30 border border-yellow-500/40 rounded-xl p-4 max-w-md mx-auto backdrop-blur-sm">
           <p className="text-sm text-yellow-200 flex items-center justify-center gap-2">
