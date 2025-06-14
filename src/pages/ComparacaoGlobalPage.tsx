@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Navigation } from '@/components/Navigation';
+import { Footer } from '@/components/Footer';
 import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Lightbulb, ChevronRight, Shuffle } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter } from 'recharts';
@@ -275,6 +276,7 @@ const ComparacaoGlobalPage = () => {
   const [regionFilter, setRegionFilter] = useState<string>('all');
   const [minExpectancy, setMinExpectancy] = useState<string>('all');
   const [isInsightsOpen, setIsInsightsOpen] = useState(false);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [currentInsightIndex, setCurrentInsightIndex] = useState(0);
 
   // Classificação por região
@@ -389,20 +391,6 @@ const ComparacaoGlobalPage = () => {
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
             Visualize e compare expectativa de vida e estilos de vida de {allCountriesData.length} países ao redor do mundo
           </p>
-          
-          {/* Fontes dos dados atualizadas */}
-          <div className="flex flex-col items-center justify-center gap-2 mt-4 text-sm text-yellow-400 bg-yellow-400/10 rounded-lg p-4 max-w-4xl mx-auto">
-            <Info className="w-5 h-5" />
-            <div className="text-center">
-              <strong className="block mb-2">Fontes Oficiais dos Dados:</strong>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                <div><strong>Expectativa de Vida:</strong> World Bank – Life Expectancy Data (2024)</div>
-                <div><strong>Índice de Felicidade:</strong> World Happiness Report 2024</div>
-                <div><strong>Jornada de Trabalho:</strong> OECD – Hours Worked (2024)</div>
-                <div><strong>Tempo em Redes Sociais:</strong> Digital 2024 Report – We Are Social & Meltwater</div>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Insights dos Dados - Collapsible com Sorteio */}
@@ -465,59 +453,71 @@ const ComparacaoGlobalPage = () => {
           </Collapsible>
         </Card>
 
-        {/* Filtros */}
+        {/* Filtros - Agora Retrátil */}
         <Card className="bg-black/40 border-gray-700 mb-8">
-          <CardHeader>
-            <CardTitle className="text-xl text-white flex items-center gap-2">
-              <Filter className="w-6 h-6 text-yellow-400" />
-              Filtros
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-              <div>
-                <label className="block text-sm font-medium text-white mb-2">Região</label>
-                <Select value={regionFilter} onValueChange={setRegionFilter}>
-                  <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
-                    <SelectValue placeholder="Selecione uma região" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600 text-white">
-                    <SelectItem value="all" className="text-white">Todas as Regiões</SelectItem>
-                    <SelectItem value="Europa" className="text-white">Europa</SelectItem>
-                    <SelectItem value="Ásia" className="text-white">Ásia</SelectItem>
-                    <SelectItem value="Américas" className="text-white">Américas</SelectItem>
-                    <SelectItem value="Oceania" className="text-white">Oceania</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-white mb-2">Expectativa Mínima</label>
-                <Select value={minExpectancy} onValueChange={setMinExpectancy}>
-                  <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
-                    <SelectValue placeholder="Expectativa mínima" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600 text-white">
-                    <SelectItem value="all" className="text-white">Todas</SelectItem>
-                    <SelectItem value="70" className="text-white">70+ anos</SelectItem>
-                    <SelectItem value="75" className="text-white">75+ anos</SelectItem>
-                    <SelectItem value="80" className="text-white">80+ anos</SelectItem>
-                    <SelectItem value="85" className="text-white">85+ anos</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+          <Collapsible open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
+            <CollapsibleTrigger asChild>
+              <CardHeader className="cursor-pointer hover:bg-gray-800/20 transition-colors">
+                <CardTitle className="text-xl text-white flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Filter className="w-6 h-6 text-yellow-400" />
+                    Filtros
+                  </div>
+                  <ChevronRight className={`w-5 h-5 transition-transform ${isFiltersOpen ? 'rotate-90' : ''}`} />
+                </CardTitle>
+                <p className="text-sm text-gray-300">
+                  Filtre países por região e expectativa de vida
+                </p>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                  <div>
+                    <label className="block text-sm font-medium text-white mb-2">Região</label>
+                    <Select value={regionFilter} onValueChange={setRegionFilter}>
+                      <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+                        <SelectValue placeholder="Selecione uma região" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-600 text-white">
+                        <SelectItem value="all" className="text-white">Todas as Regiões</SelectItem>
+                        <SelectItem value="Europa" className="text-white">Europa</SelectItem>
+                        <SelectItem value="Ásia" className="text-white">Ásia</SelectItem>
+                        <SelectItem value="Américas" className="text-white">Américas</SelectItem>
+                        <SelectItem value="Oceania" className="text-white">Oceania</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-white mb-2">Expectativa Mínima</label>
+                    <Select value={minExpectancy} onValueChange={setMinExpectancy}>
+                      <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+                        <SelectValue placeholder="Expectativa mínima" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-600 text-white">
+                        <SelectItem value="all" className="text-white">Todas</SelectItem>
+                        <SelectItem value="70" className="text-white">70+ anos</SelectItem>
+                        <SelectItem value="75" className="text-white">75+ anos</SelectItem>
+                        <SelectItem value="80" className="text-white">80+ anos</SelectItem>
+                        <SelectItem value="85" className="text-white">85+ anos</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              <div>
-                <Button 
-                  onClick={resetFilters}
-                  variant="outline" 
-                  className="bg-gray-800 border-gray-600 text-white hover:bg-gray-600"
-                >
-                  Limpar Filtros
-                </Button>
-              </div>
-            </div>
-          </CardContent>
+                  <div>
+                    <Button 
+                      onClick={resetFilters}
+                      variant="outline" 
+                      className="bg-gray-800 border-gray-600 text-white hover:bg-gray-600"
+                    >
+                      Limpar Filtros
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
         </Card>
 
         {/* Stats Cards */}
@@ -896,6 +896,8 @@ const ComparacaoGlobalPage = () => {
           </CardContent>
         </Card>
       </div>
+      
+      <Footer />
     </div>
   );
 };
