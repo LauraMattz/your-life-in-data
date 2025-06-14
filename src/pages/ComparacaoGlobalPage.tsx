@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Navigation } from '@/components/Navigation';
-import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Shuffle, Lightbulb } from 'lucide-react';
+import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Lightbulb } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter, LineChart, Line } from 'recharts';
 
@@ -406,45 +407,47 @@ const ComparacaoGlobalPage = () => {
           </div>
         </div>
 
-        {/* Sorteio de Insights */}
+        {/* Insights dos Dados - Accordion */}
         <Card className="bg-gradient-to-br from-purple-900 to-indigo-900 border-purple-700 mb-8">
           <CardHeader>
-            <CardTitle className="text-xl text-white flex items-center gap-2 justify-between">
-              <div className="flex items-center gap-2">
-                <Lightbulb className="w-6 h-6 text-yellow-400" />
-                Insights dos Dados - Sorteio
-              </div>
-              <Button 
-                onClick={shuffleInsight}
-                disabled={isShuffling}
-                className="bg-yellow-500 hover:bg-yellow-600 text-black"
-              >
-                <Shuffle className={`w-4 h-4 mr-2 ${isShuffling ? 'animate-spin' : ''}`} />
-                {isShuffling ? 'Sorteando...' : 'Novo Insight'}
-              </Button>
+            <CardTitle className="text-xl text-white flex items-center gap-2">
+              <Lightbulb className="w-6 h-6 text-yellow-400" />
+              Insights dos Dados
             </CardTitle>
+            <p className="text-sm text-purple-200">
+              Análises detalhadas baseadas nos dados oficiais de todos os países
+            </p>
           </CardHeader>
           <CardContent>
-            <div className={`transition-all duration-500 ${isShuffling ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
-              <div className="flex items-start gap-4 mb-4">
-                <div className="text-4xl">{currentInsight.emoji}</div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-yellow-400 mb-2">{currentInsight.title}</h3>
-                  <p className="text-gray-200 mb-3">{currentInsight.content}</p>
-                  <div className="bg-purple-800/50 rounded-lg p-3 mb-2">
-                    <p className="text-yellow-300 font-semibold">💎 Conclusão:</p>
-                    <p className="text-purple-100">{currentInsight.conclusion}</p>
-                  </div>
-                  <div className="bg-indigo-800/50 rounded-lg p-3">
-                    <p className="text-blue-300 font-semibold">✔️ Evidência:</p>
-                    <p className="text-indigo-100">{currentInsight.evidence}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="text-center text-sm text-purple-300">
-                Insight {currentInsight.id} de {insights.length} • Clique em "Novo Insight" para descobrir mais padrões
-              </div>
-            </div>
+            <Accordion type="multiple" className="space-y-3">
+              {insights.map((insight) => (
+                <AccordionItem 
+                  key={insight.id} 
+                  value={`insight-${insight.id}`}
+                  className="bg-purple-800/30 rounded-lg border border-purple-600/30"
+                >
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-purple-800/40 rounded-lg">
+                    <div className="flex items-center gap-3 text-left">
+                      <span className="text-2xl">{insight.emoji}</span>
+                      <span className="text-yellow-400 font-semibold">{insight.title}</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 pb-4">
+                    <div className="space-y-3">
+                      <p className="text-gray-200">{insight.content}</p>
+                      <div className="bg-purple-800/50 rounded-lg p-3">
+                        <p className="text-yellow-300 font-semibold mb-1">💎 Conclusão:</p>
+                        <p className="text-purple-100">{insight.conclusion}</p>
+                      </div>
+                      <div className="bg-indigo-800/50 rounded-lg p-3">
+                        <p className="text-blue-300 font-semibold mb-1">✔️ Evidência:</p>
+                        <p className="text-indigo-100">{insight.evidence}</p>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </CardContent>
         </Card>
 
@@ -702,7 +705,7 @@ const ComparacaoGlobalPage = () => {
                 <ResponsiveContainer width="100%" height="100%">
                   <ScatterChart 
                     data={allCountriesData.map(c => ({ ...c, x: c.workHours, y: c.happiness }))}
-                    margin={{ top: 10, right: 20, bottom: 40, left: 20 }}
+                    margin={{ top: 10, right: 20, left: 20, bottom: 40 }}
                   >
                     <XAxis 
                       dataKey="x" 
