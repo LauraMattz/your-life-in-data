@@ -7,7 +7,7 @@ export const Header = () => {
       <div className="container mx-auto flex items-center gap-4">
         <div className="w-16 h-16 rounded-full overflow-hidden border-3 border-white/30">
           <img 
-            src="/lovable-uploads/bbf5c105-f35b-4c1d-ad24-f0c10dd081bf.png" 
+            src="/lovable-uploads/e184ba99-9529-4cf2-b18d-b271c65b4026.png" 
             alt="Laura Mattos" 
             className="w-full h-full object-cover"
           />
