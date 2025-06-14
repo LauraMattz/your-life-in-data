@@ -2,10 +2,7 @@
 # ⏳ Relógio da Vida
 
 <div align="center">
-  <img src="public/lovable-uploads/e184ba99-9529-4cf2-b18d-b271c65b4026.png" alt="Laura Mattos" width="100" height="100" style="border-radius: 50%;">
-  
-  **Uma reflexão visual sobre o tempo e as possibilidades da vida**
-  
+    
   [![Desenvolvido com ❤️](https://img.shields.io/badge/Desenvolvido%20com-❤️-red.svg)](https://github.com/LauraMattz)
   [![Feito com React](https://img.shields.io/badge/Feito%20com-React-61DAFB.svg)](https://reactjs.org/)
   [![Powered by Lovable](https://img.shields.io/badge/Powered%20by-Lovable-ff69b4.svg)](https://lovable.dev)
