@@ -31,7 +31,7 @@ O **Relógio da Vida** é uma aplicação web interativa que oferece uma perspec
 ### 📸 Screenshots
 
 <div align="center">
-  <img src="public/lovable-uploads/bbf5c105-f35b-4c1d-ad24-f0c10dd081bf.png" alt="Dashboard Principal" width="600">
+  <img src="public/lovable-uploads/27634e87-58e8-4d43-a2ab-9cde960cc50e.png" alt="Dashboard Principal" width="600">
   <p><em>Dashboard principal com visualização da vida em semanas</em></p>
 </div>
 
