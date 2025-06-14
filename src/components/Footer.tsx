@@ -33,16 +33,20 @@ export const Footer = () => {
           Transformando ideias em código ✨
         </p>
         
-        {/* GitHub Section */}
+        {/* GitHub Section - Melhorado para responsividade */}
         <div className="mb-4">
           <a 
             href="https://github.com/LauraMattz/your-life-in-data" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-yellow-600 hover:bg-yellow-700 text-black font-semibold px-4 py-2 rounded-lg transition-colors duration-200"
+            className="inline-flex items-center gap-2 bg-yellow-600 hover:bg-yellow-700 text-black font-semibold px-3 sm:px-4 py-2 rounded-lg transition-colors duration-200 text-sm sm:text-base"
           >
-            <Github className="w-5 h-5" />
-            Gostou? Dê uma <Star className="w-4 h-4" /> no GitHub!
+            <Github className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+            <span className="hidden xs:inline">Gostou? Dê uma</span>
+            <span className="xs:hidden">Dê uma</span>
+            <Star className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+            <span className="hidden xs:inline">no GitHub!</span>
+            <span className="xs:hidden">no GitHub!</span>
           </a>
         </div>
         

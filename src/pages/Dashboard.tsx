@@ -1,9 +1,11 @@
-
 import { useState } from 'react';
 import { LifeClockCard } from '@/components/LifeClockCard';
 import { LifeMetricsCard } from '@/components/LifeMetricsCard';
 import { LifeSimulator } from '@/components/LifeSimulator';
 import { InsightCards } from '@/components/InsightCards';
+import { Button } from '@/components/ui/button';
+import { Globe, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface UserProfile {
   name: string;
@@ -17,6 +19,8 @@ interface DashboardProps {
 }
 
 export const Dashboard = ({ userProfile }: DashboardProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
@@ -52,6 +56,30 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
       {/* Bottom Section - Insights Cards */}
       <div className="mb-8">
         <InsightCards userProfile={userProfile} />
+      </div>
+
+      {/* Call to Action - Comparação Global */}
+      <div className="mt-12 mb-8">
+        <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 border border-gray-700 rounded-2xl p-8 text-center backdrop-blur-sm">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Globe className="w-8 h-8 text-yellow-400" />
+            <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-300 bg-clip-text text-transparent">
+              Compare com o Mundo
+            </h2>
+          </div>
+          <p className="text-gray-300 text-lg mb-6 max-w-2xl mx-auto leading-relaxed">
+            Descubra como a expectativa de vida varia pelo mundo e veja onde o {userProfile.country} se posiciona no cenário global. 
+            Uma perspectiva fascinante sobre longevidade e qualidade de vida! 🌍
+          </p>
+          <Button
+            onClick={() => navigate('/comparacao')}
+            className="bg-yellow-600 hover:bg-yellow-700 text-black font-semibold px-6 py-3 text-lg rounded-xl transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+          >
+            <Globe className="w-5 h-5" />
+            Explorar Comparação Global
+            <ArrowRight className="w-5 h-5" />
+          </Button>
+        </div>
       </div>
     </div>
   );
