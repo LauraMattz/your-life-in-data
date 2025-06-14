@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -277,33 +278,33 @@ const ComparacaoGlobalPage = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Região</label>
+                <label className="block text-sm font-medium text-white mb-2">Região</label>
                 <Select value={regionFilter} onValueChange={setRegionFilter}>
                   <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                     <SelectValue placeholder="Selecione uma região" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-700 border-gray-600">
-                    <SelectItem value="all">Todas as Regiões</SelectItem>
-                    <SelectItem value="Europa">Europa</SelectItem>
-                    <SelectItem value="Ásia">Ásia</SelectItem>
-                    <SelectItem value="Américas">Américas</SelectItem>
-                    <SelectItem value="Oceania">Oceania</SelectItem>
+                  <SelectContent className="bg-gray-700 border-gray-600 text-white">
+                    <SelectItem value="all" className="text-white">Todas as Regiões</SelectItem>
+                    <SelectItem value="Europa" className="text-white">Europa</SelectItem>
+                    <SelectItem value="Ásia" className="text-white">Ásia</SelectItem>
+                    <SelectItem value="Américas" className="text-white">Américas</SelectItem>
+                    <SelectItem value="Oceania" className="text-white">Oceania</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Expectativa Mínima</label>
+                <label className="block text-sm font-medium text-white mb-2">Expectativa Mínima</label>
                 <Select value={minExpectancy} onValueChange={setMinExpectancy}>
                   <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                     <SelectValue placeholder="Expectativa mínima" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-700 border-gray-600">
-                    <SelectItem value="all">Todas</SelectItem>
-                    <SelectItem value="70">70+ anos</SelectItem>
-                    <SelectItem value="75">75+ anos</SelectItem>
-                    <SelectItem value="80">80+ anos</SelectItem>
-                    <SelectItem value="85">85+ anos</SelectItem>
+                  <SelectContent className="bg-gray-700 border-gray-600 text-white">
+                    <SelectItem value="all" className="text-white">Todas</SelectItem>
+                    <SelectItem value="70" className="text-white">70+ anos</SelectItem>
+                    <SelectItem value="75" className="text-white">75+ anos</SelectItem>
+                    <SelectItem value="80" className="text-white">80+ anos</SelectItem>
+                    <SelectItem value="85" className="text-white">85+ anos</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
