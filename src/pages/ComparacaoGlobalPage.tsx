@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Navigation } from '@/components/Navigation';
-import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Lightbulb } from 'lucide-react';
+import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Lightbulb, ChevronRight } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter } from 'recharts';
 
 const countriesData = {
   'Noruega': { 
@@ -274,8 +274,7 @@ const ComparacaoGlobalPage = () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [regionFilter, setRegionFilter] = useState<string>('all');
   const [minExpectancy, setMinExpectancy] = useState<string>('all');
-  const [currentInsight, setCurrentInsight] = useState(insights[0]);
-  const [isShuffling, setIsShuffling] = useState(false);
+  const [isInsightsOpen, setIsInsightsOpen] = useState(false);
 
   // Classificação por região
   const countryRegions = {
@@ -342,16 +341,6 @@ const ComparacaoGlobalPage = () => {
     setMinExpectancy('all');
   };
 
-  // Função para sortear insight
-  const shuffleInsight = () => {
-    setIsShuffling(true);
-    setTimeout(() => {
-      const randomInsight = insights[Math.floor(Math.random() * insights.length)];
-      setCurrentInsight(randomInsight);
-      setIsShuffling(false);
-    }, 500);
-  };
-
   // Cálculos para insights
   const nordicos = allCountriesData.filter(c => ['Noruega', 'Dinamarca', 'Suécia', 'Finlândia'].includes(c.country));
   const avgNordicoHappiness = nordicos.reduce((sum, c) => sum + c.happiness, 0) / nordicos.length;
@@ -407,35 +396,37 @@ const ComparacaoGlobalPage = () => {
           </div>
         </div>
 
-        {/* Insights dos Dados - Accordion */}
+        {/* Insights dos Dados - Collapsible */}
         <Card className="bg-gradient-to-br from-purple-900 to-indigo-900 border-purple-700 mb-8">
-          <CardHeader>
-            <CardTitle className="text-xl text-white flex items-center gap-2">
-              <Lightbulb className="w-6 h-6 text-yellow-400" />
-              Insights dos Dados
-            </CardTitle>
-            <p className="text-sm text-purple-200">
-              Análises detalhadas baseadas nos dados oficiais de todos os países
-            </p>
-          </CardHeader>
-          <CardContent>
-            <Accordion type="multiple" className="space-y-3">
-              {insights.map((insight) => (
-                <AccordionItem 
-                  key={insight.id} 
-                  value={`insight-${insight.id}`}
-                  className="bg-purple-800/30 rounded-lg border border-purple-600/30"
-                >
-                  <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-purple-800/40 rounded-lg">
-                    <div className="flex items-center gap-3 text-left">
-                      <span className="text-2xl">{insight.emoji}</span>
-                      <span className="text-yellow-400 font-semibold">{insight.title}</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-4 pb-4">
-                    <div className="space-y-3">
-                      <p className="text-gray-200">{insight.content}</p>
-                      <div className="bg-purple-800/50 rounded-lg p-3">
+          <Collapsible open={isInsightsOpen} onOpenChange={setIsInsightsOpen}>
+            <CollapsibleTrigger asChild>
+              <CardHeader className="cursor-pointer hover:bg-purple-800/20 transition-colors">
+                <CardTitle className="text-xl text-white flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Lightbulb className="w-6 h-6 text-yellow-400" />
+                    Insights dos Dados
+                  </div>
+                  <ChevronRight className={`w-5 h-5 transition-transform ${isInsightsOpen ? 'rotate-90' : ''}`} />
+                </CardTitle>
+                <p className="text-sm text-purple-200">
+                  Análises detalhadas baseadas nos dados oficiais de todos os países
+                </p>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent>
+                <div className="space-y-6">
+                  {insights.map((insight) => (
+                    <div 
+                      key={insight.id}
+                      className="bg-purple-800/30 rounded-lg border border-purple-600/30 p-4"
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-2xl">{insight.emoji}</span>
+                        <span className="text-yellow-400 font-semibold text-lg">{insight.title}</span>
+                      </div>
+                      <p className="text-gray-200 mb-3">{insight.content}</p>
+                      <div className="bg-purple-800/50 rounded-lg p-3 mb-3">
                         <p className="text-yellow-300 font-semibold mb-1">💎 Conclusão:</p>
                         <p className="text-purple-100">{insight.conclusion}</p>
                       </div>
@@ -444,11 +435,11 @@ const ComparacaoGlobalPage = () => {
                         <p className="text-indigo-100">{insight.evidence}</p>
                       </div>
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </CardContent>
+                  ))}
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
         </Card>
 
         {/* Filtros */}
