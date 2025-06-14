@@ -15,40 +15,13 @@ interface LifeClockCardProps {
 
 export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
   const [timeData, setTimeData] = useState({
-    ageInDays: 0,
-    daysLived: 0,
-    daysRemaining: 0,
-    percentageLived: 0,
-    yearsLived: 0,
-    monthsLived: 0,
-    weeksLived: 0,
-    hoursLived: 0,
-    minutesLived: 0,
-    secondsLived: 0,
     daysPassedThisYear: 0,
     daysRemainingThisYear: 0
   });
 
   useEffect(() => {
-    const calculateLifeData = () => {
-      const birthDate = new Date(userProfile.birthDate);
+    const calculateYearData = () => {
       const now = new Date();
-
-      const ageInMs = now.getTime() - birthDate.getTime();
-      const ageInDays = Math.floor(ageInMs / (1000 * 60 * 60 * 24));
-      
-      const totalLifeDays = userProfile.lifeExpectancy * 365;
-      const daysRemaining = Math.max(0, totalLifeDays - ageInDays);
-      const percentageLived = (ageInDays / totalLifeDays) * 100;
-
-      const yearsLived = Math.floor(ageInMs / (1000 * 60 * 60 * 24 * 365));
-      const monthsLived = Math.floor(ageInMs / (1000 * 60 * 60 * 24 * 30));
-      const weeksLived = Math.floor(ageInMs / (1000 * 60 * 60 * 24 * 7));
-      const hoursLived = Math.floor(ageInMs / (1000 * 60 * 60));
-      const minutesLived = Math.floor(ageInMs / (1000 * 60));
-      const secondsLived = Math.floor(ageInMs / 1000);
-
-      // Calcular dias do ano atual
       const currentYear = now.getFullYear();
       const startOfYear = new Date(currentYear, 0, 1);
       const dayOfYear = Math.floor((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
@@ -57,23 +30,13 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
       const daysRemainingThisYear = totalDaysInYear - dayOfYear;
 
       setTimeData({
-        ageInDays,
-        daysLived: ageInDays,
-        daysRemaining,
-        percentageLived,
-        yearsLived: Math.max(0, yearsLived),
-        monthsLived: Math.max(0, monthsLived),
-        weeksLived: Math.max(0, weeksLived),
-        hoursLived: Math.max(0, hoursLived),
-        minutesLived: Math.max(0, minutesLived),
-        secondsLived: Math.max(0, secondsLived),
         daysPassedThisYear: dayOfYear,
         daysRemainingThisYear
       });
     };
 
-    calculateLifeData();
-    const interval = setInterval(calculateLifeData, 1000);
+    calculateYearData();
+    const interval = setInterval(calculateYearData, 1000 * 60 * 60); // Update every hour
     return () => clearInterval(interval);
   }, [userProfile]);
 
@@ -102,28 +65,46 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
     return squares;
   };
 
+  const percentageOfYearPassed = (daysPassedThisYear / totalDaysInYear) * 100;
+
   return (
     <Card className="bg-gradient-to-br from-gray-800 to-gray-900 border-gray-600 h-full w-full">
       <CardHeader className="pb-4">
         <div className="text-center">
           <CardTitle className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
             <div className="flex items-center justify-center gap-2">
-              <span className="text-2xl relative z-10">⏰</span>
-              <span>Seu Relógio da Vida</span>
+              <span className="text-2xl relative z-10">📅</span>
+              <span>Dias de {currentYear}</span>
             </div>
           </CardTitle>
           <p className="text-gray-300 text-sm">
-            Baseado na expectativa de vida do {userProfile.country} ({userProfile.lifeExpectancy} anos)
+            Acompanhe sua jornada através dos dias deste ano
           </p>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
+        {/* Year Progress Bar */}
+        <div className="bg-gray-800 p-4 rounded-lg">
+          <div className="mb-3">
+            <div className="flex justify-between text-sm text-gray-300 mb-1">
+              <span>Progresso do ano</span>
+              <span>{percentageOfYearPassed.toFixed(1)}%</span>
+            </div>
+            <div className="w-full bg-gray-700 rounded-full h-3">
+              <div 
+                className="bg-gradient-to-r from-yellow-400 to-yellow-500 h-3 rounded-full transition-all duration-300"
+                style={{ width: `${percentageOfYearPassed}%` }}
+              ></div>
+            </div>
+          </div>
+        </div>
+
         {/* Year Grid - Cada quadradinho é um dia do ano */}
         <div className="bg-gray-800 p-4 rounded-lg">
           <h3 className="text-lg font-semibold text-yellow-400 mb-3 text-center">
             <div className="flex items-center justify-center gap-2">
-              <span className="text-xl relative z-10">📅</span>
-              <span>Dias de {currentYear}</span>
+              <span className="text-xl relative z-10">🗓️</span>
+              <span>Mapa do Ano {currentYear}</span>
             </div>
           </h3>
           <div 
@@ -149,52 +130,33 @@ export const LifeClockCard = ({ userProfile }: LifeClockCardProps) => {
 
         {/* Year Stats */}
         <div className="grid grid-cols-2 gap-4 text-center">
-          <div className="bg-gray-800 p-3 rounded-lg">
-            <div className="text-2xl font-bold text-yellow-400">
-              {timeData.daysPassedThisYear.toLocaleString()} 📅
+          <div className="bg-gray-800 p-4 rounded-lg">
+            <div className="text-3xl font-bold text-yellow-400 mb-1">
+              {timeData.daysPassedThisYear.toLocaleString()}
             </div>
             <div className="text-sm text-gray-300">Dias vividos em {currentYear}</div>
+            <div className="text-xs text-yellow-300 mt-1">📅 Cada dia conta!</div>
           </div>
-          <div className="bg-gray-800 p-3 rounded-lg">
-            <div className="text-2xl font-bold text-green-400">
-              {timeData.daysRemainingThisYear.toLocaleString()} ✨
+          <div className="bg-gray-800 p-4 rounded-lg">
+            <div className="text-3xl font-bold text-green-400 mb-1">
+              {timeData.daysRemainingThisYear.toLocaleString()}
             </div>
             <div className="text-sm text-gray-300">Dias restantes para explorar</div>
+            <div className="text-xs text-green-300 mt-1">✨ Oportunidades à frente!</div>
           </div>
         </div>
 
-        {/* Contador Positivo - Conquistas da Vida */}
+        {/* Total Days in Year */}
         <div className="bg-black p-4 rounded-lg border border-gray-600">
-          <h3 className="text-lg font-semibold text-yellow-400 mb-3 text-center">
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-xl relative z-10">🏆</span>
-              <span>Suas Conquistas de Tempo</span>
+          <div className="text-center">
+            <div className="text-4xl font-bold text-white mb-2">
+              {totalDaysInYear.toLocaleString()}
             </div>
-          </h3>
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div>
-              <div className="text-xl font-bold text-white">{timeData.yearsLived}</div>
-              <div className="text-xs text-gray-400">Anos</div>
+            <div className="text-sm text-gray-300">
+              Total de dias em {currentYear} {isLeapYear ? '(Ano bissexto! 🎉)' : ''}
             </div>
-            <div>
-              <div className="text-xl font-bold text-white">{timeData.monthsLived}</div>
-              <div className="text-xs text-gray-400">Meses</div>
-            </div>
-            <div>
-              <div className="text-xl font-bold text-white">{timeData.weeksLived}</div>
-              <div className="text-xs text-gray-400">Semanas</div>
-            </div>
-            <div>
-              <div className="text-lg font-bold text-yellow-400">{timeData.hoursLived.toLocaleString()}</div>
-              <div className="text-xs text-gray-400">Horas</div>
-            </div>
-            <div>
-              <div className="text-lg font-bold text-yellow-400">{Math.round(timeData.minutesLived / 1000)}k</div>
-              <div className="text-xs text-gray-400">Minutos</div>
-            </div>
-            <div>
-              <div className="text-lg font-bold text-green-400">{Math.round(timeData.secondsLived / 1000000)}M</div>
-              <div className="text-xs text-gray-400">Segundos</div>
+            <div className="text-xs text-gray-400 mt-2">
+              {isLeapYear ? 'Um dia extra para fazer a diferença!' : 'Aproveite cada um dos 365 dias!'}
             </div>
           </div>
         </div>
