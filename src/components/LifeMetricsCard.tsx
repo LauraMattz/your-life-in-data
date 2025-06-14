@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Edit3, Save, DollarSign } from 'lucide-react';
+import { Edit3, Save, DollarSign, Info } from 'lucide-react';
 
 interface UserProfile {
   name: string;
@@ -98,7 +98,7 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
   ];
 
   const workHours = calculateActivityTime(dailyHours.work, 18).hours;
-  const hourlyWage = salary.monthly * 12 / (dailyHours.work * 22 * 12); // 22 dias úteis por mês
+  const hourlyWage = salary.monthly * 12 / (dailyHours.work * 22 * 12);
   const totalEarned = workHours * hourlyWage;
 
   return (
@@ -109,8 +109,9 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
             <CardTitle className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               📊 Sua Jornada de Vida
             </CardTitle>
-            <p className="text-gray-300 text-sm">
-              Celebrando cada momento da sua experiência
+            <p className="text-gray-300 text-sm flex items-center gap-1">
+              <Info className="w-3 h-3" />
+              Estimativas baseadas nos seus hábitos atuais
             </p>
           </div>
           <Button
@@ -125,14 +126,14 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
       </CardHeader>
       <CardContent className="space-y-4">
         {isEditing && (
-          <div className="bg-gradient-to-r from-green-900/20 to-blue-900/20 p-4 rounded-lg border border-green-500/20 space-y-3">
-            <h4 className="font-semibold text-green-400 flex items-center gap-2">
+          <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 p-4 rounded-lg border border-blue-500/20 space-y-3">
+            <h4 className="font-semibold text-blue-400 flex items-center gap-2">
               <DollarSign className="w-4 h-4" />
               Configurações Pessoais
             </h4>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-gray-300 text-xs">Salário mensal</Label>
+                <Label className="text-gray-300 text-xs">Renda mensal (opcional)</Label>
                 <Input
                   type="number"
                   value={salary.monthly}
@@ -149,6 +150,9 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
                 />
               </div>
             </div>
+            <p className="text-xs text-gray-400">
+              💡 Ajuste as horas diárias para refletir melhor sua rotina
+            </p>
           </div>
         )}
 
@@ -192,28 +196,28 @@ export const LifeMetricsCard = ({ userProfile }: LifeMetricsCardProps) => {
           </div>
         ))}
         
-        <div className="mt-4 p-4 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/30 rounded-lg">
-          <div className="flex items-center gap-2 mb-2">
-            <DollarSign className="w-5 h-5 text-yellow-400" />
-            <h4 className="font-semibold text-yellow-400">Valor do Seu Tempo</h4>
+        {salary.monthly > 0 && (
+          <div className="mt-4 p-4 bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-500/30 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <DollarSign className="w-5 h-5 text-green-400" />
+              <h4 className="font-semibold text-green-400">Valor do Seu Tempo</h4>
+            </div>
+            <p className="text-green-300 text-sm">
+              💰 Através do seu trabalho, você já conquistou aproximadamente{' '}
+              <span className="font-bold">
+                {salary.currency} {totalEarned.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
+              </span>
+            </p>
+            <p className="text-green-200 text-xs mt-1">
+              Cada hora vale {salary.currency} {hourlyWage.toFixed(2)} - reconheça o valor do seu tempo! ⏰
+            </p>
           </div>
-          <p className="text-yellow-300 text-sm">
-            💰 Considerando seu salário, você já conquistou aproximadamente{' '}
-            <span className="font-bold">
-              {salary.currency} {totalEarned.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
-            </span>{' '}
-            através do seu trabalho! 
-          </p>
-          <p className="text-yellow-200 text-xs mt-1">
-            Cada hora vale {salary.currency} {hourlyWage.toFixed(2)} - reconheça o valor do seu tempo! ⏰
-          </p>
-        </div>
+        )}
 
         <div className="mt-4 p-3 bg-gradient-to-r from-purple-900/20 to-pink-900/20 border border-purple-500/20 rounded-lg">
           <p className="text-purple-300 text-sm font-medium">
-            ✨ <strong>Reflexão positiva:</strong> Cada momento vivido contribui para sua rica experiência de vida. 
-            Você construiu {((metrics.reduce((acc, m) => acc + Number(m.data.years), 0) / ageInYears) * 100).toFixed(1)}% 
-            de memórias valiosas através dessas atividades essenciais!
+            ✨ <strong>Reflexão:</strong> Cada momento vivido contribui para sua experiência única. 
+            Estas são estimativas baseadas em médias - sua jornada real pode ser ainda mais rica! 
           </p>
         </div>
       </CardContent>
