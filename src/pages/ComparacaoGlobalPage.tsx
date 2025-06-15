@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
-import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Lightbulb, ChevronRight, Shuffle, ArrowUp, Menu, X } from 'lucide-react';
+import { Globe, TrendingUp, Heart, Clock, Users, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Lightbulb, ChevronRight, Shuffle, ArrowUp } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter } from 'recharts';
 
@@ -279,58 +279,21 @@ const ComparacaoGlobalPage = () => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [currentInsightIndex, setCurrentInsightIndex] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('header');
 
-  // Scroll tracking for back to top button and active section
+  // Scroll tracking for back to top button
   useEffect(() => {
     const handleScroll = () => {
       setShowBackToTop(window.scrollY > 400);
-      
-      // Track active section
-      const sections = ['header', 'insights', 'filters', 'stats', 'charts', 'ranking'];
-      const scrollPosition = window.scrollY + 100;
-      
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId);
-        if (element && scrollPosition >= element.offsetTop && scrollPosition < element.offsetTop + element.offsetHeight) {
-          setActiveSection(sectionId);
-          break;
-        }
-      }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Smooth scroll to section
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start',
-        inline: 'nearest'
-      });
-    }
-    setIsNavMenuOpen(false);
-  };
-
   // Scroll to top
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  // Navigation items
-  const navItems = [
-    { id: 'header', label: 'Início', icon: Globe },
-    { id: 'insights', label: 'Insights', icon: Lightbulb },
-    { id: 'filters', label: 'Filtros', icon: Filter },
-    { id: 'stats', label: 'Estatísticas', icon: BarChart3 },
-    { id: 'charts', label: 'Gráficos', icon: Activity },
-    { id: 'ranking', label: 'Ranking', icon: TrendingUp },
-  ];
 
   // Classificação por região
   const countryRegions = {
@@ -436,42 +399,6 @@ const ComparacaoGlobalPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white">
       <Navigation />
       
-      {/* Floating Navigation Menu - Mobile Optimized */}
-      <div className="fixed top-16 right-2 z-40 md:top-20 md:right-4">
-        <div className="bg-black/90 backdrop-blur-sm border border-gray-600 rounded-lg overflow-hidden shadow-xl">
-          <Button
-            onClick={() => setIsNavMenuOpen(!isNavMenuOpen)}
-            variant="ghost"
-            size="sm"
-            className="w-full p-2 text-white hover:bg-gray-700 md:hidden"
-          >
-            {isNavMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          </Button>
-          
-          <div className={`${isNavMenuOpen ? 'block' : 'hidden'} md:block max-h-[70vh] overflow-y-auto`}>
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeSection === item.id;
-              
-              return (
-                <Button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  variant="ghost"
-                  size="sm"
-                  className={`w-full justify-start p-2 md:p-3 text-left hover:bg-gray-700 transition-colors ${
-                    isActive ? 'bg-yellow-600 text-black' : 'text-gray-300'
-                  }`}
-                >
-                  <Icon className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                  <span className="text-xs">{item.label}</span>
-                </Button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
       {/* Back to Top Button */}
       {showBackToTop && (
         <Button
@@ -483,7 +410,7 @@ const ComparacaoGlobalPage = () => {
         </Button>
       )}
 
-      <div className="container mx-auto px-2 py-4 pr-12 md:px-4 md:py-8 md:pr-20">
+      <div className="container mx-auto px-2 py-4 md:px-4 md:py-8">
         {/* Header */}
         <div id="header" className="text-center mb-8 md:mb-12 scroll-mt-20">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent">
@@ -492,26 +419,6 @@ const ComparacaoGlobalPage = () => {
           <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto mb-4 md:mb-6 px-2">
             Visualize e compare expectativa de vida e estilos de vida de {allCountriesData.length} países ao redor do mundo
           </p>
-          
-          {/* Quick Navigation - Mobile Responsive */}
-          <div className="grid grid-cols-2 gap-2 mt-6 md:flex md:flex-wrap md:justify-center md:gap-3 md:mt-8">
-            {navItems.slice(1).map((item) => {
-              const Icon = item.icon;
-              return (
-                <Button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  variant="outline"
-                  size="sm"
-                  className="bg-gray-800/50 border-gray-600 text-white hover:bg-gray-700 hover:border-yellow-400 transition-all duration-200 text-xs md:text-sm"
-                >
-                  <Icon className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                  <span className="hidden sm:inline">{item.label}</span>
-                  <span className="sm:hidden">{item.label.slice(0, 4)}</span>
-                </Button>
-              );
-            })}
-          </div>
         </div>
 
         {/* Insights dos Dados - Mobile Optimized */}
