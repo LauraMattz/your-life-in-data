@@ -74,12 +74,6 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
           <span>Insights Práticos para {currentYear}</span>
         </div>
       </h2>
-      <p className="text-gray-400 text-center mb-4 max-w-2xl mx-auto">
-        <strong>Como usar:</strong> Leia os insights abaixo e escolha 1 ou 2 ações para implementar hoje.
-      </p>
-      <p className="text-gray-500 text-center mb-8 max-w-xl mx-auto text-sm">
-        💡 Dica: Não tente fazer tudo de uma vez. Escolha o que mais faz sentido para você agora!
-      </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {insights.map((insight, index) => (
           <Card key={index} className="bg-gray-900/80 border-gray-700 overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer group">
