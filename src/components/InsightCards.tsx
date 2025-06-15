@@ -68,17 +68,17 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
         {insights.map((insight, index) => (
           <Card key={index} className="bg-gray-900/80 border-gray-700 overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer group">
             <CardContent className="p-0">
-              <div className={`bg-gradient-to-br ${insight.color} p-4 relative overflow-hidden group-hover:from-gray-600 group-hover:to-gray-700 transition-all duration-300`}>
-                <div className="absolute top-0 right-0 w-20 h-20 bg-white/5 rounded-full -translate-y-8 translate-x-8 group-hover:bg-white/10 transition-all duration-300"></div>
-                <div className="text-3xl mb-2 relative z-10 group-hover:scale-110 transition-transform duration-300">{insight.icon}</div>
-                <h3 className="font-bold text-white text-lg relative z-10">{insight.title}</h3>
+              <div className={`bg-gradient-to-br ${insight.color} p-3 md:p-4 relative overflow-hidden group-hover:from-gray-600 group-hover:to-gray-700 transition-all duration-300`}>
+                <div className="absolute top-0 right-0 w-16 h-16 md:w-20 md:h-20 bg-white/5 rounded-full -translate-y-6 md:-translate-y-8 translate-x-6 md:translate-x-8 group-hover:bg-white/10 transition-all duration-300"></div>
+                <div className="text-2xl md:text-3xl mb-2 relative z-10 group-hover:scale-110 transition-transform duration-300">{insight.icon}</div>
+                <h3 className="font-bold text-white text-base md:text-lg relative z-10">{insight.title}</h3>
               </div>
-              <div className="p-4 space-y-3">
-                <p className="text-gray-300 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: insight.content }}>
+              <div className="p-3 md:p-4 space-y-2 md:space-y-3">
+                <p className="text-gray-300 text-xs md:text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: insight.content }}>
                 </p>
                 <div className="bg-blue-900/20 border border-blue-500/30 p-2 rounded">
                   <p className="text-blue-200 text-xs font-medium">

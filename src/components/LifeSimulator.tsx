@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
@@ -66,25 +67,25 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
     <Card className="bg-slate-800 border-slate-700">
       <CardHeader>
         <div className="space-y-3">
-          <p className="text-slate-300">
+          <p className="text-slate-300 text-sm md:text-base px-2 md:px-0">
             <strong>Como usar:</strong> Mova os controles abaixo para simular pequenas mudanças na sua rotina. 
             Veja o impacto acumulado até dezembro de {currentYear}!
           </p>
           {!hasAnyChanges && (
             <div className="bg-blue-900/20 border border-blue-500/30 p-3 rounded-lg">
-              <p className="text-blue-200 text-sm">
+              <p className="text-blue-200 text-xs md:text-sm">
                 👆 <strong>Comece agora:</strong> Escolha pelo menos uma área para ajustar. Mesmo mudanças pequenas fazem diferença!
               </p>
             </div>
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4 md:space-y-6">
         {/* Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           <div className="space-y-4">
             <div>
-              <Label className="text-white font-semibold">
+              <Label className="text-white font-semibold text-sm md:text-base">
                 📱 Reduzir redes sociais: {changes.socialMediaReduction}h/dia
               </Label>
               <p className="text-xs text-gray-400 mb-2">👆 Mova para a direita para reduzir o tempo de tela</p>
@@ -99,7 +100,7 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
             </div>
 
             <div>
-              <Label className="text-white font-semibold">
+              <Label className="text-white font-semibold text-sm md:text-base">
                 💪 Aumentar exercícios: {changes.exerciseIncrease}h/dia
               </Label>
               <p className="text-xs text-gray-400 mb-2">👆 Mova para definir quanto tempo a mais de atividade física</p>
@@ -116,7 +117,7 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
 
           <div className="space-y-4">
             <div>
-              <Label className="text-white font-semibold">
+              <Label className="text-white font-semibold text-sm md:text-base">
                 📚 Aumentar leitura: {changes.readingIncrease} min/dia
               </Label>
               <p className="text-xs text-gray-400 mb-2">👆 Defina quantos minutos a mais de leitura por dia</p>
@@ -131,7 +132,7 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
             </div>
 
             <div>
-              <Label className="text-white font-semibold">
+              <Label className="text-white font-semibold text-sm md:text-base">
                 😴 Melhorar sono: +{changes.sleepImprovement}h/dia
               </Label>
               <p className="text-xs text-gray-400 mb-2">👆 Quantas horas a mais de sono de qualidade</p>
@@ -149,18 +150,18 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
 
         {/* Results */}
         {hasAnyChanges && (
-          <div className="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 p-6 rounded-lg border border-emerald-500/20">
-            <h3 className="text-xl font-bold text-emerald-400 mb-4">
+          <div className="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 p-4 md:p-6 rounded-lg border border-emerald-500/20">
+            <h3 className="text-lg md:text-xl font-bold text-emerald-400 mb-3 md:mb-4">
               ✨ Resultado da sua simulação até dezembro:
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
               {changes.socialMediaReduction > 0 && (
                 <div className="bg-violet-900/20 p-3 rounded border border-violet-500/30">
-                  <div className="text-2xl font-bold text-violet-400">
+                  <div className="text-xl md:text-2xl font-bold text-violet-400">
                     {impact.socialMediaDaysSaved.toFixed(1)}
                   </div>
-                  <div className="text-sm text-slate-300">
+                  <div className="text-xs md:text-sm text-slate-300">
                     dias livres das redes sociais
                   </div>
                 </div>
@@ -168,10 +169,10 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
 
               {changes.readingIncrease > 0 && (
                 <div className="bg-cyan-900/20 p-3 rounded border border-cyan-500/30">
-                  <div className="text-2xl font-bold text-cyan-400">
+                  <div className="text-xl md:text-2xl font-bold text-cyan-400">
                     {impact.booksRead}
                   </div>
-                  <div className="text-sm text-slate-300">
+                  <div className="text-xs md:text-sm text-slate-300">
                     livros devorados até dezembro
                   </div>
                 </div>
@@ -179,10 +180,10 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
 
               {changes.exerciseIncrease > 0 && (
                 <div className="bg-emerald-900/20 p-3 rounded border border-emerald-500/30">
-                  <div className="text-2xl font-bold text-emerald-400">
+                  <div className="text-xl md:text-2xl font-bold text-emerald-400">
                     {impact.exerciseDaysAdded.toFixed(1)}
                   </div>
-                  <div className="text-sm text-slate-300">
+                  <div className="text-xs md:text-sm text-slate-300">
                     dias inteiros se exercitando
                   </div>
                 </div>
@@ -190,10 +191,10 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
 
               {changes.sleepImprovement > 0 && (
                 <div className="bg-indigo-900/20 p-3 rounded border border-indigo-500/30">
-                  <div className="text-2xl font-bold text-indigo-400">
+                  <div className="text-xl md:text-2xl font-bold text-indigo-400">
                     {impact.sleepDaysAdded.toFixed(1)}
                   </div>
-                  <div className="text-sm text-slate-300">
+                  <div className="text-xs md:text-sm text-slate-300">
                     dias extras de sono reparador
                   </div>
                 </div>
@@ -201,11 +202,11 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
             </div>
 
             {impact.totalProductiveDays > 0 && (
-              <div className="mt-4 p-3 bg-amber-900/20 border border-amber-500/30 rounded">
-                <p className="text-amber-300 font-semibold">
+              <div className="mt-3 md:mt-4 p-3 bg-amber-900/20 border border-amber-500/30 rounded">
+                <p className="text-amber-300 font-semibold text-sm md:text-base">
                   🎯 Total: {impact.totalProductiveDays.toFixed(1)} dias de vida mais rica e significativa até o fim de {currentYear}!
                 </p>
-                <p className="text-amber-200 text-sm mt-1">
+                <p className="text-amber-200 text-xs md:text-sm mt-1">
                   <strong>Próximo passo:</strong> Escolha uma mudança e comece hoje, {userProfile.name}! 
                   Pequenos passos consistentes criam grandes transformações.
                 </p>
