@@ -65,10 +65,11 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
     <Card className="bg-slate-800 border-slate-700">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-white">
-          🔮 Simulador para o Resto de {currentYear}
+          🔮 E se você começar hoje, {userProfile.name}?
         </CardTitle>
         <p className="text-slate-300">
-          "E se..." você começar a fazer mudanças hoje? Veja o impacto até o fim de {currentYear} ({daysRemainingThisYear} dias restantes).
+          Simule pequenas mudanças e veja o impacto transformador até o final de {currentYear}. 
+          Ainda temos <span className="text-blue-400 font-semibold">{daysRemainingThisYear} dias</span> pela frente!
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -77,8 +78,9 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
           <div className="space-y-4">
             <div>
               <Label className="text-white font-semibold">
-                📱 Reduzir Redes Sociais: {changes.socialMediaReduction}h/dia
+                📱 Menos redes sociais: {changes.socialMediaReduction}h/dia
               </Label>
+              <p className="text-xs text-gray-400 mb-2">Mais tempo para o que importa de verdade</p>
               <Slider
                 value={[changes.socialMediaReduction]}
                 onValueChange={(value) => setChanges(prev => ({ ...prev, socialMediaReduction: value[0] }))}
@@ -90,8 +92,9 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
 
             <div>
               <Label className="text-white font-semibold">
-                💪 Aumentar Exercícios: {changes.exerciseIncrease}h/dia
+                💪 Mais exercícios: {changes.exerciseIncrease}h/dia
               </Label>
+              <p className="text-xs text-gray-400 mb-2">Energia e disposição para tudo</p>
               <Slider
                 value={[changes.exerciseIncrease]}
                 onValueChange={(value) => setChanges(prev => ({ ...prev, exerciseIncrease: value[0] }))}
@@ -105,8 +108,9 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
           <div className="space-y-4">
             <div>
               <Label className="text-white font-semibold">
-                📚 Aumentar Leitura: {changes.readingIncrease} min/dia
+                📚 Mais leitura: {changes.readingIncrease} min/dia
               </Label>
+              <p className="text-xs text-gray-400 mb-2">Conhecimento que se acumula todo dia</p>
               <Slider
                 value={[changes.readingIncrease]}
                 onValueChange={(value) => setChanges(prev => ({ ...prev, readingIncrease: value[0] }))}
@@ -118,8 +122,9 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
 
             <div>
               <Label className="text-white font-semibold">
-                😴 Melhorar Sono: +{changes.sleepImprovement}h/dia
+                😴 Sono de qualidade: +{changes.sleepImprovement}h/dia
               </Label>
+              <p className="text-xs text-gray-400 mb-2">A base de tudo que você quer alcançar</p>
               <Slider
                 value={[changes.sleepImprovement]}
                 onValueChange={(value) => setChanges(prev => ({ ...prev, sleepImprovement: value[0] }))}
@@ -135,7 +140,7 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
         {(changes.socialMediaReduction > 0 || changes.exerciseIncrease > 0 || changes.readingIncrease > 0 || changes.sleepImprovement > 0) && (
           <div className="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 p-6 rounded-lg border border-emerald-500/20">
             <h3 className="text-xl font-bold text-emerald-400 mb-4">
-              ✨ Impacto até o fim de {currentYear}:
+              ✨ Olha só o que você conquistaria até dezembro:
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -145,7 +150,7 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                     {impact.socialMediaDaysSaved.toFixed(1)}
                   </div>
                   <div className="text-sm text-slate-300">
-                    dias livres sem redes sociais
+                    dias livres das redes sociais
                   </div>
                 </div>
               )}
@@ -156,7 +161,7 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                     {impact.booksRead}
                   </div>
                   <div className="text-sm text-slate-300">
-                    livros lidos até o fim do ano
+                    livros devorados até dezembro
                   </div>
                 </div>
               )}
@@ -167,7 +172,7 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                     {impact.exerciseDaysAdded.toFixed(1)}
                   </div>
                   <div className="text-sm text-slate-300">
-                    dias de exercício extra
+                    dias inteiros se exercitando
                   </div>
                 </div>
               )}
@@ -178,7 +183,7 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                     {impact.sleepDaysAdded.toFixed(1)}
                   </div>
                   <div className="text-sm text-slate-300">
-                    dias extras de sono
+                    dias extras de sono reparador
                   </div>
                 </div>
               )}
@@ -187,7 +192,10 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
             {impact.totalProductiveDays > 0 && (
               <div className="mt-4 p-3 bg-amber-900/20 border border-amber-500/30 rounded">
                 <p className="text-amber-300 font-semibold">
-                  🎯 Total: {impact.totalProductiveDays.toFixed(1)} dias de vida mais produtiva e saudável até o fim de {currentYear}!
+                  🎯 Total: {impact.totalProductiveDays.toFixed(1)} dias de vida mais rica e significativa até o fim de {currentYear}!
+                </p>
+                <p className="text-amber-200 text-sm mt-1">
+                  {userProfile.name}, que tal começar hoje mesmo? Pequenos passos, grandes transformações.
                 </p>
               </div>
             )}

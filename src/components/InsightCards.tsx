@@ -24,57 +24,60 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
   const insights = [
     {
       icon: '📱',
-      title: 'Tempo Digital',
-      content: `Uma hora a menos de tela por dia te daria <span class="text-orange-400 font-bold">${daysRemainingThisYear}</span> horas extras até o fim de ${currentYear} para fazer o que você ama.`,
+      title: 'Tempo de Qualidade',
+      content: `Reduzindo <span class="text-blue-400 font-bold">1 hora</span> de tela por dia, você ganha <span class="text-blue-400 font-bold">${daysRemainingThisYear}</span> horas extras até o final do ano para fazer o que realmente importa.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '📚',
-      title: 'Hábito da Leitura',
-      content: `Com <span class="text-orange-400 font-bold">15 minutos</span> diários de leitura, você poderia ler cerca de <span class="text-orange-400 font-bold">${Math.floor(daysRemainingThisYear * 0.25 / 8)} livros</span> até o fim de ${currentYear}.`,
+      title: 'Conhecimento Acumulado',
+      content: `Apenas <span class="text-green-400 font-bold">15 minutinhos</span> de leitura por dia podem resultar em <span class="text-green-400 font-bold">${Math.floor(daysRemainingThisYear * 0.25 / 8)} livros</span> até dezembro. Imagine o que você vai aprender!`,
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '⚡',
-      title: 'Energia do Ano',
-      content: `Você ainda tem <span class="text-orange-400 font-bold">${((daysRemainingThisYear / totalDaysInYear) * 100).toFixed(1)}%</span> do ano de ${currentYear} pela frente. Cada dia restante é uma nova oportunidade.`,
+      title: 'Energia Restante',
+      content: `Ainda temos <span class="text-yellow-400 font-bold">${((daysRemainingThisYear / totalDaysInYear) * 100).toFixed(1)}%</span> do ano pela frente, ${userProfile.name}! Cada amanhecer é uma página em branco esperando sua história.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
-      icon: '😴',
-      title: 'Qualidade do Sono',
-      content: `Melhorar seu sono nos próximos <span class="text-orange-400 font-bold">${daysRemainingThisYear} dias</span> pode fazer toda a diferença no seu bem-estar até o fim do ano.`,
+      icon: '💤',
+      title: 'Descanso Reparador',
+      content: `Melhorar seu sono nos próximos <span class="text-purple-400 font-bold">${daysRemainingThisYear} dias</span> é investir na sua energia, humor e produtividade. Seu corpo agradece!`,
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '🎯',
-      title: 'Pequenos Passos',
-      content: `Melhorar <span class="text-orange-400 font-bold">1%</span> ao dia pelos próximos <span class="text-orange-400 font-bold">${daysRemainingThisYear} dias</span> resultará em um crescimento exponencial até o fim de ${currentYear}.`,
+      title: 'Evolução Constante',
+      content: `O poder do <span class="text-orange-400 font-bold">1% melhor</span> por dia: nos próximos <span class="text-orange-400 font-bold">${daysRemainingThisYear} dias</span>, pequenas melhorias criam transformações extraordinárias.`,
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '🌱',
-      title: 'Desenvolvimento Pessoal',
-      content: `Com <span class="text-orange-400 font-bold">${daysRemainingThisYear} dias</span> restantes em ${currentYear}, você tem tempo suficiente para desenvolver uma nova habilidade significativa.`,
+      title: 'Crescimento Pessoal',
+      content: `Com <span class="text-emerald-400 font-bold">${daysRemainingThisYear} dias</span> à frente, você tem tempo de sobra para dominar uma nova habilidade. Que tal começar hoje mesmo?`,
       color: 'from-gray-700 to-gray-800'
     }
   ];
 
   return (
     <div>
-      <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-300 bg-clip-text text-transparent mb-6 text-center">
+      <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-6 text-center">
         <div className="flex items-center justify-center gap-3">
           <span className="text-4xl relative z-10">💡</span>
-          <span>Insights para {currentYear}</span>
+          <span>Insights para Aproveitar {currentYear}</span>
         </div>
       </h2>
+      <p className="text-gray-400 text-center mb-8 max-w-2xl mx-auto">
+        Pequenas mudanças, grandes resultados. Veja como otimizar seus próximos meses:
+      </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {insights.map((insight, index) => (
-          <Card key={index} className="bg-gray-900/80 border-gray-700 overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer">
+          <Card key={index} className="bg-gray-900/80 border-gray-700 overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer group">
             <CardContent className="p-0">
-              <div className={`bg-gradient-to-br ${insight.color} p-4 relative overflow-hidden`}>
-                <div className="absolute top-0 right-0 w-20 h-20 bg-white/5 rounded-full -translate-y-8 translate-x-8"></div>
-                <div className="text-3xl mb-2 relative z-10">{insight.icon}</div>
+              <div className={`bg-gradient-to-br ${insight.color} p-4 relative overflow-hidden group-hover:from-gray-600 group-hover:to-gray-700 transition-all duration-300`}>
+                <div className="absolute top-0 right-0 w-20 h-20 bg-white/5 rounded-full -translate-y-8 translate-x-8 group-hover:bg-white/10 transition-all duration-300"></div>
+                <div className="text-3xl mb-2 relative z-10 group-hover:scale-110 transition-transform duration-300">{insight.icon}</div>
                 <h3 className="font-bold text-white text-lg relative z-10">{insight.title}</h3>
               </div>
               <div className="p-4">
