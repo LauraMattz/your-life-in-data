@@ -1,4 +1,5 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -6,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
-import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Lightbulb, ChevronRight, Shuffle } from 'lucide-react';
+import { Globe, TrendingUp, Heart, Clock, Users, Info, Filter, ChevronUp, ChevronDown, BarChart3, Activity, Lightbulb, ChevronRight, Shuffle, ArrowUp, Menu, X } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, ScatterChart, Scatter } from 'recharts';
 
@@ -278,6 +279,59 @@ const ComparacaoGlobalPage = () => {
   const [isInsightsOpen, setIsInsightsOpen] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [currentInsightIndex, setCurrentInsightIndex] = useState(0);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('header');
+
+  // Scroll tracking for back to top button and active section
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+      
+      // Track active section
+      const sections = ['header', 'insights', 'filters', 'stats', 'charts', 'ranking'];
+      const scrollPosition = window.scrollY + 100;
+      
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId);
+        if (element && scrollPosition >= element.offsetTop && scrollPosition < element.offsetTop + element.offsetHeight) {
+          setActiveSection(sectionId);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Smooth scroll to section
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start',
+        inline: 'nearest'
+      });
+    }
+    setIsNavMenuOpen(false);
+  };
+
+  // Scroll to top
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Navigation items
+  const navItems = [
+    { id: 'header', label: 'Início', icon: Globe },
+    { id: 'insights', label: 'Insights', icon: Lightbulb },
+    { id: 'filters', label: 'Filtros', icon: Filter },
+    { id: 'stats', label: 'Estatísticas', icon: BarChart3 },
+    { id: 'charts', label: 'Gráficos', icon: Activity },
+    { id: 'ranking', label: 'Ranking', icon: TrendingUp },
+  ];
 
   // Classificação por região
   const countryRegions = {
@@ -382,519 +436,596 @@ const ComparacaoGlobalPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white">
       <Navigation />
-      <div className="container mx-auto px-4 py-8">
+      
+      {/* Floating Navigation Menu */}
+      <div className="fixed top-20 right-4 z-40 lg:block">
+        <div className="bg-black/80 backdrop-blur-sm border border-gray-600 rounded-lg overflow-hidden">
+          <Button
+            onClick={() => setIsNavMenuOpen(!isNavMenuOpen)}
+            variant="ghost"
+            size="sm"
+            className="w-full p-3 text-white hover:bg-gray-700 lg:hidden"
+          >
+            {isNavMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          </Button>
+          
+          <div className={`${isNavMenuOpen ? 'block' : 'hidden'} lg:block`}>
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.id;
+              
+              return (
+                <Button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  variant="ghost"
+                  size="sm"
+                  className={`w-full justify-start p-3 text-left hover:bg-gray-700 transition-colors ${
+                    isActive ? 'bg-yellow-600 text-black' : 'text-gray-300'
+                  }`}
+                >
+                  <Icon className="w-4 h-4 mr-2" />
+                  <span className="text-xs">{item.label}</span>
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Back to Top Button */}
+      {showBackToTop && (
+        <Button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-4 z-40 bg-yellow-600 hover:bg-yellow-700 text-black rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110"
+          size="sm"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </Button>
+      )}
+
+      <div className="container mx-auto px-4 py-8 pr-20">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div id="header" className="text-center mb-12 scroll-mt-20">
           <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent">
             <span className="text-yellow-400">🌍</span> Comparação Global de Todos os Países
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-6">
             Visualize e compare expectativa de vida e estilos de vida de {allCountriesData.length} países ao redor do mundo
           </p>
+          
+          {/* Quick Navigation */}
+          <div className="flex flex-wrap justify-center gap-3 mt-8">
+            {navItems.slice(1).map((item) => {
+              const Icon = item.icon;
+              return (
+                <Button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  variant="outline"
+                  size="sm"
+                  className="bg-gray-800/50 border-gray-600 text-white hover:bg-gray-700 hover:border-yellow-400 transition-all duration-200"
+                >
+                  <Icon className="w-4 h-4 mr-2" />
+                  {item.label}
+                </Button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Insights dos Dados - Collapsible com Sorteio */}
-        <Card className="bg-black/40 border-gray-700 mb-8">
-          <Collapsible open={isInsightsOpen} onOpenChange={setIsInsightsOpen}>
-            <CollapsibleTrigger asChild>
-              <CardHeader className="cursor-pointer hover:bg-gray-800/20 transition-colors">
-                <CardTitle className="text-xl text-white flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Lightbulb className="w-6 h-6 text-yellow-400" />
-                    Insights dos Dados
+        <section id="insights" className="scroll-mt-20">
+          <Card className="bg-black/40 border-gray-700 mb-8">
+            <Collapsible open={isInsightsOpen} onOpenChange={setIsInsightsOpen}>
+              <CollapsibleTrigger asChild>
+                <CardHeader className="cursor-pointer hover:bg-gray-800/20 transition-colors">
+                  <CardTitle className="text-xl text-white flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Lightbulb className="w-6 h-6 text-yellow-400" />
+                      Insights dos Dados
+                    </div>
+                    <ChevronRight className={`w-5 h-5 transition-transform ${isInsightsOpen ? 'rotate-90' : ''}`} />
+                  </CardTitle>
+                  <p className="text-sm text-gray-300">
+                    Análises detalhadas baseadas nos dados oficiais de todos os países
+                  </p>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent>
+                  <div className="space-y-6">
+                    {/* Insight Atual */}
+                    <div className="bg-gray-800/30 rounded-lg border border-gray-600/30 p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="text-3xl">{insights[currentInsightIndex].emoji}</span>
+                        <span className="text-yellow-400 font-semibold text-xl">{insights[currentInsightIndex].title}</span>
+                      </div>
+                      <p className="text-gray-200 mb-4 text-lg leading-relaxed">{insights[currentInsightIndex].content}</p>
+                      <div className="bg-gray-800/50 rounded-lg p-4 mb-4">
+                        <p className="text-yellow-300 font-semibold mb-2">💎 Conclusão:</p>
+                        <p className="text-gray-100">{insights[currentInsightIndex].conclusion}</p>
+                      </div>
+                      <div className="bg-gray-700/50 rounded-lg p-4 mb-6">
+                        <p className="text-blue-300 font-semibold mb-2">✔️ Evidência:</p>
+                        <p className="text-gray-100">{insights[currentInsightIndex].evidence}</p>
+                      </div>
+                      
+                      {/* Botão de Sortear */}
+                      <div className="flex justify-center">
+                        <Button 
+                          onClick={drawRandomInsight}
+                          className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-semibold px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                        >
+                          <Shuffle className="w-4 h-4" />
+                          Sortear Outro Insight
+                        </Button>
+                      </div>
+                      
+                      {/* Contador de Insights */}
+                      <div className="text-center mt-4">
+                        <span className="text-gray-300 text-sm">
+                          Insight {currentInsightIndex + 1} de {insights.length}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <ChevronRight className={`w-5 h-5 transition-transform ${isInsightsOpen ? 'rotate-90' : ''}`} />
-                </CardTitle>
-                <p className="text-sm text-gray-300">
-                  Análises detalhadas baseadas nos dados oficiais de todos os países
-                </p>
-              </CardHeader>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <CardContent>
-                <div className="space-y-6">
-                  {/* Insight Atual */}
-                  <div className="bg-gray-800/30 rounded-lg border border-gray-600/30 p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="text-3xl">{insights[currentInsightIndex].emoji}</span>
-                      <span className="text-yellow-400 font-semibold text-xl">{insights[currentInsightIndex].title}</span>
-                    </div>
-                    <p className="text-gray-200 mb-4 text-lg leading-relaxed">{insights[currentInsightIndex].content}</p>
-                    <div className="bg-gray-800/50 rounded-lg p-4 mb-4">
-                      <p className="text-yellow-300 font-semibold mb-2">💎 Conclusão:</p>
-                      <p className="text-gray-100">{insights[currentInsightIndex].conclusion}</p>
-                    </div>
-                    <div className="bg-gray-700/50 rounded-lg p-4 mb-6">
-                      <p className="text-blue-300 font-semibold mb-2">✔️ Evidência:</p>
-                      <p className="text-gray-100">{insights[currentInsightIndex].evidence}</p>
-                    </div>
-                    
-                    {/* Botão de Sortear */}
-                    <div className="flex justify-center">
-                      <Button 
-                        onClick={drawRandomInsight}
-                        className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-semibold px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
-                      >
-                        <Shuffle className="w-4 h-4" />
-                        Sortear Outro Insight
-                      </Button>
-                    </div>
-                    
-                    {/* Contador de Insights */}
-                    <div className="text-center mt-4">
-                      <span className="text-gray-300 text-sm">
-                        Insight {currentInsightIndex + 1} de {insights.length}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </CollapsibleContent>
-          </Collapsible>
-        </Card>
+                </CardContent>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
+        </section>
 
         {/* Filtros - Agora Retrátil */}
-        <Card className="bg-black/40 border-gray-700 mb-8">
-          <Collapsible open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
-            <CollapsibleTrigger asChild>
-              <CardHeader className="cursor-pointer hover:bg-gray-800/20 transition-colors">
-                <CardTitle className="text-xl text-white flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Filter className="w-6 h-6 text-yellow-400" />
-                    Filtros
-                  </div>
-                  <ChevronRight className={`w-5 h-5 transition-transform ${isFiltersOpen ? 'rotate-90' : ''}`} />
-                </CardTitle>
-                <p className="text-sm text-gray-300">
-                  Filtre países por região e expectativa de vida
-                </p>
-              </CardHeader>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                  <div>
-                    <label className="block text-sm font-medium text-white mb-2">Região</label>
-                    <Select value={regionFilter} onValueChange={setRegionFilter}>
-                      <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
-                        <SelectValue placeholder="Selecione uma região" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-600 text-white">
-                        <SelectItem value="all" className="text-white">Todas as Regiões</SelectItem>
-                        <SelectItem value="Europa" className="text-white">Europa</SelectItem>
-                        <SelectItem value="Ásia" className="text-white">Ásia</SelectItem>
-                        <SelectItem value="Américas" className="text-white">Américas</SelectItem>
-                        <SelectItem value="Oceania" className="text-white">Oceania</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-white mb-2">Expectativa Mínima</label>
-                    <Select value={minExpectancy} onValueChange={setMinExpectancy}>
-                      <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
-                        <SelectValue placeholder="Expectativa mínima" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-600 text-white">
-                        <SelectItem value="all" className="text-white">Todas</SelectItem>
-                        <SelectItem value="70" className="text-white">70+ anos</SelectItem>
-                        <SelectItem value="75" className="text-white">75+ anos</SelectItem>
-                        <SelectItem value="80" className="text-white">80+ anos</SelectItem>
-                        <SelectItem value="85" className="text-white">85+ anos</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+        <section id="filters" className="scroll-mt-20">
+          <Card className="bg-black/40 border-gray-700 mb-8">
+            <Collapsible open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
+              <CollapsibleTrigger asChild>
+                <CardHeader className="cursor-pointer hover:bg-gray-800/20 transition-colors">
+                  <CardTitle className="text-xl text-white flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Filter className="w-6 h-6 text-yellow-400" />
+                      Filtros
+                    </div>
+                    <ChevronRight className={`w-5 h-5 transition-transform ${isFiltersOpen ? 'rotate-90' : ''}`} />
+                  </CardTitle>
+                  <p className="text-sm text-gray-300">
+                    Filtre países por região e expectativa de vida
+                  </p>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div>
+                      <label className="block text-sm font-medium text-white mb-2">Região</label>
+                      <Select value={regionFilter} onValueChange={setRegionFilter}>
+                        <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+                          <SelectValue placeholder="Selecione uma região" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-600 text-white z-50">
+                          <SelectItem value="all" className="text-white">Todas as Regiões</SelectItem>
+                          <SelectItem value="Europa" className="text-white">Europa</SelectItem>
+                          <SelectItem value="Ásia" className="text-white">Ásia</SelectItem>
+                          <SelectItem value="Américas" className="text-white">Américas</SelectItem>
+                          <SelectItem value="Oceania" className="text-white">Oceania</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-white mb-2">Expectativa Mínima</label>
+                      <Select value={minExpectancy} onValueChange={setMinExpectancy}>
+                        <SelectTrigger className="bg-gray-800 border-gray-600 text-white">
+                          <SelectValue placeholder="Expectativa mínima" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-600 text-white z-50">
+                          <SelectItem value="all" className="text-white">Todas</SelectItem>
+                          <SelectItem value="70" className="text-white">70+ anos</SelectItem>
+                          <SelectItem value="75" className="text-white">75+ anos</SelectItem>
+                          <SelectItem value="80" className="text-white">80+ anos</SelectItem>
+                          <SelectItem value="85" className="text-white">85+ anos</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  <div>
-                    <Button 
-                      onClick={resetFilters}
-                      variant="outline" 
-                      className="bg-gray-800 border-gray-600 text-white hover:bg-gray-600"
-                    >
-                      Limpar Filtros
-                    </Button>
+                    <div>
+                      <Button 
+                        onClick={resetFilters}
+                        variant="outline" 
+                        className="bg-gray-800 border-gray-600 text-white hover:bg-gray-600"
+                      >
+                        Limpar Filtros
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </CollapsibleContent>
-          </Collapsible>
-        </Card>
+                </CardContent>
+              </CollapsibleContent>
+            </Collapsible>
+          </Card>
+        </section>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-black/40 border-gray-700">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Heart className="w-5 h-5 text-red-400" />
-                <h3 className="font-semibold text-white">Maior Expectativa</h3>
-              </div>
-              <div className="text-2xl font-bold text-red-400">
-                {allCountriesData.length > 0 ? Math.max(...allCountriesData.map(c => c.expectancy)).toFixed(1) : 0} anos
-              </div>
-              <div className="text-sm text-gray-400">
-                {allCountriesData.find(c => c.expectancy === Math.max(...allCountriesData.map(c => c.expectancy)))?.flag} {allCountriesData.find(c => c.expectancy === Math.max(...allCountriesData.map(c => c.expectancy)))?.country}
-              </div>
-            </CardContent>
-          </Card>
+        <section id="stats" className="scroll-mt-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Card className="bg-black/40 border-gray-700">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Heart className="w-5 h-5 text-red-400" />
+                  <h3 className="font-semibold text-white">Maior Expectativa</h3>
+                </div>
+                <div className="text-2xl font-bold text-red-400">
+                  {allCountriesData.length > 0 ? Math.max(...allCountriesData.map(c => c.expectancy)).toFixed(1) : 0} anos
+                </div>
+                <div className="text-sm text-gray-400">
+                  {allCountriesData.find(c => c.expectancy === Math.max(...allCountriesData.map(c => c.expectancy)))?.flag} {allCountriesData.find(c => c.expectancy === Math.max(...allCountriesData.map(c => c.expectancy)))?.country}
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card className="bg-black/40 border-gray-700">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-5 h-5 text-yellow-400" />
-                <h3 className="font-semibold text-white">Mais Feliz</h3>
-              </div>
-              <div className="text-2xl font-bold text-yellow-400">
-                {allCountriesData.length > 0 ? Math.max(...allCountriesData.map(c => c.happiness)).toFixed(2) : 0}/10
-              </div>
-              <div className="text-sm text-gray-400">
-                {allCountriesData.find(c => c.happiness === Math.max(...allCountriesData.map(c => c.happiness)))?.flag} {allCountriesData.find(c => c.happiness === Math.max(...allCountriesData.map(c => c.happiness)))?.country}
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="bg-black/40 border-gray-700">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="w-5 h-5 text-yellow-400" />
+                  <h3 className="font-semibold text-white">Mais Feliz</h3>
+                </div>
+                <div className="text-2xl font-bold text-yellow-400">
+                  {allCountriesData.length > 0 ? Math.max(...allCountriesData.map(c => c.happiness)).toFixed(2) : 0}/10
+                </div>
+                <div className="text-sm text-gray-400">
+                  {allCountriesData.find(c => c.happiness === Math.max(...allCountriesData.map(c => c.happiness)))?.flag} {allCountriesData.find(c => c.happiness === Math.max(...allCountriesData.map(c => c.happiness)))?.country}
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card className="bg-black/40 border-gray-700">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Clock className="w-5 h-5 text-green-400" />
-                <h3 className="font-semibold text-white">Menos Trabalho</h3>
-              </div>
-              <div className="text-2xl font-bold text-green-400">
-                {allCountriesData.length > 0 ? Math.min(...allCountriesData.map(c => c.workHours)).toFixed(1) : 0}h/sem
-              </div>
-              <div className="text-sm text-gray-400">
-                {allCountriesData.find(c => c.workHours === Math.min(...allCountriesData.map(c => c.workHours)))?.flag} {allCountriesData.find(c => c.workHours === Math.min(...allCountriesData.map(c => c.workHours)))?.country}
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="bg-black/40 border-gray-700">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Clock className="w-5 h-5 text-green-400" />
+                  <h3 className="font-semibold text-white">Menos Trabalho</h3>
+                </div>
+                <div className="text-2xl font-bold text-green-400">
+                  {allCountriesData.length > 0 ? Math.min(...allCountriesData.map(c => c.workHours)).toFixed(1) : 0}h/sem
+                </div>
+                <div className="text-sm text-gray-400">
+                  {allCountriesData.find(c => c.workHours === Math.min(...allCountriesData.map(c => c.workHours)))?.flag} {allCountriesData.find(c => c.workHours === Math.min(...allCountriesData.map(c => c.workHours)))?.country}
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card className="bg-black/40 border-gray-700">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Users className="w-5 h-5 text-blue-400" />
-                <h3 className="font-semibold text-white">Países Filtrados</h3>
-              </div>
-              <div className="text-2xl font-bold text-blue-400">
-                {allCountriesData.length}
-              </div>
-              <div className="text-sm text-gray-400">
-                de 21 países
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            <Card className="bg-black/40 border-gray-700">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-5 h-5 text-blue-400" />
+                  <h3 className="font-semibold text-white">Países Filtrados</h3>
+                </div>
+                <div className="text-2xl font-bold text-blue-400">
+                  {allCountriesData.length}
+                </div>
+                <div className="text-sm text-gray-400">
+                  de 21 países
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Top 10 Expectativa de Vida - Agora com todas as barras */}
-          <Card className="bg-black/40 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-xl text-white flex items-center gap-2">
-                <Heart className="w-6 h-6 text-red-400" />
-                Top 10 Expectativa de Vida
-              </CardTitle>
-              <p className="text-sm text-gray-400">
-                Asiáticos dominam, mas europeus não ficam muito atrás
-              </p>
-            </CardHeader>
-            <CardContent className="h-[450px] p-4">
-              <ChartContainer config={chartConfig} className="h-full w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart 
-                    data={top10Expectancy}
-                    margin={{ top: 10, right: 20, left: 20, bottom: 60 }}
-                  >
-                    <XAxis 
-                      dataKey="displayName" 
-                      tick={{ fontSize: 20 }}
-                      interval={0}
-                      height={80}
-                      angle={0}
-                      textAnchor="middle"
-                    />
-                    <YAxis 
-                      domain={[75, 90]}
-                      label={{ value: 'Anos', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
-                      tick={{ fontSize: 12, fill: '#ffffff' }}
-                    />
-                    <Bar 
-                      dataKey="expectancy" 
-                      fill="url(#expectancyGradient)"
-                      radius={[4, 4, 0, 0]}
-                    />
-                    <defs>
-                      <linearGradient id="expectancyGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#ef4444" />
-                        <stop offset="50%" stopColor="#f87171" />
-                        <stop offset="100%" stopColor="#fca5a5" />
-                      </linearGradient>
-                    </defs>
-                    <ChartTooltip 
-                      content={<ChartTooltipContent />}
-                      formatter={(value, name, props) => [
-                        `${value} anos`, 
-                        `${props.payload.country} (${props.payload.rank}º lugar)`
-                      ]}
-                      labelFormatter={() => ''}
-                      contentStyle={{
-                        backgroundColor: '#1f2937',
-                        border: '1px solid #374151',
-                        borderRadius: '8px',
-                        color: '#ffffff'
-                      }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </CardContent>
-          </Card>
+        <section id="charts" className="scroll-mt-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* Top 10 Expectativa de Vida - Agora com todas as barras */}
+            <Card className="bg-black/40 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <Heart className="w-6 h-6 text-red-400" />
+                  Top 10 Expectativa de Vida
+                </CardTitle>
+                <p className="text-sm text-gray-400">
+                  Asiáticos dominam, mas europeus não ficam muito atrás
+                </p>
+              </CardHeader>
+              <CardContent className="h-[450px] p-4">
+                <ChartContainer config={chartConfig} className="h-full w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart 
+                      data={top10Expectancy}
+                      margin={{ top: 10, right: 20, left: 20, bottom: 60 }}
+                    >
+                      <XAxis 
+                        dataKey="displayName" 
+                        tick={{ fontSize: 20 }}
+                        interval={0}
+                        height={80}
+                        angle={0}
+                        textAnchor="middle"
+                      />
+                      <YAxis 
+                        domain={[75, 90]}
+                        label={{ value: 'Anos', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
+                        tick={{ fontSize: 12, fill: '#ffffff' }}
+                      />
+                      <Bar 
+                        dataKey="expectancy" 
+                        fill="url(#expectancyGradient)"
+                        radius={[4, 4, 0, 0]}
+                      />
+                      <defs>
+                        <linearGradient id="expectancyGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#ef4444" />
+                          <stop offset="50%" stopColor="#f87171" />
+                          <stop offset="100%" stopColor="#fca5a5" />
+                        </linearGradient>
+                      </defs>
+                      <ChartTooltip 
+                        content={<ChartTooltipContent />}
+                        formatter={(value, name, props) => [
+                          `${value} anos`, 
+                          `${props.payload.country} (${props.payload.rank}º lugar)`
+                        ]}
+                        labelFormatter={() => ''}
+                        contentStyle={{
+                          backgroundColor: '#1f2937',
+                          border: '1px solid #374151',
+                          borderRadius: '8px',
+                          color: '#ffffff'
+                        }}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              </CardContent>
+            </Card>
 
-          {/* Work-Life Balance Scatter */}
-          <Card className="bg-black/40 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-xl text-white flex items-center gap-2">
-                <Clock className="w-6 h-6 text-blue-400" />
-                Work-Life Balance Global
-              </CardTitle>
-              <p className="text-sm text-gray-400">
-                Países no canto inferior direito têm o melhor equilíbrio
-              </p>
-            </CardHeader>
-            <CardContent className="h-[450px] p-4">
-              <ChartContainer config={chartConfig} className="h-full w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart 
-                    data={scatterData}
-                    margin={{ top: 10, right: 20, bottom: 40, left: 20 }}
-                  >
-                    <XAxis 
-                      dataKey="x" 
-                      name="Horas de Trabalho" 
-                      unit="h/sem" 
-                      domain={[25, 50]}
-                      label={{ value: 'Horas/Semana →', position: 'insideBottom', offset: -5, style: { fontSize: '12px', fill: '#ffffff' } }}
-                      tick={{ fontSize: 12, fill: '#ffffff' }}
-                    />
-                    <YAxis 
-                      dataKey="y" 
-                      name="Expectativa" 
-                      unit=" anos"
-                      domain={[68, 86]}
-                      label={{ value: '↑ Expectativa (anos)', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
-                      tick={{ fontSize: 12, fill: '#ffffff' }}
-                    />
-                    <Scatter dataKey="y" fill="#3b82f6" />
-                    <ChartTooltip 
-                      content={<ChartTooltipContent />}
-                      formatter={(value, name, props) => {
-                        if (name === 'y') return [`${value} anos`, 'Expectativa'];
-                        if (name === 'x') return [`${props.payload.x}h/sem`, 'Trabalho'];
-                        return [value, name];
-                      }}
-                      labelFormatter={(label, payload) => {
-                        if (payload && payload.length > 0) {
-                          return `${payload[0].payload.flag} ${payload[0].payload.country}`;
-                        }
-                        return label;
-                      }}
-                    />
-                  </ScatterChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </CardContent>
-          </Card>
+            {/* Work-Life Balance Scatter */}
+            <Card className="bg-black/40 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <Clock className="w-6 h-6 text-blue-400" />
+                  Work-Life Balance Global
+                </CardTitle>
+                <p className="text-sm text-gray-400">
+                  Países no canto inferior direito têm o melhor equilíbrio
+                </p>
+              </CardHeader>
+              <CardContent className="h-[450px] p-4">
+                <ChartContainer config={chartConfig} className="h-full w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ScatterChart 
+                      data={scatterData}
+                      margin={{ top: 10, right: 20, bottom: 40, left: 20 }}
+                    >
+                      <XAxis 
+                        dataKey="x" 
+                        name="Horas de Trabalho" 
+                        unit="h/sem" 
+                        domain={[25, 50]}
+                        label={{ value: 'Horas/Semana →', position: 'insideBottom', offset: -5, style: { fontSize: '12px', fill: '#ffffff' } }}
+                        tick={{ fontSize: 12, fill: '#ffffff' }}
+                      />
+                      <YAxis 
+                        dataKey="y" 
+                        name="Expectativa" 
+                        unit=" anos"
+                        domain={[68, 86]}
+                        label={{ value: '↑ Expectativa (anos)', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
+                        tick={{ fontSize: 12, fill: '#ffffff' }}
+                      />
+                      <Scatter dataKey="y" fill="#3b82f6" />
+                      <ChartTooltip 
+                        content={<ChartTooltipContent />}
+                        formatter={(value, name, props) => {
+                          if (name === 'y') return [`${value} anos`, 'Expectativa'];
+                          if (name === 'x') return [`${props.payload.x}h/sem`, 'Trabalho'];
+                          return [value, name];
+                        }}
+                        labelFormatter={(label, payload) => {
+                          if (payload && payload.length > 0) {
+                            return `${payload[0].payload.flag} ${payload[0].payload.country}`;
+                          }
+                          return label;
+                        }}
+                      />
+                    </ScatterChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              </CardContent>
+            </Card>
 
-          {/* Happiness vs Work Hours */}
-          <Card className="bg-black/40 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-xl text-white flex items-center gap-2">
-                <TrendingUp className="w-6 h-6 text-yellow-400" />
-                Felicidade vs Horas de Trabalho
-              </CardTitle>
-              <p className="text-sm text-gray-400">
-                Será que trabalhar mais traz mais felicidade?
-              </p>
-            </CardHeader>
-            <CardContent className="h-[450px] p-4">
-              <ChartContainer config={chartConfig} className="h-full w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart 
-                    data={allCountriesData.map(c => ({ ...c, x: c.workHours, y: c.happiness }))}
-                    margin={{ top: 10, right: 20, left: 20, bottom: 40 }}
-                  >
-                    <XAxis 
-                      dataKey="x" 
-                      name="Horas de Trabalho" 
-                      unit="h/sem" 
-                      domain={[25, 50]}
-                      label={{ value: 'Horas/Semana →', position: 'insideBottom', offset: -5, style: { fontSize: '12px', fill: '#ffffff' } }}
-                      tick={{ fontSize: 12, fill: '#ffffff' }}
-                    />
-                    <YAxis 
-                      dataKey="y" 
-                      name="Felicidade" 
-                      unit="/10"
-                      domain={[3, 8]}
-                      label={{ value: '↑ Felicidade', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
-                      tick={{ fontSize: 12, fill: '#ffffff' }}
-                    />
-                    <Scatter dataKey="y" fill="#fbbf24" />
-                    <ChartTooltip 
-                      content={<ChartTooltipContent />}
-                      formatter={(value, name, props) => {
-                        if (name === 'y') return [`${value}/10`, 'Felicidade'];
-                        if (name === 'x') return [`${props.payload.x}h/sem`, 'Trabalho'];
-                        return [value, name];
-                      }}
-                      labelFormatter={(label, payload) => {
-                        if (payload && payload.length > 0) {
-                          return `${payload[0].payload.flag} ${payload[0].payload.country}`;
-                        }
-                        return label;
-                      }}
-                    />
-                  </ScatterChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </CardContent>
-          </Card>
+            {/* Happiness vs Work Hours */}
+            <Card className="bg-black/40 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <TrendingUp className="w-6 h-6 text-yellow-400" />
+                  Felicidade vs Horas de Trabalho
+                </CardTitle>
+                <p className="text-sm text-gray-400">
+                  Será que trabalhar mais traz mais felicidade?
+                </p>
+              </CardHeader>
+              <CardContent className="h-[450px] p-4">
+                <ChartContainer config={chartConfig} className="h-full w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ScatterChart 
+                      data={allCountriesData.map(c => ({ ...c, x: c.workHours, y: c.happiness }))}
+                      margin={{ top: 10, right: 20, left: 20, bottom: 40 }}
+                    >
+                      <XAxis 
+                        dataKey="x" 
+                        name="Horas de Trabalho" 
+                        unit="h/sem" 
+                        domain={[25, 50]}
+                        label={{ value: 'Horas/Semana →', position: 'insideBottom', offset: -5, style: { fontSize: '12px', fill: '#ffffff' } }}
+                        tick={{ fontSize: 12, fill: '#ffffff' }}
+                      />
+                      <YAxis 
+                        dataKey="y" 
+                        name="Felicidade" 
+                        unit="/10"
+                        domain={[3, 8]}
+                        label={{ value: '↑ Felicidade', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
+                        tick={{ fontSize: 12, fill: '#ffffff' }}
+                      />
+                      <Scatter dataKey="y" fill="#fbbf24" />
+                      <ChartTooltip 
+                        content={<ChartTooltipContent />}
+                        formatter={(value, name, props) => {
+                          if (name === 'y') return [`${value}/10`, 'Felicidade'];
+                          if (name === 'x') return [`${props.payload.x}h/sem`, 'Trabalho'];
+                          return [value, name];
+                        }}
+                        labelFormatter={(label, payload) => {
+                          if (payload && payload.length > 0) {
+                            return `${payload[0].payload.flag} ${payload[0].payload.country}`;
+                          }
+                          return label;
+                        }}
+                      />
+                    </ScatterChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              </CardContent>
+            </Card>
 
-          {/* Países com Melhor Equilíbrio */}
-          <Card className="bg-black/40 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-xl text-white flex items-center gap-2">
-                <Activity className="w-6 h-6 text-green-400" />
-                Mestres do Work-Life Balance
-              </CardTitle>
-              <p className="text-sm text-gray-400">
-                Menos de 30h/semana + Felicidade 7+
-              </p>
-            </CardHeader>
-            <CardContent className="h-[450px] p-4">
-              <ChartContainer config={chartConfig} className="h-full w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart 
-                    data={workLifeBalanceCountries}
-                    margin={{ top: 10, right: 20, left: 20, bottom: 60 }}
-                  >
-                    <XAxis 
-                      dataKey="flag" 
-                      tick={{ fontSize: 16 }}
-                      interval={0}
-                      height={60}
-                    />
-                    <YAxis 
-                      label={{ value: 'Horas/Semana', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
-                      tick={{ fontSize: 12, fill: '#ffffff' }}
-                    />
-                    <Bar dataKey="workHours" fill="#10b981" radius={[4, 4, 0, 0]} />
-                    <ChartTooltip 
-                      content={<ChartTooltipContent />}
-                      formatter={(value, name, props) => [
-                        `${value}h/sem`, 
-                        `${props.payload.country} (${props.payload.happiness}/10 felicidade)`
-                      ]}
-                      labelFormatter={() => ''}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Países com Melhor Equilíbrio */}
+            <Card className="bg-black/40 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <Activity className="w-6 h-6 text-green-400" />
+                  Mestres do Work-Life Balance
+                </CardTitle>
+                <p className="text-sm text-gray-400">
+                  Menos de 30h/semana + Felicidade 7+
+                </p>
+              </CardHeader>
+              <CardContent className="h-[450px] p-4">
+                <ChartContainer config={chartConfig} className="h-full w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart 
+                      data={workLifeBalanceCountries}
+                      margin={{ top: 10, right: 20, left: 20, bottom: 60 }}
+                    >
+                      <XAxis 
+                        dataKey="flag" 
+                        tick={{ fontSize: 16 }}
+                        interval={0}
+                        height={60}
+                      />
+                      <YAxis 
+                        label={{ value: 'Horas/Semana', angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: '#ffffff' } }}
+                        tick={{ fontSize: 12, fill: '#ffffff' }}
+                      />
+                      <Bar dataKey="workHours" fill="#10b981" radius={[4, 4, 0, 0]} />
+                      <ChartTooltip 
+                        content={<ChartTooltipContent />}
+                        formatter={(value, name, props) => [
+                          `${value}h/sem`, 
+                          `${props.payload.country} (${props.payload.happiness}/10 felicidade)`
+                        ]}
+                        labelFormatter={() => ''}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
         {/* Tabela Completa com ordenação clicável */}
-        <Card className="bg-black/40 border-gray-700">
-          <CardHeader>
-            <CardTitle className="text-xl text-white flex items-center gap-2">
-              <Globe className="w-6 h-6 text-blue-400" />
-              Ranking Completo de Países (Dados Oficiais 2024)
-            </CardTitle>
-            <p className="text-sm text-gray-400 mt-2">
-              Clique nas colunas para ordenar os dados
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-gray-600">
-                    <TableHead className="text-gray-300">#</TableHead>
-                    <TableHead 
-                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
-                      onClick={() => handleSort('country')}
-                    >
-                      País <SortIcon field="country" />
-                    </TableHead>
-                    <TableHead className="text-gray-300">Região</TableHead>
-                    <TableHead 
-                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
-                      onClick={() => handleSort('expectancy')}
-                    >
-                      Expectativa <SortIcon field="expectancy" />
-                    </TableHead>
-                    <TableHead 
-                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
-                      onClick={() => handleSort('workHours')}
-                    >
-                      Trabalho <SortIcon field="workHours" />
-                    </TableHead>
-                    <TableHead 
-                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
-                      onClick={() => handleSort('exercise')}
-                    >
-                      Exercício <SortIcon field="exercise" />
-                    </TableHead>
-                    <TableHead 
-                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
-                      onClick={() => handleSort('socialMedia')}
-                    >
-                      Redes Sociais <SortIcon field="socialMedia" />
-                    </TableHead>
-                    <TableHead 
-                      className="text-gray-300 cursor-pointer hover:text-white transition-colors"
-                      onClick={() => handleSort('happiness')}
-                    >
-                      Felicidade <SortIcon field="happiness" />
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sortedCountries.map((country, index) => (
-                    <TableRow key={country.country} className="border-gray-600 hover:bg-gray-700/50">
-                      <TableCell className="text-gray-400 font-mono">
-                        {(index + 1).toString().padStart(2, '0')}
-                      </TableCell>
-                      <TableCell className="text-white font-medium">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xl">{country.flag}</span>
-                          <span className="hidden sm:inline">{country.country}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-gray-300 text-sm">
-                        {country.region}
-                      </TableCell>
-                      <TableCell className="text-red-400 font-semibold">
-                        {country.expectancy} anos
-                      </TableCell>
-                      <TableCell className="text-orange-400">
-                        {country.workHours}h/sem
-                      </TableCell>
-                      <TableCell className="text-green-400">
-                        {country.exercise}h/sem
-                      </TableCell>
-                      <TableCell className="text-purple-400">
-                        {country.socialMedia}h/dia
-                      </TableCell>
-                      <TableCell className="text-yellow-400 font-semibold">
-                        {country.happiness}/10
-                      </TableCell>
+        <section id="ranking" className="scroll-mt-20">
+          <Card className="bg-black/40 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-xl text-white flex items-center gap-2">
+                <Globe className="w-6 h-6 text-blue-400" />
+                Ranking Completo de Países (Dados Oficiais 2024)
+              </CardTitle>
+              <p className="text-sm text-gray-400 mt-2">
+                Clique nas colunas para ordenar os dados
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-gray-600">
+                      <TableHead className="text-gray-300">#</TableHead>
+                      <TableHead 
+                        className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                        onClick={() => handleSort('country')}
+                      >
+                        País <SortIcon field="country" />
+                      </TableHead>
+                      <TableHead className="text-gray-300">Região</TableHead>
+                      <TableHead 
+                        className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                        onClick={() => handleSort('expectancy')}
+                      >
+                        Expectativa <SortIcon field="expectancy" />
+                      </TableHead>
+                      <TableHead 
+                        className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                        onClick={() => handleSort('workHours')}
+                      >
+                        Trabalho <SortIcon field="workHours" />
+                      </TableHead>
+                      <TableHead 
+                        className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                        onClick={() => handleSort('exercise')}
+                      >
+                        Exercício <SortIcon field="exercise" />
+                      </TableHead>
+                      <TableHead 
+                        className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                        onClick={() => handleSort('socialMedia')}
+                      >
+                        Redes Sociais <SortIcon field="socialMedia" />
+                      </TableHead>
+                      <TableHead 
+                        className="text-gray-300 cursor-pointer hover:text-white transition-colors"
+                        onClick={() => handleSort('happiness')}
+                      >
+                        Felicidade <SortIcon field="happiness" />
+                      </TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {sortedCountries.map((country, index) => (
+                      <TableRow key={country.country} className="border-gray-600 hover:bg-gray-700/50">
+                        <TableCell className="text-gray-400 font-mono">
+                          {(index + 1).toString().padStart(2, '0')}
+                        </TableCell>
+                        <TableCell className="text-white font-medium">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">{country.flag}</span>
+                            <span className="hidden sm:inline">{country.country}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-gray-300 text-sm">
+                          {country.region}
+                        </TableCell>
+                        <TableCell className="text-red-400 font-semibold">
+                          {country.expectancy} anos
+                        </TableCell>
+                        <TableCell className="text-orange-400">
+                          {country.workHours}h/sem
+                        </TableCell>
+                        <TableCell className="text-green-400">
+                          {country.exercise}h/sem
+                        </TableCell>
+                        <TableCell className="text-purple-400">
+                          {country.socialMedia}h/dia
+                        </TableCell>
+                        <TableCell className="text-yellow-400 font-semibold">
+                          {country.happiness}/10
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
       </div>
       
       <Footer />
