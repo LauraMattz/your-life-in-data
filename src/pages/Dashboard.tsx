@@ -23,6 +23,17 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest'
+      });
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Header */}
@@ -44,27 +55,47 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
         </div>
       </div>
 
-      {/* Progresso da Jornada */}
+      {/* Progresso da Jornada - Navegável */}
       <div className="mb-16">
         <div className="flex justify-center">
           <div className="flex items-center gap-4 bg-gray-900/60 backdrop-blur-sm border border-gray-700 rounded-full px-6 py-3">
             <div className="flex items-center gap-2">
-              <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">1</div>
+              <button 
+                onClick={() => scrollToSection('etapa-1')}
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold transition-colors cursor-pointer"
+              >
+                1
+              </button>
               <span className="text-sm text-gray-300 hidden sm:inline">Visualizar</span>
             </div>
             <div className="w-8 h-0.5 bg-gray-700"></div>
             <div className="flex items-center gap-2">
-              <div className="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">2</div>
+              <button 
+                onClick={() => scrollToSection('etapa-2')}
+                className="bg-green-600 hover:bg-green-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold transition-colors cursor-pointer"
+              >
+                2
+              </button>
               <span className="text-sm text-gray-300 hidden sm:inline">Personalizar</span>
             </div>
             <div className="w-8 h-0.5 bg-gray-700"></div>
             <div className="flex items-center gap-2">
-              <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">3</div>
+              <button 
+                onClick={() => scrollToSection('etapa-3')}
+                className="bg-purple-600 hover:bg-purple-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold transition-colors cursor-pointer"
+              >
+                3
+              </button>
               <span className="text-sm text-gray-300 hidden sm:inline">Simular</span>
             </div>
             <div className="w-8 h-0.5 bg-gray-700"></div>
             <div className="flex items-center gap-2">
-              <div className="bg-yellow-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">4</div>
+              <button 
+                onClick={() => scrollToSection('etapa-4')}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold transition-colors cursor-pointer"
+              >
+                4
+              </button>
               <span className="text-sm text-gray-300 hidden sm:inline">Aplicar</span>
             </div>
           </div>
@@ -72,7 +103,7 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
       </div>
 
       {/* Etapa 1 - Visualizar onde você está */}
-      <div className="mb-20">
+      <div id="etapa-1" className="mb-20 scroll-mt-20">
         <div className="flex items-center gap-3 mb-8">
           <div className="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg">1</div>
           <h2 className="text-3xl font-bold text-white flex items-center gap-3">
@@ -101,15 +132,34 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          <div className="h-fit">
-            <LifeClockCard userProfile={userProfile} />
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="w-full">
+              <LifeClockCard userProfile={userProfile} />
+            </div>
+            <div className="w-full lg:min-h-[600px] flex items-center justify-center">
+              <div className="bg-gray-800/50 border border-gray-600 rounded-2xl p-8 text-center w-full">
+                <div className="text-6xl mb-4">🎯</div>
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Próximo Passo
+                </h3>
+                <p className="text-gray-300 mb-6">
+                  Agora que você viu onde está no tempo, vamos personalizar seus dados para cálculos mais precisos.
+                </p>
+                <Button 
+                  onClick={() => scrollToSection('etapa-2')}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  Ir para Etapa 2 →
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Etapa 2 - Personalizar seus dados */}
-      <div className="mb-20">
+      <div id="etapa-2" className="mb-20 scroll-mt-20">
         <div className="flex items-center gap-3 mb-8">
           <div className="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg">2</div>
           <h2 className="text-3xl font-bold text-white flex items-center gap-3">
@@ -137,15 +187,34 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          <div className="h-fit">
-            <LifeMetricsCard userProfile={userProfile} />
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="w-full">
+              <LifeMetricsCard userProfile={userProfile} />
+            </div>
+            <div className="w-full lg:min-h-[600px] flex items-center justify-center">
+              <div className="bg-gray-800/50 border border-gray-600 rounded-2xl p-8 text-center w-full">
+                <div className="text-6xl mb-4">🔧</div>
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Dados Personalizados
+                </h3>
+                <p className="text-gray-300 mb-6">
+                  Depois de ajustar seus dados pessoais, vamos simular diferentes cenários para sua rotina.
+                </p>
+                <Button 
+                  onClick={() => scrollToSection('etapa-3')}
+                  className="bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  Ir para Etapa 3 →
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Etapa 3 - Simular mudanças */}
-      <div className="mb-20">
+      <div id="etapa-3" className="mb-20 scroll-mt-20">
         <div className="flex items-center gap-3 mb-8">
           <div className="bg-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg">3</div>
           <h2 className="text-3xl font-bold text-white flex items-center gap-3">
@@ -179,7 +248,7 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
       </div>
 
       {/* Etapa 4 - Aplicar insights */}
-      <div className="mb-20">
+      <div id="etapa-4" className="mb-20 scroll-mt-20">
         <div className="flex items-center gap-3 mb-8">
           <div className="bg-yellow-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg">4</div>
           <h2 className="text-3xl font-bold text-white flex items-center gap-3">
