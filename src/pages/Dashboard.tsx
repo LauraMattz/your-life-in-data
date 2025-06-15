@@ -39,7 +39,7 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
       {/* Header */}
       <div className="text-center mb-8 md:mb-12">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-          Olá, {userProfile.name}! 👋
+          Olá, {userProfile.name}! 🙋‍♀️
         </h1>
         <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto mb-4 md:mb-6 px-2">
           Transforme seu tempo em 4 passos simples
