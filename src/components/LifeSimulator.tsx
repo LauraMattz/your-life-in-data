@@ -61,16 +61,25 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
 
   const impact = calculateImpact();
 
+  const hasAnyChanges = changes.socialMediaReduction > 0 || changes.exerciseIncrease > 0 || changes.readingIncrease > 0 || changes.sleepImprovement > 0;
+
   return (
     <Card className="bg-slate-800 border-slate-700">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-white">
-          🔮 E se você começar hoje, {userProfile.name}?
+          🔮 Simulador de Mudanças
         </CardTitle>
         <p className="text-slate-300">
-          Simule pequenas mudanças e veja o impacto transformador até o final de {currentYear}. 
-          Ainda temos <span className="text-blue-400 font-semibold">{daysRemainingThisYear} dias</span> pela frente!
+          <strong>Como usar:</strong> Mova os controles abaixo para simular pequenas mudanças na sua rotina. 
+          Veja o impacto acumulado até dezembro de {currentYear}!
         </p>
+        {!hasAnyChanges && (
+          <div className="bg-blue-900/20 border border-blue-500/30 p-3 rounded-lg">
+            <p className="text-blue-200 text-sm">
+              👆 <strong>Comece agora:</strong> Escolha pelo menos uma área para ajustar. Mesmo mudanças pequenas fazem diferença!
+            </p>
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Controls */}
@@ -78,9 +87,9 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
           <div className="space-y-4">
             <div>
               <Label className="text-white font-semibold">
-                📱 Menos redes sociais: {changes.socialMediaReduction}h/dia
+                📱 Reduzir redes sociais: {changes.socialMediaReduction}h/dia
               </Label>
-              <p className="text-xs text-gray-400 mb-2">Mais tempo para o que importa de verdade</p>
+              <p className="text-xs text-gray-400 mb-2">👆 Mova para a direita para reduzir o tempo de tela</p>
               <Slider
                 value={[changes.socialMediaReduction]}
                 onValueChange={(value) => setChanges(prev => ({ ...prev, socialMediaReduction: value[0] }))}
@@ -88,13 +97,14 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                 step={0.5}
                 className="mt-2"
               />
+              <p className="text-xs text-gray-500 mt-1">💡 Dica: Comece com 30min (0.5h) por dia</p>
             </div>
 
             <div>
               <Label className="text-white font-semibold">
-                💪 Mais exercícios: {changes.exerciseIncrease}h/dia
+                💪 Aumentar exercícios: {changes.exerciseIncrease}h/dia
               </Label>
-              <p className="text-xs text-gray-400 mb-2">Energia e disposição para tudo</p>
+              <p className="text-xs text-gray-400 mb-2">👆 Mova para definir quanto tempo a mais de atividade física</p>
               <Slider
                 value={[changes.exerciseIncrease]}
                 onValueChange={(value) => setChanges(prev => ({ ...prev, exerciseIncrease: value[0] }))}
@@ -102,15 +112,16 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                 step={0.25}
                 className="mt-2"
               />
+              <p className="text-xs text-gray-500 mt-1">💡 Dica: 15min (0.25h) de caminhada já ajuda muito</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div>
               <Label className="text-white font-semibold">
-                📚 Mais leitura: {changes.readingIncrease} min/dia
+                📚 Aumentar leitura: {changes.readingIncrease} min/dia
               </Label>
-              <p className="text-xs text-gray-400 mb-2">Conhecimento que se acumula todo dia</p>
+              <p className="text-xs text-gray-400 mb-2">👆 Defina quantos minutos a mais de leitura por dia</p>
               <Slider
                 value={[changes.readingIncrease]}
                 onValueChange={(value) => setChanges(prev => ({ ...prev, readingIncrease: value[0] }))}
@@ -118,13 +129,14 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                 step={15}
                 className="mt-2"
               />
+              <p className="text-xs text-gray-500 mt-1">💡 Dica: 15 minutos antes de dormir é um ótimo começo</p>
             </div>
 
             <div>
               <Label className="text-white font-semibold">
-                😴 Sono de qualidade: +{changes.sleepImprovement}h/dia
+                😴 Melhorar sono: +{changes.sleepImprovement}h/dia
               </Label>
-              <p className="text-xs text-gray-400 mb-2">A base de tudo que você quer alcançar</p>
+              <p className="text-xs text-gray-400 mb-2">👆 Quantas horas a mais de sono de qualidade</p>
               <Slider
                 value={[changes.sleepImprovement]}
                 onValueChange={(value) => setChanges(prev => ({ ...prev, sleepImprovement: value[0] }))}
@@ -132,15 +144,16 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                 step={0.5}
                 className="mt-2"
               />
+              <p className="text-xs text-gray-500 mt-1">💡 Dica: 30min (0.5h) mais cedo para dormir faz toda diferença</p>
             </div>
           </div>
         </div>
 
         {/* Results */}
-        {(changes.socialMediaReduction > 0 || changes.exerciseIncrease > 0 || changes.readingIncrease > 0 || changes.sleepImprovement > 0) && (
+        {hasAnyChanges && (
           <div className="bg-gradient-to-r from-emerald-900/30 to-cyan-900/30 p-6 rounded-lg border border-emerald-500/20">
             <h3 className="text-xl font-bold text-emerald-400 mb-4">
-              ✨ Olha só o que você conquistaria até dezembro:
+              ✨ Resultado da sua simulação até dezembro:
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -195,10 +208,19 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
                   🎯 Total: {impact.totalProductiveDays.toFixed(1)} dias de vida mais rica e significativa até o fim de {currentYear}!
                 </p>
                 <p className="text-amber-200 text-sm mt-1">
-                  {userProfile.name}, que tal começar hoje mesmo? Pequenos passos, grandes transformações.
+                  <strong>Próximo passo:</strong> Escolha uma mudança e comece hoje, {userProfile.name}! 
+                  Pequenos passos consistentes criam grandes transformações.
                 </p>
               </div>
             )}
+          </div>
+        )}
+
+        {!hasAnyChanges && (
+          <div className="bg-gray-700/30 border border-gray-600 p-4 rounded-lg text-center">
+            <p className="text-gray-400">
+              🎯 <strong>Esperando você começar...</strong> Mova qualquer um dos controles acima para ver o impacto das mudanças!
+            </p>
           </div>
         )}
       </CardContent>

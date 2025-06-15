@@ -26,36 +26,42 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
       icon: '📱',
       title: 'Tempo de Qualidade',
       content: `Reduzindo <span class="text-blue-400 font-bold">1 hora</span> de tela por dia, você ganha <span class="text-blue-400 font-bold">${daysRemainingThisYear}</span> horas extras até o final do ano para fazer o que realmente importa.`,
+      action: '🎯 Ação: Configure um limite diário no seu celular ou use o modo "não perturbe" por 1 hora.',
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '📚',
       title: 'Conhecimento Acumulado',
       content: `Apenas <span class="text-green-400 font-bold">15 minutinhos</span> de leitura por dia podem resultar em <span class="text-green-400 font-bold">${Math.floor(daysRemainingThisYear * 0.25 / 8)} livros</span> até dezembro. Imagine o que você vai aprender!`,
+      action: '🎯 Ação: Escolha um livro hoje e leia 1 página antes de dormir. Só isso!',
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '⚡',
       title: 'Energia Restante',
       content: `Ainda temos <span class="text-yellow-400 font-bold">${((daysRemainingThisYear / totalDaysInYear) * 100).toFixed(1)}%</span> do ano pela frente, ${userProfile.name}! Cada amanhecer é uma página em branco esperando sua história.`,
+      action: '🎯 Ação: Defina 1 objetivo pequeno para esta semana. Algo que você consegue fazer em 10 minutos por dia.',
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '💤',
       title: 'Descanso Reparador',
       content: `Melhorar seu sono nos próximos <span class="text-purple-400 font-bold">${daysRemainingThisYear} dias</span> é investir na sua energia, humor e produtividade. Seu corpo agradece!`,
+      action: '🎯 Ação: Durma 30 minutos mais cedo hoje. Configure um alarme para começar a rotina noturna.',
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '🎯',
       title: 'Evolução Constante',
       content: `O poder do <span class="text-orange-400 font-bold">1% melhor</span> por dia: nos próximos <span class="text-orange-400 font-bold">${daysRemainingThisYear} dias</span>, pequenas melhorias criam transformações extraordinárias.`,
+      action: '🎯 Ação: Escolha 1 coisa que você quer melhorar e dedique apenas 5 minutos por dia a ela.',
       color: 'from-gray-700 to-gray-800'
     },
     {
       icon: '🌱',
       title: 'Crescimento Pessoal',
       content: `Com <span class="text-emerald-400 font-bold">${daysRemainingThisYear} dias</span> à frente, você tem tempo de sobra para dominar uma nova habilidade. Que tal começar hoje mesmo?`,
+      action: '🎯 Ação: Assista 1 vídeo no YouTube sobre algo que você sempre quis aprender. Agora mesmo!',
       color: 'from-gray-700 to-gray-800'
     }
   ];
@@ -65,11 +71,14 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
       <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-6 text-center">
         <div className="flex items-center justify-center gap-3">
           <span className="text-4xl relative z-10">💡</span>
-          <span>Insights para Aproveitar {currentYear}</span>
+          <span>Insights Práticos para {currentYear}</span>
         </div>
       </h2>
-      <p className="text-gray-400 text-center mb-8 max-w-2xl mx-auto">
-        Pequenas mudanças, grandes resultados. Veja como otimizar seus próximos meses:
+      <p className="text-gray-400 text-center mb-4 max-w-2xl mx-auto">
+        <strong>Como usar:</strong> Leia os insights abaixo e escolha 1 ou 2 ações para implementar hoje.
+      </p>
+      <p className="text-gray-500 text-center mb-8 max-w-xl mx-auto text-sm">
+        💡 Dica: Não tente fazer tudo de uma vez. Escolha o que mais faz sentido para você agora!
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {insights.map((insight, index) => (
@@ -80,13 +89,27 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
                 <div className="text-3xl mb-2 relative z-10 group-hover:scale-110 transition-transform duration-300">{insight.icon}</div>
                 <h3 className="font-bold text-white text-lg relative z-10">{insight.title}</h3>
               </div>
-              <div className="p-4">
+              <div className="p-4 space-y-3">
                 <p className="text-gray-300 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: insight.content }}>
                 </p>
+                <div className="bg-blue-900/20 border border-blue-500/30 p-2 rounded">
+                  <p className="text-blue-200 text-xs font-medium">
+                    {insight.action}
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
         ))}
+      </div>
+      
+      <div className="mt-8 bg-green-900/20 border border-green-500/30 p-4 rounded-lg text-center">
+        <p className="text-green-200 font-semibold mb-2">
+          ✅ Próximo passo: Escolha 1 ação acima e faça AGORA!
+        </p>
+        <p className="text-green-300 text-sm">
+          Lembre-se, {userProfile.name}: não é sobre perfeição, é sobre progresso. Um pequeno passo hoje vale mais que grandes planos para amanhã.
+        </p>
       </div>
     </div>
   );
