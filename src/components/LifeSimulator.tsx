@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
@@ -66,20 +65,19 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
   return (
     <Card className="bg-slate-800 border-slate-700">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-white">
-          🔮 Simulador de Mudanças
-        </CardTitle>
-        <p className="text-slate-300">
-          <strong>Como usar:</strong> Mova os controles abaixo para simular pequenas mudanças na sua rotina. 
-          Veja o impacto acumulado até dezembro de {currentYear}!
-        </p>
-        {!hasAnyChanges && (
-          <div className="bg-blue-900/20 border border-blue-500/30 p-3 rounded-lg">
-            <p className="text-blue-200 text-sm">
-              👆 <strong>Comece agora:</strong> Escolha pelo menos uma área para ajustar. Mesmo mudanças pequenas fazem diferença!
-            </p>
-          </div>
-        )}
+        <div className="space-y-3">
+          <p className="text-slate-300">
+            <strong>Como usar:</strong> Mova os controles abaixo para simular pequenas mudanças na sua rotina. 
+            Veja o impacto acumulado até dezembro de {currentYear}!
+          </p>
+          {!hasAnyChanges && (
+            <div className="bg-blue-900/20 border border-blue-500/30 p-3 rounded-lg">
+              <p className="text-blue-200 text-sm">
+                👆 <strong>Comece agora:</strong> Escolha pelo menos uma área para ajustar. Mesmo mudanças pequenas fazem diferença!
+              </p>
+            </div>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Controls */}
