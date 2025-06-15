@@ -52,15 +52,12 @@ export const UserSetup = ({ onProfileComplete }: UserSetupProps) => {
             <span className="bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent">
               Olá!
             </span>
-            <span className="ml-3 text-4xl">👋</span>
           </CardTitle>
+          <span className="text-4xl block mb-4">👋</span>
           
           <div className="space-y-4 text-gray-300">
             <p className="text-lg md:text-xl leading-relaxed font-medium">
               Que tal descobrirmos juntos quanto do ano ainda está nas suas mãos?
-            </p>
-            <p className="text-base text-gray-400 leading-relaxed">
-              Vou te mostrar exatamente quantos dias restam de 2024 e como você pode aproveitá-los ao máximo.
             </p>
             
             <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/40 rounded-xl p-4 backdrop-blur-sm">
