@@ -79,11 +79,11 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px]">
-          <div className="h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="min-h-[500px]">
             <LifeClockCard userProfile={userProfile} />
           </div>
-          <div className="bg-gray-800/50 border border-gray-600 rounded-xl p-6 flex flex-col justify-center text-center h-full">
+          <div className="bg-gray-800/50 border border-gray-600 rounded-xl p-6 flex flex-col justify-center text-center min-h-[500px]">
             <div className="text-4xl mb-4">📊</div>
             <h3 className="text-xl font-bold text-white mb-3">Seu Progresso Anual</h3>
             <p className="text-gray-300 mb-6 text-sm leading-relaxed">
@@ -109,11 +109,11 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px]">
-          <div className="h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="min-h-[500px]">
             <LifeMetricsCard userProfile={userProfile} />
           </div>
-          <div className="bg-gray-800/50 border border-gray-600 rounded-xl p-6 flex flex-col justify-center text-center h-full">
+          <div className="bg-gray-800/50 border border-gray-600 rounded-xl p-6 flex flex-col justify-center text-center min-h-[500px]">
             <div className="text-4xl mb-4">⚙️</div>
             <h3 className="text-xl font-bold text-white mb-3">Ajuste Sua Rotina</h3>
             <p className="text-gray-300 mb-6 text-sm leading-relaxed">
