@@ -24,7 +24,7 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-transparent">
@@ -45,7 +45,7 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
       </div>
 
       {/* Progresso da Jornada */}
-      <div className="mb-12">
+      <div className="mb-16">
         <div className="flex justify-center">
           <div className="flex items-center gap-4 bg-gray-900/60 backdrop-blur-sm border border-gray-700 rounded-full px-6 py-3">
             <div className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
       </div>
 
       {/* Etapa 1 - Visualizar onde você está */}
-      <div className="mb-16">
+      <div className="mb-20">
         <div className="flex items-center gap-3 mb-8">
           <div className="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg">1</div>
           <h2 className="text-3xl font-bold text-white flex items-center gap-3">
@@ -101,15 +101,15 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
           </div>
         </div>
         
-        <div className="flex justify-center">
-          <div className="w-full max-w-md">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="h-fit">
             <LifeClockCard userProfile={userProfile} />
           </div>
         </div>
       </div>
 
       {/* Etapa 2 - Personalizar seus dados */}
-      <div className="mb-16">
+      <div className="mb-20">
         <div className="flex items-center gap-3 mb-8">
           <div className="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg">2</div>
           <h2 className="text-3xl font-bold text-white flex items-center gap-3">
@@ -137,15 +137,15 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
           </div>
         </div>
         
-        <div className="flex justify-center">
-          <div className="w-full max-w-md">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="h-fit">
             <LifeMetricsCard userProfile={userProfile} />
           </div>
         </div>
       </div>
 
       {/* Etapa 3 - Simular mudanças */}
-      <div className="mb-16">
+      <div className="mb-20">
         <div className="flex items-center gap-3 mb-8">
           <div className="bg-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg">3</div>
           <h2 className="text-3xl font-bold text-white flex items-center gap-3">
@@ -173,11 +173,13 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
           </div>
         </div>
         
-        <LifeSimulator userProfile={userProfile} />
+        <div className="max-w-6xl mx-auto">
+          <LifeSimulator userProfile={userProfile} />
+        </div>
       </div>
 
       {/* Etapa 4 - Aplicar insights */}
-      <div className="mb-16">
+      <div className="mb-20">
         <div className="flex items-center gap-3 mb-8">
           <div className="bg-yellow-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg">4</div>
           <h2 className="text-3xl font-bold text-white flex items-center gap-3">
@@ -205,12 +207,14 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
           </div>
         </div>
         
-        <InsightCards userProfile={userProfile} />
+        <div className="max-w-6xl mx-auto">
+          <InsightCards userProfile={userProfile} />
+        </div>
       </div>
 
       {/* Call to Action - Comparação Global */}
       <div className="mt-16 mb-8">
-        <div className="bg-gradient-to-br from-indigo-900/40 via-purple-900/40 to-pink-900/40 border border-indigo-500/40 rounded-3xl p-8 text-center backdrop-blur-sm relative overflow-hidden">
+        <div className="bg-gradient-to-br from-indigo-900/40 via-purple-900/40 to-pink-900/40 border border-indigo-500/40 rounded-3xl p-8 text-center backdrop-blur-sm relative overflow-hidden max-w-4xl mx-auto">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full -translate-y-16 translate-x-16"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-pink-400/10 to-yellow-400/10 rounded-full translate-y-12 -translate-x-12"></div>
           
