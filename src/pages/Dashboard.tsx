@@ -38,8 +38,11 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
     <div className="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
       {/* Header */}
       <div className="text-center mb-8 md:mb-12">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-          Olá, {userProfile.name}! 🙋‍♀️
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4">
+          <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            Olá, {userProfile.name}!
+          </span>
+          <span className="ml-2">👋</span>
         </h1>
         <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto mb-4 md:mb-6 px-2">
           Transforme seu tempo em 4 passos simples
