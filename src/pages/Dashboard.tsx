@@ -69,62 +69,35 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
         </div>
       </div>
 
-      {/* Step 1 - Visualizar */}
+      {/* Steps 1 & 2 Side by Side */}
       <section id="etapa-1" className="mb-20 scroll-mt-20">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">1</div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Eye className="w-6 h-6 text-blue-400" />
-            Visualize onde você está
-          </h2>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="min-h-[500px]">
-            <LifeClockCard userProfile={userProfile} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Step 1 - Visualizar */}
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">1</div>
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Eye className="w-6 h-6 text-blue-400" />
+                Visualize onde você está
+              </h2>
+            </div>
+            <div className="min-h-[500px]">
+              <LifeClockCard userProfile={userProfile} />
+            </div>
           </div>
-          <div className="bg-gray-800/50 border border-gray-600 rounded-xl p-6 flex flex-col justify-center text-center min-h-[500px]">
-            <div className="text-4xl mb-4">📊</div>
-            <h3 className="text-xl font-bold text-white mb-3">Seu Progresso Anual</h3>
-            <p className="text-gray-300 mb-6 text-sm leading-relaxed">
-              Cada quadradinho representa um dia de {currentYear}. Veja quantos já passaram e quantos ainda restam.
-            </p>
-            <Button 
-              onClick={() => scrollToSection('etapa-2')}
-              className="bg-green-600 hover:bg-green-700 text-white mx-auto"
-            >
-              Próximo Passo →
-            </Button>
-          </div>
-        </div>
-      </section>
 
-      {/* Step 2 - Personalizar */}
-      <section id="etapa-2" className="mb-20 scroll-mt-20">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">2</div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Settings className="w-6 h-6 text-green-400" />
-            Personalize seus dados
-          </h2>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="min-h-[500px]">
-            <LifeMetricsCard userProfile={userProfile} />
-          </div>
-          <div className="bg-gray-800/50 border border-gray-600 rounded-xl p-6 flex flex-col justify-center text-center min-h-[500px]">
-            <div className="text-4xl mb-4">⚙️</div>
-            <h3 className="text-xl font-bold text-white mb-3">Ajuste Sua Rotina</h3>
-            <p className="text-gray-300 mb-6 text-sm leading-relaxed">
-              Clique em "Editar" no card ao lado para personalizar quantas horas você dedica a cada atividade.
-            </p>
-            <Button 
-              onClick={() => scrollToSection('etapa-3')}
-              className="bg-purple-600 hover:bg-purple-700 text-white mx-auto"
-            >
-              Próximo Passo →
-            </Button>
+          {/* Step 2 - Personalizar */}
+          <div id="etapa-2">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">2</div>
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Settings className="w-6 h-6 text-green-400" />
+                Personalize seus dados
+              </h2>
+            </div>
+            <div className="min-h-[500px]">
+              <LifeMetricsCard userProfile={userProfile} />
+            </div>
           </div>
         </div>
       </section>
