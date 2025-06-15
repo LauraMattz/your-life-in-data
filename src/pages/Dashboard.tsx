@@ -112,12 +112,6 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
           </h2>
         </div>
         
-        <div className="bg-gray-800/30 border border-gray-600 rounded-xl p-4 mb-6">
-          <p className="text-gray-300 text-sm text-center">
-            Experimente pequenas mudanças e veja o impacto até dezembro de {currentYear}
-          </p>
-        </div>
-        
         <LifeSimulator userProfile={userProfile} />
       </section>
 
@@ -129,12 +123,6 @@ export const Dashboard = ({ userProfile }: DashboardProps) => {
             <Lightbulb className="w-6 h-6 text-yellow-400" />
             Aplique insights
           </h2>
-        </div>
-        
-        <div className="bg-gray-800/30 border border-gray-600 rounded-xl p-4 mb-6">
-          <p className="text-gray-300 text-sm text-center">
-            Escolha 1-2 ações práticas para implementar hoje mesmo
-          </p>
         </div>
         
         <InsightCards userProfile={userProfile} />

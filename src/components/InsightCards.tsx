@@ -90,15 +90,6 @@ export const InsightCards = ({ userProfile }: InsightCardsProps) => {
           </Card>
         ))}
       </div>
-      
-      <div className="mt-8 bg-green-900/20 border border-green-500/30 p-4 rounded-lg text-center">
-        <p className="text-green-200 font-semibold mb-2">
-          ✅ Próximo passo: Escolha 1 ação acima e faça AGORA!
-        </p>
-        <p className="text-green-300 text-sm">
-          Lembre-se, {userProfile.name}: não é sobre perfeição, é sobre progresso. Um pequeno passo hoje vale mais que grandes planos para amanhã.
-        </p>
-      </div>
     </div>
   );
 };

@@ -215,14 +215,6 @@ export const LifeSimulator = ({ userProfile }: LifeSimulatorProps) => {
             )}
           </div>
         )}
-
-        {!hasAnyChanges && (
-          <div className="bg-gray-700/30 border border-gray-600 p-4 rounded-lg text-center">
-            <p className="text-gray-400">
-              🎯 <strong>Esperando você começar...</strong> Mova qualquer um dos controles acima para ver o impacto das mudanças!
-            </p>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
